@@ -88,6 +88,15 @@ The built files will be in the `dist` directory.
 4. **Export**: Download your completed document as a markdown file
 5. **Resume**: Return later to continue where you left off
 
+## 📁 Memory Documentation
+
+The `memory/` folder contains actual project memory documents that serve dual purposes:
+
+- **📖 Project Documentation**: Real decisions, lessons learned, and team knowledge about building Arcana
+- **🎯 Working Examples**: Demonstrates proper memory document structure and content
+
+You can import these documents into Arcana to test functionality or see real-world examples of how memory documents should be structured.
+
 ## 🏗️ Project Structure
 
 ```
@@ -104,10 +113,19 @@ src/
 ├── types/               # TypeScript type definitions
 │   └── index.ts
 ├── utils/               # Utility functions
-│   ├── markdownParser.ts
+│   ├── markdownParsers.ts
 │   └── hostPageUtils.ts
 └── styles/              # CSS files
     └── input-isolation.css
+
+memory/                   # Project memory documents
+├── arcana-project-memory.md  # Actual project documentation
+└── README.md            # Memory folder documentation
+
+public/                   # Static assets
+├── sample-spec-document.md   # Sample specification document
+├── sample-memory-document.md # Sample memory document
+└── ...
 ```
 
 ## 🛠️ Technology Stack

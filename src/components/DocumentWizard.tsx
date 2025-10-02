@@ -43,6 +43,10 @@ export const DocumentWizard: React.FC = () => {
 
       const content = await response.text();
       
+      if (!content || content.trim().length === 0) {
+        throw new Error('Sample document is empty or could not be loaded');
+      }
+      
       // Use the same parsing logic as ImportModal
       const parsedData = documentType === 'spec' 
         ? parseSpecMarkdownContent(content)

@@ -54,21 +54,16 @@ export const StepNavigation: React.FC = () => {
           Step {currentStep + 1} of {steps.length}
         </div>
 
-        <button
-          id="next-button"
-          onClick={handleNext}
-          disabled={isLastStep}
-          className={`
-            flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors duration-200
-            ${isLastStep 
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-              : 'btn-primary'
-            }
-          `}
-        >
-          <span>{isLastStep ? 'Complete' : 'Next'}</span>
-          <ChevronRight id="next-icon" className="w-4 h-4" />
-        </button>
+        {!isLastStep && (
+          <button
+            id="next-button"
+            onClick={handleNext}
+            className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors duration-200 btn-primary"
+          >
+            <span>Next</span>
+            <ChevronRight id="next-icon" className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </div>
   );

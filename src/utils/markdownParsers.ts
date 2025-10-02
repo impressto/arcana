@@ -3,6 +3,11 @@ import type { SpecDocumentData } from '../types';
 // Memory document markdown parser
 export const parseMemoryMarkdownContent = (content: string) => {
   try {
+    // Validate input
+    if (!content || typeof content !== 'string') {
+      throw new Error('Content must be a non-empty string');
+    }
+
     const data = {
       projectInfo: { name: '', description: '', team: [] as string[] },
       decisionLog: [] as any[],
@@ -17,13 +22,13 @@ export const parseMemoryMarkdownContent = (content: string) => {
 
     // Extract project name from title
     const titleMatch = content.match(/^# (.+?) - Memory Document/m);
-    if (titleMatch) {
+    if (titleMatch && titleMatch[1]) {
       data.projectInfo.name = titleMatch[1].trim();
     }
 
     // Simple parsing - look for section headers and basic content
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
+      const line = lines[i]?.trim() || '';
       
       if (line.startsWith('## ')) {
         currentSection = line.replace('## ', '').trim();
@@ -67,8 +72,8 @@ export const parseMemoryMarkdownContent = (content: string) => {
         };
 
         // Parse following lines for decision details
-        while (j < lines.length && !lines[j].startsWith('###') && !lines[j].startsWith('##')) {
-          const detailLine = lines[j].trim();
+        while (j < lines.length && !lines[j]?.startsWith('###') && !lines[j]?.startsWith('##')) {
+          const detailLine = lines[j]?.trim() || '';
           if (detailLine.startsWith('**Date:**')) {
             decision.date = detailLine.replace('**Date:**', '').trim();
           } else if (detailLine.startsWith('**Description:**')) {
@@ -100,7 +105,7 @@ export const parseMemoryMarkdownContent = (content: string) => {
       if (currentSection.includes('Meeting Notes') && line.startsWith('### ') && !line.includes('No meeting')) {
         const titleMatch = line.match(/^### (.+?)(?: - (\d{4}-\d{2}-\d{2}))?$/);
         const title = titleMatch ? titleMatch[1].trim() : line.replace('### ', '').trim();
-        const date = titleMatch ? titleMatch[2].trim() : '';
+        const date = titleMatch && titleMatch[2] ? titleMatch[2].trim() : '';
 
         let j = i + 1;
         const meeting: any = {
@@ -316,6 +321,11 @@ export const parseMemoryMarkdownContent = (content: string) => {
 // Specification document markdown parser
 export const parseSpecMarkdownContent = (content: string) => {
   try {
+    // Validate input
+    if (!content || typeof content !== 'string') {
+      throw new Error('Content must be a non-empty string');
+    }
+
     const data: SpecDocumentData = {
       projectOverview: {
         name: '',
@@ -358,13 +368,13 @@ export const parseSpecMarkdownContent = (content: string) => {
 
     // Extract project name from title
     const titleMatch = content.match(/^# (.+?) - (?:Project )?Specification/m);
-    if (titleMatch) {
+    if (titleMatch && titleMatch[1]) {
       data.projectOverview.name = titleMatch[1].trim();
     }
 
     // Parse content line by line
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
+      const line = lines[i]?.trim() || '';
       
       if (!line) continue;
 
@@ -509,7 +519,7 @@ const parseSpecRoadmap = (line: string, data: SpecDocumentData, subsection: stri
         name: milestoneMatch[1].trim(),
         description: milestoneMatch[2].trim(),
         date: milestoneMatch[3]?.trim() || '',
-        dependencies: milestoneMatch[4]?.split(',').map(d => d.trim()).filter(Boolean) || []
+        dependencies: milestoneMatch[4] ? milestoneMatch[4].split(',').map(d => d.trim()).filter(Boolean) : []
       };
       data.roadmap.milestones.push(milestone);
     }
