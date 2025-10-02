@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcana App - Host Page Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .host-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #arcana-info-box {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        #arcana-info-box h3 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        
+        .arcana-container {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #fafafa;
+        }
+    </style>
+</head>
+<body>
+    <div class="host-content">
+        <h1>Host Page - Arcana Documentation Wizard</h1>
+        <p>This is a demo of the host page that contains the Arcana app.</p>
+        
+        <div id="arcana-info-box">
+            <h3>📋 Documentation Wizard</h3>
+            <p>Welcome! This info box will automatically hide when you start using one of the documentation wizards below.</p>
+            <ul>
+                <li><strong>Spec Wizard:</strong> Create comprehensive project specifications</li>
+                <li><strong>Memory Wizard:</strong> Document project decisions and knowledge</li>
+            </ul>
+            <p><em>This box should disappear when you select a document type and reappear when you reset the wizard.</em></p>
+        </div>
+        
+        <div class="arcana-container">
+            <h3>Arcana App Container</h3>
+            <p>The React app would be embedded here:</p>
+            
+            <!-- This is where your built Arcana app would be embedded -->
+            <div id="arcana-app-root">
+                <!-- App content goes here -->
+                <p style="text-align: center; color: #666; font-style: italic;">
+                    Arcana App will render here when integrated
+                </p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 40px; padding: 20px; background: #f0f0f0; border-radius: 8px;">
+            <h3>Integration Instructions</h3>
+            <p>To integrate the Arcana app:</p>
+            <ol>
+                <li>Build the app: <code>npm run build</code></li>
+                <li>Include the CSS: <code>&lt;link rel="stylesheet" href="dist/assets/index.css"&gt;</code></li>
+                <li>Include the JS: <code>&lt;script src="dist/assets/index.js"&gt;&lt;/script&gt;</code></li>
+                <li>The app will automatically hide the <code>#arcana-info-box</code> when wizards start</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Demo script to simulate the behavior
+        console.log('Host page loaded. Element with ID "arcana-info-box" is ready to be controlled by the Arcana app.');
+        
+        // You can test the functionality manually in the browser console:
+        // - To hide: document.getElementById('arcana-info-box').style.display = 'none'
+        // - To show: document.getElementById('arcana-info-box').style.display = 'block'
+    </script>
+</body>
+</html>

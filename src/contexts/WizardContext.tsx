@@ -7,6 +7,7 @@ import type {
   MemoryDocumentData,
   WizardContextType,
 } from '../types';
+import { hideHostElementWithMemory, restoreHostElement } from '../utils/hostPageUtils';
 
 // localStorage key
 const STORAGE_KEY = 'arcana-state';
@@ -215,6 +216,10 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     setSpecData(defaultSpecData);
     setMemoryData(defaultMemoryData);
     clearStorage();
+    
+    // Restore the host page info box when resetting the wizard
+    restoreHostElement('arcana-info-box');
+    
     if ((window as any).showToast) {
       (window as any).showToast('Progress cleared', 'info');
     }
@@ -233,6 +238,9 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
   const handleSetDocumentType = (type: DocumentType) => {
     setDocumentType(type);
     setCurrentStep(0);
+    
+    // Hide the host page info box when starting a wizard
+    hideHostElementWithMemory('arcana-info-box');
   };
 
   const value: WizardContextType = {

@@ -2,6 +2,7 @@ import React from 'react';
 import { FileText, BookOpen } from 'lucide-react';
 import { useWizard } from '../contexts/WizardContext';
 import type { DocumentType } from '../types';
+import { HostPageTest } from './HostPageTest';
 
 export const DocumentTypeSelector: React.FC = () => {
   const { setDocumentType, resetWizard } = useWizard();
@@ -151,6 +152,9 @@ export const DocumentTypeSelector: React.FC = () => {
             Both document types support markdown export and professional formatting
           </p>
         </div>
+        
+        {/* Temporary test component for host page element control */}
+        <HostPageTest />
       </div>
     </div>
   );
