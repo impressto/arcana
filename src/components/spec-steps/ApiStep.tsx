@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Plus, X, Edit2 } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
 import type { APIEndpoint } from '../../types';
@@ -10,10 +10,23 @@ export const ApiStep: React.FC = () => {
   const [formData, setFormData] = useState(apis);
   const [showEndpointForm, setShowEndpointForm] = useState(false);
   const [editingEndpoint, setEditingEndpoint] = useState<APIEndpoint | null>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setFormData(apis);
   }, [apis]);
+
+  // Scroll to form when showing endpoint form (for both add and edit)
+  useEffect(() => {
+    if (showEndpointForm && formRef.current) {
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [showEndpointForm]);
 
   const updateData = (updatedData: typeof apis) => {
     setFormData(updatedData);
@@ -148,14 +161,16 @@ export const ApiStep: React.FC = () => {
         )}
 
         {showEndpointForm && (
-          <EndpointForm
-            endpoint={editingEndpoint}
-            onSave={addOrUpdateEndpoint}
-            onCancel={() => {
-              setShowEndpointForm(false);
-              setEditingEndpoint(null);
-            }}
-          />
+          <div ref={formRef}>
+            <EndpointForm
+              endpoint={editingEndpoint}
+              onSave={addOrUpdateEndpoint}
+              onCancel={() => {
+                setShowEndpointForm(false);
+                setEditingEndpoint(null);
+              }}
+            />
+          </div>
         )}
       </div>
     </div>

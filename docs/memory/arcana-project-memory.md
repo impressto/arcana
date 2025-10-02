@@ -63,12 +63,14 @@
 
 ### Smooth Scroll to Edit Forms
 **Date:** October 2, 2025  
-**Description:** Add smooth scrolling to edit forms when clicking "Edit" buttons in memory steps  
-**Rationale:** On longer pages with many entries, clicking "Edit" opens the form but users lose visual context of where the form is located, requiring manual scrolling  
+**Description:** Add smooth scrolling to edit forms when clicking "Edit" buttons in memory steps and "Add/Edit Feature" buttons in spec steps  
+**Rationale:** On longer pages with many entries, clicking "Edit" or "Add Feature" opens the form but users lose visual context of where the form is located, requiring manual scrolling  
 **Status:** Implemented  
-**Impact:** Improved user experience - users immediately see the edit form when clicking Edit, reducing confusion and improving workflow efficiency  
+**Impact:** Improved user experience - users immediately see the edit/add form when clicking buttons, reducing confusion and improving workflow efficiency across both memory and spec documentation  
 **Stakeholders:** Development Team, End Users  
-**Implementation:** Added useRef and useEffect hooks to all memory step components (DecisionLogStep, MeetingNotesStep, LessonsLearnedStep, GlossaryStep) to scroll smoothly to form when editing existing entries
+**Implementation:** Added useRef and useEffect hooks to all components with forms:
+- Memory steps: DecisionLogStep, MeetingNotesStep, LessonsLearnedStep, GlossaryStep (scroll when editing existing entries)  
+- Spec steps: FunctionalRequirementsStep, ApiStep (scroll when adding/editing features and API endpoints)
 
 ### CSS Specificity Fix for Input Field Padding
 **Date:** October 2, 2025  

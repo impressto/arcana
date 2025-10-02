@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Plus, X, Edit2 } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
 import type { Feature } from '../../types';
@@ -12,10 +12,23 @@ export const FunctionalRequirementsStep: React.FC = () => {
   const [newCriteria, setNewCriteria] = useState('');
   const [editingFeature, setEditingFeature] = useState<Feature | null>(null);
   const [showFeatureForm, setShowFeatureForm] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setFormData(functionalRequirements);
   }, [functionalRequirements]);
+
+  // Scroll to form when showing feature form (for both add and edit)
+  useEffect(() => {
+    if (showFeatureForm && formRef.current) {
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [showFeatureForm]);
 
   const updateData = (updatedData: typeof functionalRequirements) => {
     setFormData(updatedData);
@@ -205,14 +218,16 @@ export const FunctionalRequirementsStep: React.FC = () => {
         )}
 
         {showFeatureForm && (
-          <FeatureForm
-            feature={editingFeature}
-            onSave={addOrUpdateFeature}
-            onCancel={() => {
-              setShowFeatureForm(false);
-              setEditingFeature(null);
-            }}
-          />
+          <div ref={formRef}>
+            <FeatureForm
+              feature={editingFeature}
+              onSave={addOrUpdateFeature}
+              onCancel={() => {
+                setShowFeatureForm(false);
+                setEditingFeature(null);
+              }}
+            />
+          </div>
         )}
       </div>
 
