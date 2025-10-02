@@ -7,17 +7,21 @@ import { SpecSteps } from './spec-steps';
 import { MemorySteps } from './memory-steps';
 import { PreviewStep } from './PreviewStep';
 import { ImportModal } from './ImportModal';
+import { ConfirmationModal } from './ConfirmationModal';
 import { parseSpecMarkdownContent, parseMemoryMarkdownContent } from '../utils/markdownParsers';
 
 export const DocumentWizard: React.FC = () => {
   const { documentType, currentStep, steps, resetWizard, manualSave, updateSpecData, updateMemoryData } = useWizard();
   const [showImportModal, setShowImportModal] = useState(false);
+  const [showClearConfirmModal, setShowClearConfirmModal] = useState(false);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
 
   const handleClearProgress = () => {
-    if (window.confirm('Are you sure you want to clear all progress? This action cannot be undone.')) {
-      resetWizard();
-    }
+    setShowClearConfirmModal(true);
+  };
+
+  const handleConfirmClearProgress = () => {
+    resetWizard();
   };
 
   const handleUseSample = async () => {
@@ -210,6 +214,17 @@ export const DocumentWizard: React.FC = () => {
       <ImportModal 
         isOpen={showImportModal} 
         onClose={() => setShowImportModal(false)} 
+      />
+      
+      <ConfirmationModal
+        isOpen={showClearConfirmModal}
+        onClose={() => setShowClearConfirmModal(false)}
+        onConfirm={handleConfirmClearProgress}
+        title="Clear Progress?"
+        message="Are you sure you want to clear all progress? This will delete all your work and start over from the beginning. This action cannot be undone."
+        confirmText="Clear Progress"
+        cancelText="Cancel"
+        type="danger"
       />
     </div>
   );

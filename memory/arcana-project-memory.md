@@ -33,6 +33,16 @@
 **Alternatives:** Make the button functional, Keep it but improve styling  
 **Implementation:** Modified `StepNavigation.tsx` to conditionally render the Next button only when not on the last step  
 
+### Start Over Confirmation Dialog
+**Date:** October 2, 2025  
+**Description:** Decision to add a confirmation dialog when users click the "Start Over" button  
+**Rationale:** Users could accidentally lose their work by clicking "Start Over" without warning, causing frustration and lost productivity  
+**Status:** Decided  
+**Impact:** Prevents accidental data loss and improves user confidence when navigating the wizard  
+**Stakeholders:** Development Team, End Users  
+**Alternatives:** Remove the Start Over button, Move it to a less prominent location, Add an undo feature  
+**Implementation:** Added `handleStartOver` function in `StepNavigation.tsx` with `window.confirm()` before calling `resetWizard()`  
+
 ### Technology Stack Selection
 **Date:** 2024 (Initial Project)  
 **Description:** Selection of React + TypeScript + Vite for the frontend stack  

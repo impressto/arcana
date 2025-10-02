@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { useWizard } from '../contexts/WizardContext';
+import { ConfirmationModal } from './ConfirmationModal';
 
 export const StepNavigation: React.FC = () => {
   const { currentStep, steps, setCurrentStep, resetWizard } = useWizard();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === steps.length - 1;
@@ -20,12 +22,20 @@ export const StepNavigation: React.FC = () => {
     }
   };
 
+  const handleStartOver = () => {
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmStartOver = () => {
+    resetWizard();
+  };
+
   return (
     <div id="step-navigation" className="mt-8 flex items-center justify-between">
       <div id="navigation-left" className="flex items-center space-x-4">
         <button
           id="start-over-button"
-          onClick={resetWizard}
+          onClick={handleStartOver}
           className="btn-secondary flex items-center space-x-2"
         >
           <RotateCcw id="start-over-icon" className="w-4 h-4" />
@@ -65,6 +75,17 @@ export const StepNavigation: React.FC = () => {
           </button>
         )}
       </div>
+
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleConfirmStartOver}
+        title="Start Over?"
+        message="Are you sure you want to start over? This will clear all your progress and return to document type selection. This action cannot be undone."
+        confirmText="Start Over"
+        cancelText="Cancel"
+        type="warning"
+      />
     </div>
   );
 };
