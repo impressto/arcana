@@ -1,6 +1,9 @@
 # Arcana Documentation Platform - Project Specification
 
+# Sample Project Specification Document
+
 *Generated using Arcana Documentation Wizard*  
+*Reference: [Main Project Spec](../docs/spec/arcana-project-spec.md)*  
 *Last Updated: October 2, 2025*
 
 ## 📋 Project Overview

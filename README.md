@@ -4,6 +4,12 @@
 
 A modern React TypeScript application for creating professional specification and memory documentation with an intuitive step-by-step wizard interface. Arcana helps teams and individuals create comprehensive, well-structured documentation efficiently.
 
+## 📚 Documentation
+
+- **[Project Specification](docs/spec/arcana-project-spec.md)** - Complete technical specification and requirements
+- **[Project Memory](docs/memory/arcana-project-memory.md)** - Living documentation of decisions, lessons learned, and project knowledge  
+- **[AI Copilot Guide](docs/AI_COPILOT_GUIDE.md)** - GitHub Copilot integration guide with context prompts
+
 ## ✨ Features
 
 ### Document Types
