@@ -203,12 +203,5 @@ The app can automatically hide elements on the host page:
 
 ## 📄 License
 
-This project is private and proprietary.
+This project is completely open source and free
 
-## 🙋‍♂️ Support
-
-For support, please contact the development team or create an issue in the repository.
-
----
-
-Built with ❤️ using React, TypeScript, and Vite.
