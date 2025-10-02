@@ -128,6 +128,33 @@ src/
 - `npm run lint` - Run ESLint
 - `npm run preview` - Preview production build
 
+### Environment Variables
+
+Arcana uses environment variables for configuration. Copy `.env.example` to `.env` and customize as needed:
+
+```bash
+cp .env.example .env
+```
+
+**Available Environment Variables:**
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `VITE_SAMPLE_SPEC_DOCUMENT_PATH` | Path or URL to the sample specification document | `/sample-spec-document.md` |
+| `VITE_SAMPLE_MEMORY_DOCUMENT_PATH` | Path or URL to the sample memory document | `/sample-memory-document.md` |
+
+**Example configurations:**
+
+```bash
+# Local development (default)
+VITE_SAMPLE_SPEC_DOCUMENT_PATH=/sample-spec-document.md
+VITE_SAMPLE_MEMORY_DOCUMENT_PATH=/sample-memory-document.md
+
+# Production with CDN
+VITE_SAMPLE_SPEC_DOCUMENT_PATH=https://cdn.example.com/samples/spec-document.md
+VITE_SAMPLE_MEMORY_DOCUMENT_PATH=https://cdn.example.com/samples/memory-document.md
+```
+
 ### ESLint Configuration
 
 For production applications, you may want to enable type-aware lint rules:
