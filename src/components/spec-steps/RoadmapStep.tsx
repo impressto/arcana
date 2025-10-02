@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, Edit2 } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
 import type { RoadmapPhase, Milestone } from '../../types';
 
@@ -261,15 +261,7 @@ const MilestoneForm: React.FC<MilestoneFormProps> = ({ onSave, onCancel }) => {
     newDependency: ''
   });
 
-  const addDependency = () => {
-    if (formData.newDependency.trim()) {
-      setFormData({
-        ...formData,
-        dependencies: [...formData.dependencies, formData.newDependency.trim()],
-        newDependency: ''
-      });
-    }
-  };
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

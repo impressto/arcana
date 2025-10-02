@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useWizard } from '../contexts/WizardContext';
+import type { SpecDocumentData } from '../types';
 import { Upload, FileText, AlertCircle, CheckCircle, X } from 'lucide-react';
 
 interface ImportModalProps {
@@ -8,7 +9,7 @@ interface ImportModalProps {
 }
 
 export function ImportModal({ isOpen, onClose }: ImportModalProps) {
-  const { updateMemoryData, memoryData } = useWizard();
+  const { updateMemoryData, memoryData, updateSpecData, specData, documentType } = useWizard();
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState<{
     success: boolean;
@@ -33,7 +34,9 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
 
     try {
       const content = await file.text();
-      const parsedData = parseMarkdownContent(content);
+      const parsedData = documentType === 'spec' 
+        ? parseSpecMarkdownContent(content)
+        : parseMemoryMarkdownContent(content);
 
       if (parsedData.success && parsedData.data) {
         // Merge with existing data or replace
@@ -41,41 +44,119 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
           'Do you want to merge with existing data? Click OK to merge, Cancel to replace all data.'
         );
 
-        if (shouldMerge) {
-          // Merge arrays
-          updateMemoryData('decisionLog', [...memoryData.decisionLog, ...parsedData.data.decisionLog]);
-          updateMemoryData('glossary', [...memoryData.glossary, ...parsedData.data.glossary]);
-          updateMemoryData('meetingNotes', [...memoryData.meetingNotes, ...parsedData.data.meetingNotes]);
-          updateMemoryData('lessonsLearned', [...memoryData.lessonsLearned, ...parsedData.data.lessonsLearned]);
-          updateMemoryData('onboardingNotes', [...memoryData.onboardingNotes, ...parsedData.data.onboardingNotes]);
-          
-          // Update project info if it's not empty
-          if (parsedData.data.projectInfo.name || parsedData.data.projectInfo.description) {
-            updateMemoryData('projectInfo', parsedData.data.projectInfo);
+        if (documentType === 'memory') {
+          const memoryDocData = parsedData.data as any; // Memory document data
+          if (shouldMerge) {
+            // Merge arrays for memory document
+            if (memoryDocData.decisionLog) {
+              updateMemoryData('decisionLog', [...memoryData.decisionLog, ...memoryDocData.decisionLog]);
+            }
+            if (memoryDocData.glossary) {
+              updateMemoryData('glossary', [...memoryData.glossary, ...memoryDocData.glossary]);
+            }
+            if (memoryDocData.meetingNotes) {
+              updateMemoryData('meetingNotes', [...memoryData.meetingNotes, ...memoryDocData.meetingNotes]);
+            }
+            if (memoryDocData.lessonsLearned) {
+              updateMemoryData('lessonsLearned', [...memoryData.lessonsLearned, ...memoryDocData.lessonsLearned]);
+            }
+            if (memoryDocData.onboardingNotes) {
+              updateMemoryData('onboardingNotes', [...memoryData.onboardingNotes, ...memoryDocData.onboardingNotes]);
+            }
+            
+            // Update project info if it's not empty
+            if (memoryDocData.projectInfo && (memoryDocData.projectInfo.name || memoryDocData.projectInfo.description)) {
+              updateMemoryData('projectInfo', memoryDocData.projectInfo);
+            }
+          } else {
+            // Replace all sections
+            Object.keys(memoryDocData).forEach(key => {
+              updateMemoryData(key as any, memoryDocData[key]);
+            });
           }
         } else {
-          // Replace all sections
-          Object.keys(parsedData.data).forEach(key => {
-            updateMemoryData(key as any, (parsedData.data as any)[key]);
-          });
+          // Handle spec document
+          const specDocData = parsedData.data as SpecDocumentData;
+          if (shouldMerge) {
+            // Merge arrays for spec document
+            if (specDocData.functionalRequirements) {
+              updateSpecData('functionalRequirements', {
+                ...specData.functionalRequirements,
+                userStories: [...specData.functionalRequirements.userStories, ...(specDocData.functionalRequirements.userStories || [])],
+                features: [...specData.functionalRequirements.features, ...(specDocData.functionalRequirements.features || [])],
+                acceptanceCriteria: [...specData.functionalRequirements.acceptanceCriteria, ...(specDocData.functionalRequirements.acceptanceCriteria || [])]
+              });
+            }
+            if (specDocData.technicalRequirements) {
+              updateSpecData('technicalRequirements', {
+                ...specDocData.technicalRequirements,
+                technologies: [...specData.technicalRequirements.technologies, ...(specDocData.technicalRequirements.technologies || [])],
+                dependencies: [...specData.technicalRequirements.dependencies, ...(specDocData.technicalRequirements.dependencies || [])]
+              });
+            }
+            if (specDocData.apis) {
+              updateSpecData('apis', {
+                ...specDocData.apis,
+                endpoints: [...specData.apis.endpoints, ...(specDocData.apis.endpoints || [])]
+              });
+            }
+            if (specDocData.roadmap) {
+              updateSpecData('roadmap', {
+                phases: [...specData.roadmap.phases, ...(specDocData.roadmap.phases || [])],
+                milestones: [...specData.roadmap.milestones, ...(specDocData.roadmap.milestones || [])]
+              });
+            }
+            
+            // Update other sections if they have content
+            if (specDocData.projectOverview && (specDocData.projectOverview.name || specDocData.projectOverview.description)) {
+              updateSpecData('projectOverview', specDocData.projectOverview);
+            }
+            if (specDocData.nonFunctionalRequirements && (specDocData.nonFunctionalRequirements.performance || specDocData.nonFunctionalRequirements.security)) {
+              updateSpecData('nonFunctionalRequirements', specDocData.nonFunctionalRequirements);
+            }
+          } else {
+            // Replace all sections
+            Object.keys(specDocData).forEach(key => {
+              updateSpecData(key as any, (specDocData as any)[key]);
+            });
+          }
         }
 
-        setImportResult({
-          success: true,
-          message: `Successfully imported memory document!`,
-          details: {
-            decisions: parsedData.data.decisionLog.length,
-            glossaryTerms: parsedData.data.glossary.length,
-            meetings: parsedData.data.meetingNotes.length,
-            lessons: parsedData.data.lessonsLearned.length,
-            onboarding: parsedData.data.onboardingNotes.length,
-            // Additional details for complex structures
-            actionItems: parsedData.data.meetingNotes.reduce((sum: number, meeting: any) => 
-              sum + (meeting.actionItems?.length || 0), 0),
-            onboardingTasks: parsedData.data.onboardingNotes.reduce((sum: number, note: any) => 
-              sum + (note.onboardingTasks?.length || 0), 0)
-          }
-        });
+        if (documentType === 'memory') {
+          const memoryData = parsedData.data as any;
+          setImportResult({
+            success: true,
+            message: `Successfully imported memory document!`,
+            details: {
+              decisions: memoryData.decisionLog.length,
+              glossaryTerms: memoryData.glossary.length,
+              meetings: memoryData.meetingNotes.length,
+              lessons: memoryData.lessonsLearned.length,
+              onboarding: memoryData.onboardingNotes.length,
+              // Additional details for complex structures
+              actionItems: memoryData.meetingNotes.reduce((sum: number, meeting: any) => 
+                sum + (meeting.actionItems?.length || 0), 0),
+              onboardingTasks: memoryData.onboardingNotes.reduce((sum: number, note: any) => 
+                sum + (note.onboardingTasks?.length || 0), 0)
+            }
+          });
+        } else {
+          const specData = parsedData.data as SpecDocumentData;
+          setImportResult({
+            success: true,
+            message: `Successfully imported specification document!`,
+            details: {
+              userStories: specData.functionalRequirements.userStories.length,
+              features: specData.functionalRequirements.features.length,
+              acceptanceCriteria: specData.functionalRequirements.acceptanceCriteria.length,
+              technologies: specData.technicalRequirements.technologies.length,
+              dependencies: specData.technicalRequirements.dependencies.length,
+              endpoints: specData.apis.endpoints.length,
+              phases: specData.roadmap.phases.length,
+              milestones: specData.roadmap.milestones.length
+            }
+          });
+        }
       } else {
         setImportResult({
           success: false,
@@ -92,8 +173,8 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
     }
   };
 
-  // Simple markdown parser - basic implementation
-  const parseMarkdownContent = (content: string) => {
+  // Memory document markdown parser
+  const parseMemoryMarkdownContent = (content: string) => {
     try {
       const data = {
         projectInfo: { name: '', description: '', team: [] as string[] },
@@ -412,17 +493,249 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
     }
   };
 
+  // Specification document markdown parser
+  const parseSpecMarkdownContent = (content: string) => {
+    try {
+      const data: SpecDocumentData = {
+        projectOverview: {
+          name: '',
+          description: '',
+          purpose: '',
+          stakeholders: [],
+          timeline: ''
+        },
+        functionalRequirements: {
+          userStories: [],
+          features: [],
+          acceptanceCriteria: []
+        },
+        technicalRequirements: {
+          architecture: '',
+          technologies: [],
+          infrastructure: '',
+          dependencies: []
+        },
+        apis: {
+          endpoints: [],
+          authentication: '',
+          rateLimit: ''
+        },
+        nonFunctionalRequirements: {
+          performance: '',
+          security: '',
+          scalability: '',
+          availability: ''
+        },
+        roadmap: {
+          phases: [],
+          milestones: []
+        }
+      };
+
+      const lines = content.split('\n');
+      let currentSection = '';
+      let currentSubsection = '';
+
+      // Extract project name from title
+      const titleMatch = content.match(/^# (.+?) - (?:Project )?Specification/m);
+      if (titleMatch) {
+        data.projectOverview.name = titleMatch[1].trim();
+      }
+
+      // Parse content line by line
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        if (!line) continue;
+
+        // Section headers
+        if (line.startsWith('## ')) {
+          currentSection = line.replace('## ', '').trim();
+          currentSubsection = '';
+          continue;
+        }
+
+        // Subsection headers  
+        if (line.startsWith('### ')) {
+          currentSubsection = line.replace('### ', '').trim();
+          continue;
+        }
+
+        // Parse based on current section
+        switch (currentSection) {
+          case '📋 Project Overview':
+            parseSpecProjectOverview(line, data);
+            break;
+          
+          case '🎯 Functional Requirements':
+            parseSpecFunctionalRequirements(line, data, currentSubsection);
+            break;
+          
+          case '⚙️ Technical Requirements':
+            parseSpecTechnicalRequirements(line, data, currentSubsection);
+            break;
+          
+          case '🔌 API Documentation':
+            parseSpecApiDocumentation(line, lines, i, data);
+            break;
+          
+          case '📊 Non-Functional Requirements':
+            parseSpecNonFunctionalRequirements(line, data);
+            break;
+          
+          case '🗓️ Roadmap':
+            parseSpecRoadmap(line, data, currentSubsection);
+            break;
+        }
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: `Spec parsing error: ${error instanceof Error ? error.message : 'Unknown error'}` 
+      };
+    }
+  };
+
+  // Helper functions for spec parsing
+  const parseSpecProjectOverview = (line: string, data: SpecDocumentData) => {
+    if (line.startsWith('**Description:**')) {
+      data.projectOverview.description = line.replace('**Description:**', '').trim();
+    } else if (line.startsWith('**Purpose:**')) {
+      data.projectOverview.purpose = line.replace('**Purpose:**', '').trim();
+    } else if (line.startsWith('**Timeline:**')) {
+      data.projectOverview.timeline = line.replace('**Timeline:**', '').trim();
+    } else if (line.startsWith('**Stakeholders:**')) {
+      const stakeholders = line.replace('**Stakeholders:**', '').trim();
+      data.projectOverview.stakeholders = stakeholders.split(',').map(s => s.trim()).filter(Boolean);
+    }
+  };
+
+  const parseSpecFunctionalRequirements = (line: string, data: SpecDocumentData, subsection: string) => {
+    if (subsection.includes('User Stories') && line.startsWith('- ')) {
+      data.functionalRequirements.userStories.push(line.replace('- ', '').trim());
+    } else if (subsection.includes('Acceptance Criteria') && line.startsWith('- ')) {
+      data.functionalRequirements.acceptanceCriteria.push(line.replace('- ', '').trim());
+    } else if (subsection.includes('Features') && line.startsWith('**') && line.includes(':**')) {
+      // Parse feature: **Feature Name:** Description (Priority: High, Status: Planned)
+      const featureMatch = line.match(/\*\*(.+?):\*\*\s*(.+?)(?:\s*\(Priority:\s*(.+?),\s*Status:\s*(.+?)\))?$/);
+      if (featureMatch) {
+        const feature = {
+          id: Date.now().toString() + Math.random(),
+          name: featureMatch[1].trim(),
+          description: featureMatch[2].trim(),
+          priority: (featureMatch[3]?.trim() as any) || 'Medium',
+          status: (featureMatch[4]?.trim() as any) || 'Planned'
+        };
+        data.functionalRequirements.features.push(feature);
+      }
+    }
+  };
+
+  const parseSpecTechnicalRequirements = (line: string, data: SpecDocumentData, subsection: string) => {
+    if (line.startsWith('**Architecture:**')) {
+      data.technicalRequirements.architecture = line.replace('**Architecture:**', '').trim();
+    } else if (line.startsWith('**Infrastructure:**')) {
+      data.technicalRequirements.infrastructure = line.replace('**Infrastructure:**', '').trim();
+    } else if (subsection.includes('Technologies') && line.startsWith('- ')) {
+      data.technicalRequirements.technologies.push(line.replace('- ', '').trim());
+    } else if (subsection.includes('Dependencies') && line.startsWith('- ')) {
+      data.technicalRequirements.dependencies.push(line.replace('- ', '').trim());
+    }
+  };
+
+  const parseSpecApiDocumentation = (line: string, lines: string[], index: number, data: SpecDocumentData) => {
+    if (line.startsWith('**🔐 Authentication:**')) {
+      data.apis.authentication = line.replace('**🔐 Authentication:**', '').trim();
+    } else if (line.startsWith('**⚡ Rate Limiting:**')) {
+      data.apis.rateLimit = line.replace('**⚡ Rate Limiting:**', '').trim();
+    } else if (line.startsWith('#### `') && line.includes('`')) {
+      // Parse endpoint: #### `GET` /api/users
+      const endpointMatch = line.match(/####\s*`(\w+)`\s*(.+)/);
+      if (endpointMatch) {
+        const endpoint = {
+          method: endpointMatch[1] as any,
+          path: endpointMatch[2].trim(),
+          description: '',
+          parameters: [],
+          response: ''
+        };
+        
+        // Look ahead for endpoint details
+        let j = index + 1;
+        while (j < lines.length && !lines[j].startsWith('####') && !lines[j].startsWith('##')) {
+          const detailLine = lines[j].trim();
+          if (detailLine && !detailLine.startsWith('**')) {
+            endpoint.description = detailLine;
+            break;
+          }
+          j++;
+        }
+        
+        data.apis.endpoints.push(endpoint);
+      }
+    }
+  };
+
+  const parseSpecNonFunctionalRequirements = (line: string, data: SpecDocumentData) => {
+    if (line.startsWith('**Performance:**')) {
+      data.nonFunctionalRequirements.performance = line.replace('**Performance:**', '').trim();
+    } else if (line.startsWith('**Security:**')) {
+      data.nonFunctionalRequirements.security = line.replace('**Security:**', '').trim();
+    } else if (line.startsWith('**Scalability:**')) {
+      data.nonFunctionalRequirements.scalability = line.replace('**Scalability:**', '').trim();
+    } else if (line.startsWith('**Availability:**')) {
+      data.nonFunctionalRequirements.availability = line.replace('**Availability:**', '').trim();
+    }
+  };
+
+  const parseSpecRoadmap = (line: string, data: SpecDocumentData, subsection: string) => {
+    if (subsection.includes('Phases') || subsection.includes('Phase')) {
+      // Parse phase: **Phase 1 - Foundation:** Description (Duration: 3 months)
+      const phaseMatch = line.match(/\*\*(.+?):\*\*\s*(.+?)(?:\s*\(Duration:\s*(.+?)\))?$/);
+      if (phaseMatch) {
+        const phase = {
+          name: phaseMatch[1].trim(),
+          description: phaseMatch[2].trim(),
+          duration: phaseMatch[3]?.trim() || '',
+          deliverables: []
+        };
+        data.roadmap.phases.push(phase);
+      } else if (line.startsWith('  - ')) {
+        // Add deliverable to last phase
+        const lastPhase = data.roadmap.phases[data.roadmap.phases.length - 1];
+        if (lastPhase) {
+          lastPhase.deliverables.push(line.replace('  - ', '').trim());
+        }
+      }
+    } else if (subsection.includes('Milestones') || subsection.includes('Milestone')) {
+      // Parse milestone: **Beta Release:** Description (Date: 2025-06-01, Dependencies: Phase 1)
+      const milestoneMatch = line.match(/\*\*(.+?):\*\*\s*(.+?)(?:\s*\(Date:\s*(.+?)(?:,\s*Dependencies:\s*(.+?))?\))?$/);
+      if (milestoneMatch) {
+        const milestone = {
+          name: milestoneMatch[1].trim(),
+          description: milestoneMatch[2].trim(),
+          date: milestoneMatch[3]?.trim() || '',
+          dependencies: milestoneMatch[4]?.split(',').map(d => d.trim()).filter(Boolean) || []
+        };
+        data.roadmap.milestones.push(milestone);
+      }
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-            <Upload className="w-5 h-5" />
-            Import Memory Document
+    <div id="import-modal-overlay" className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div id="import-modal" className="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div id="import-modal-header" className="flex items-center justify-between p-6 border-b border-gray-200">
+          <h2 id="import-modal-title" className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <Upload id="import-modal-icon" className="w-5 h-5" />
+            Import {documentType === 'spec' ? 'Specification' : 'Memory'} Document
           </h2>
           <button
+            id="import-modal-close"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
@@ -430,17 +743,17 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
           </button>
         </div>
 
-        <div className="p-6">
-          <div className="mb-4">
-            <p className="text-gray-600 text-sm mb-4">
-              Import a previously exported memory document (.md file) to populate the wizard fields.
+        <div id="import-modal-content" className="p-6">
+          <div id="import-instructions" className="mb-4">
+            <p id="import-description" className="text-gray-600 text-sm mb-4">
+              Import a previously exported {documentType === 'spec' ? 'specification' : 'memory'} document (.md file) to populate the wizard fields.
             </p>
             
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-              <FileText className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-              <div className="mb-4">
+            <div id="file-drop-zone" className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+              <FileText id="file-icon" className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+              <div id="file-upload-section" className="mb-4">
                 <label htmlFor="file-upload" className="cursor-pointer">
-                  <span className="text-blue-600 hover:text-blue-700 font-medium">
+                  <span id="file-upload-text" className="text-blue-600 hover:text-blue-700 font-medium">
                     Choose a markdown file
                   </span>
                   <input
@@ -452,7 +765,7 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
                     className="hidden"
                   />
                 </label>
-                <p className="text-gray-500 text-sm mt-1">
+                <p id="drag-drop-text" className="text-gray-500 text-sm mt-1">
                   or drag and drop your .md file here
                 </p>
               </div>
@@ -460,54 +773,85 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
           </div>
 
           {isImporting && (
-            <div className="flex items-center justify-center py-4">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-              <span className="ml-2 text-gray-600">Importing...</span>
+            <div id="import-loading" className="flex items-center justify-center py-4">
+              <div id="import-spinner" className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+              <span id="import-loading-text" className="ml-2 text-gray-600">Importing...</span>
             </div>
           )}
 
           {importResult && (
-            <div className={`p-4 rounded-lg ${
+            <div id="import-result" className={`p-4 rounded-lg ${
               importResult.success 
                 ? 'bg-green-50 border border-green-200' 
                 : 'bg-red-50 border border-red-200'
             }`}>
-              <div className="flex items-start gap-2">
+              <div id="import-result-content" className="flex items-start gap-2">
                 {importResult.success ? (
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <CheckCircle id="import-success-icon" className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                 ) : (
-                  <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                  <AlertCircle id="import-error-icon" className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
                 )}
-                <div className="flex-1">
-                  <p className={`font-medium ${
+                <div id="import-result-text" className="flex-1">
+                  <p id="import-result-message" className={`font-medium ${
                     importResult.success ? 'text-green-800' : 'text-red-800'
                   }`}>
                     {importResult.message}
                   </p>
                   {importResult.success && importResult.details && (
-                    <div className="mt-2 text-sm text-green-700">
-                      <p>Imported items:</p>
-                      <ul className="list-disc list-inside mt-1 space-y-1">
-                        {importResult.details.decisions > 0 && (
-                          <li>{importResult.details.decisions} decision(s)</li>
-                        )}
-                        {importResult.details.glossaryTerms > 0 && (
-                          <li>{importResult.details.glossaryTerms} glossary term(s)</li>
-                        )}
-                        {importResult.details.meetings > 0 && (
-                          <li>{importResult.details.meetings} meeting note(s)</li>
-                        )}
-                        {importResult.details.lessons > 0 && (
-                          <li>{importResult.details.lessons} lesson(s) learned</li>
-                        )}
-                        {importResult.details.onboarding > 0 && (
-                          <li>{importResult.details.onboarding} onboarding note(s)</li>
-                        )}
-                        {importResult.details.actionItems > 0 && (
-                          <li>{importResult.details.actionItems} action item(s)</li>
-                        )}
-                        {importResult.details.onboardingTasks > 0 && (
-                          <li>{importResult.details.onboardingTasks} onboarding task(s)</li>
+                    <div id="import-details" className="mt-2 text-sm text-green-700">
+                      <p id="import-details-title">Imported items:</p>
+                      <ul id="import-details-list" className="list-disc list-inside mt-1 space-y-1">
+                        {documentType === 'memory' ? (
+                          <>
+                            {importResult.details.decisions > 0 && (
+                              <li>{importResult.details.decisions} decision(s)</li>
+                            )}
+                            {importResult.details.glossaryTerms > 0 && (
+                              <li>{importResult.details.glossaryTerms} glossary term(s)</li>
+                            )}
+                            {importResult.details.meetings > 0 && (
+                              <li>{importResult.details.meetings} meeting note(s)</li>
+                            )}
+                            {importResult.details.lessons > 0 && (
+                              <li>{importResult.details.lessons} lesson(s) learned</li>
+                            )}
+                            {importResult.details.onboarding > 0 && (
+                              <li>{importResult.details.onboarding} onboarding note(s)</li>
+                            )}
+                            {importResult.details.actionItems > 0 && (
+                              <li>{importResult.details.actionItems} action item(s)</li>
+                            )}
+                            {importResult.details.onboardingTasks > 0 && (
+                              <li>{importResult.details.onboardingTasks} onboarding task(s)</li>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            {importResult.details.userStories > 0 && (
+                              <li>{importResult.details.userStories} user stor{importResult.details.userStories === 1 ? 'y' : 'ies'}</li>
+                            )}
+                            {importResult.details.features > 0 && (
+                              <li>{importResult.details.features} feature(s)</li>
+                            )}
+                            {importResult.details.acceptanceCriteria > 0 && (
+                              <li>{importResult.details.acceptanceCriteria} acceptance criteria</li>
+                            )}
+                            {importResult.details.technologies > 0 && (
+                              <li>{importResult.details.technologies} technolog{importResult.details.technologies === 1 ? 'y' : 'ies'}</li>
+                            )}
+                            {importResult.details.dependencies > 0 && (
+                              <li>{importResult.details.dependencies} dependenc{importResult.details.dependencies === 1 ? 'y' : 'ies'}</li>
+                            )}
+                            {importResult.details.endpoints > 0 && (
+                              <li>{importResult.details.endpoints} API endpoint(s)</li>
+                            )}
+                            {importResult.details.phases > 0 && (
+                              <li>{importResult.details.phases} roadmap phase(s)</li>
+                            )}
+                            {importResult.details.milestones > 0 && (
+                              <li>{importResult.details.milestones} milestone(s)</li>
+                            )}
+                          </>
                         )}
                       </ul>
                     </div>
@@ -518,8 +862,9 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
           )}
         </div>
 
-        <div className="flex justify-end gap-3 p-6 border-t border-gray-200">
+        <div id="import-modal-footer" className="flex justify-end gap-3 p-6 border-t border-gray-200">
           <button
+            id="import-modal-close-button"
             onClick={onClose}
             className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
           >

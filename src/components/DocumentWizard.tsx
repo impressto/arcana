@@ -37,29 +37,34 @@ export const DocumentWizard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="mb-8">
-          <div className="flex justify-between items-start mb-4">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900 text-center mb-2">
+    <div id="document-wizard" className="min-h-screen bg-gray-50 py-8">
+      <div id="wizard-container" className="max-w-4xl mx-auto px-4">
+        <div id="wizard-header" className="mb-8">
+          <div id="header-content" className="flex justify-between items-start mb-4">
+            <div id="header-title-section" className="flex-1">
+              <h1 
+                id="wizard-title"
+                className="text-3xl font-bold text-gray-900 text-center mb-2 cursor-pointer hover:text-blue-600 transition-colors duration-200"
+                onClick={() => resetWizard()}
+                title="Return to document type selection"
+              >
                 Arcana
               </h1>
-              <p className="text-gray-600 text-center">
+              <p id="wizard-subtitle" className="text-gray-600 text-center">
                 Create professional {documentType === 'spec' ? 'specification' : 'memory'} documentation
               </p>
             </div>
-            <div className="flex gap-2 ml-4 flex-shrink-0">
-              {documentType === 'memory' && (
-                <button
-                  onClick={() => setShowImportModal(true)}
-                  className="bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 transition-colors duration-200 font-medium text-sm px-3 py-1.5"
-                  title="Import memory document from .md file"
-                >
-                  📁 Import
-                </button>
-              )}
+            <div id="header-actions" className="flex gap-2 ml-4 flex-shrink-0">
               <button
+                id="import-button"
+                onClick={() => setShowImportModal(true)}
+                className="bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 transition-colors duration-200 font-medium text-sm px-3 py-1.5"
+                title={`Import ${documentType} document from .md file`}
+              >
+                📁 Import
+              </button>
+              <button
+                id="save-button"
                 onClick={manualSave}
                 className="bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 transition-colors duration-200 font-medium text-sm px-3 py-1.5"
                 title="Save progress manually"
@@ -67,6 +72,7 @@ export const DocumentWizard: React.FC = () => {
                 💾 Save
               </button>
               <button
+                id="clear-progress-button"
                 onClick={handleClearProgress}
                 className="btn-secondary text-sm px-3 py-1.5"
                 title="Clear all progress and start over"
@@ -75,15 +81,15 @@ export const DocumentWizard: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="text-center text-sm text-gray-500">
+          <div id="auto-save-notice" className="text-center text-sm text-gray-500">
             💾 Your progress is automatically saved
           </div>
         </div>
 
         <ProgressIndicator />
         
-        <div className="mt-8">
-          <div className="card animate-fade-in">
+        <div id="wizard-content" className="mt-8">
+          <div id="step-container" className="card animate-fade-in">
             {renderCurrentStep()}
           </div>
         </div>

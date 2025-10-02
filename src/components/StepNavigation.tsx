@@ -21,19 +21,21 @@ export const StepNavigation: React.FC = () => {
   };
 
   return (
-    <div className="mt-8 flex items-center justify-between">
-      <div className="flex items-center space-x-4">
+    <div id="step-navigation" className="mt-8 flex items-center justify-between">
+      <div id="navigation-left" className="flex items-center space-x-4">
         <button
+          id="start-over-button"
           onClick={resetWizard}
           className="btn-secondary flex items-center space-x-2"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw id="start-over-icon" className="w-4 h-4" />
           <span>Start Over</span>
         </button>
       </div>
 
-      <div className="flex items-center space-x-4">
+      <div id="navigation-right" className="flex items-center space-x-4">
         <button
+          id="previous-button"
           onClick={handlePrevious}
           disabled={isFirstStep}
           className={`
@@ -44,15 +46,16 @@ export const StepNavigation: React.FC = () => {
             }
           `}
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft id="previous-icon" className="w-4 h-4" />
           <span>Previous</span>
         </button>
 
-        <div className="text-sm text-gray-500">
+        <div id="step-counter" className="text-sm text-gray-500">
           Step {currentStep + 1} of {steps.length}
         </div>
 
         <button
+          id="next-button"
           onClick={handleNext}
           disabled={isLastStep}
           className={`
@@ -64,7 +67,7 @@ export const StepNavigation: React.FC = () => {
           `}
         >
           <span>{isLastStep ? 'Complete' : 'Next'}</span>
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight id="next-icon" className="w-4 h-4" />
         </button>
       </div>
     </div>

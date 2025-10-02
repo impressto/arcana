@@ -93,10 +93,10 @@ export const DecisionLogStep: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Decision Log</h2>
-        <p className="text-gray-600">
+    <div id="decision-log-step" className="space-y-6">
+      <div id="decision-log-header">
+        <h2 id="decision-log-title" className="text-2xl font-bold text-gray-900 mb-2">Decision Log</h2>
+        <p id="decision-log-description" className="text-gray-600">
           Document important project decisions, their rationale, and impact on the project.
         </p>
       </div>
@@ -104,28 +104,30 @@ export const DecisionLogStep: React.FC = () => {
       {/* Add New Button */}
       {!isAddingNew && (
         <button
+          id="add-decision-button"
           onClick={() => setIsAddingNew(true)}
           className="btn-primary flex items-center space-x-2"
         >
-          <Plus className="w-4 h-4" />
+          <Plus id="add-decision-icon" className="w-4 h-4" />
           <span>Add Decision</span>
         </button>
       )}
 
       {/* Form for Adding/Editing */}
       {isAddingNew && (
-        <div className="card">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div id="decision-form-card" className="card">
+          <h3 id="decision-form-title" className="text-lg font-semibold text-gray-900 mb-4">
             {editingIndex !== null ? 'Edit Decision' : 'Add New Decision'}
           </h3>
 
-          <div className="space-y-4">
+          <div id="decision-form-fields" className="space-y-4">
             {/* Title */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div id="decision-title-field">
+              <label htmlFor="decision-title-input" className="block text-sm font-medium text-gray-700 mb-1">
                 Decision Title *
               </label>
               <input
+                id="decision-title-input"
                 type="text"
                 value={formData.title}
                 onChange={(e) => updateFormField('title', e.target.value)}

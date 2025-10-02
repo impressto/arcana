@@ -32,13 +32,15 @@ export const Toast: React.FC<ToastProps> = ({
 
   return (
     <div
+      id="toast"
       className={`fixed top-4 right-4 p-3 rounded-lg border z-50 transition-all duration-300 transform ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'
       } ${typeStyles[type]}`}
     >
-      <div className="flex items-center">
-        <span className="text-sm font-medium">{message}</span>
+      <div id="toast-content" className="flex items-center">
+        <span id="toast-message" className="text-sm font-medium">{message}</span>
         <button
+          id="toast-close-button"
           onClick={() => {
             setIsVisible(false);
             setTimeout(onClose, 300);
@@ -79,7 +81,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   return (
     <>
       {children}
-      <div className="toast-container">
+      <div id="toast-container" className="toast-container">
         {toasts.map(toast => (
           <Toast
             key={toast.id}

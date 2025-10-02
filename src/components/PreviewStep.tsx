@@ -47,17 +47,18 @@ export const PreviewStep: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Preview & Export</h2>
-        <p className="text-gray-600">
+    <div id="preview-step" className="space-y-6">
+      <div id="preview-header">
+        <h2 id="preview-title" className="text-2xl font-bold text-gray-900 mb-2">Preview & Export</h2>
+        <p id="preview-description" className="text-gray-600">
           Review your document and export it as Markdown.
         </p>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div id="preview-controls" className="flex items-center justify-between">
+        <div id="view-mode-toggles" className="flex items-center space-x-4">
           <button
+            id="formatted-view-button"
             onClick={() => setPreviewMode('formatted')}
             className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
               previewMode === 'formatted'
@@ -65,10 +66,11 @@ export const PreviewStep: React.FC = () => {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            <Eye className="w-4 h-4" />
+            <Eye id="formatted-view-icon" className="w-4 h-4" />
             <span>Formatted View</span>
           </button>
           <button
+            id="markdown-view-button"
             onClick={() => setPreviewMode('markdown')}
             className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
               previewMode === 'markdown'
@@ -76,32 +78,34 @@ export const PreviewStep: React.FC = () => {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            <FileText className="w-4 h-4" />
+            <FileText id="markdown-view-icon" className="w-4 h-4" />
             <span>Markdown Source</span>
           </button>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div id="export-actions" className="flex items-center space-x-3">
           <button
+            id="copy-markdown-button"
             onClick={copyToClipboard}
             className="btn-secondary flex items-center space-x-2"
           >
-            <FileText className="w-4 h-4" />
+            <FileText id="copy-markdown-icon" className="w-4 h-4" />
             <span>Copy Markdown</span>
           </button>
           <button
+            id="download-markdown-button"
             onClick={downloadMarkdown}
             className="btn-primary flex items-center space-x-2"
           >
-            <Download className="w-4 h-4" />
+            <Download id="download-markdown-icon" className="w-4 h-4" />
             <span>Download .md</span>
           </button>
         </div>
       </div>
 
-      <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+      <div id="preview-content" className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         {previewMode === 'formatted' ? (
-          <div className="bg-white p-8 max-w-none">
+          <div id="formatted-preview" className="bg-white p-8 max-w-none">
             {documentType === 'spec' ? (
               <FormattedSpecPreview data={specData} />
             ) : (
@@ -109,18 +113,18 @@ export const PreviewStep: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="bg-gray-900">
-            <div className="bg-gray-800 px-4 py-2 border-b border-gray-700">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="ml-4 text-gray-400 text-sm font-medium">
+          <div id="markdown-preview" className="bg-gray-900">
+            <div id="markdown-header" className="bg-gray-800 px-4 py-2 border-b border-gray-700">
+              <div id="markdown-header-content" className="flex items-center space-x-2">
+                <div id="traffic-light-red" className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <div id="traffic-light-yellow" className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div id="traffic-light-green" className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span id="filename-display" className="ml-4 text-gray-400 text-sm font-medium">
                   {documentType}-document.md
                 </span>
               </div>
             </div>
-            <pre className="p-6 text-sm text-green-400 whitespace-pre-wrap font-mono overflow-x-auto bg-gray-900 leading-relaxed">
+            <pre id="markdown-source" className="p-6 text-sm text-green-400 whitespace-pre-wrap font-mono overflow-x-auto bg-gray-900 leading-relaxed">
               {generateMarkdown()}
             </pre>
           </div>

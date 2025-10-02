@@ -49,43 +49,42 @@ export const DocumentTypeSelector: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-6xl w-full">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Arcana
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+    <div id="document-type-selector" className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+      <div id="selector-container" className="max-w-6xl w-full">
+        <div id="selector-header" className="text-center mb-12">
+          <p id="selector-description" className="text-xl text-gray-600 max-w-2xl mx-auto">
             Choose the type of documentation you want to create. Arcana will guide you through 
             each step to create professional, comprehensive documentation.
           </p>
         </div>
 
         {hasSavedProgress && (
-          <div className="max-w-4xl mx-auto mb-8">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="text-blue-600 mr-3">
+          <div id="saved-progress-section" className="max-w-4xl mx-auto mb-8">
+            <div id="saved-progress-card" className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div id="saved-progress-content" className="flex items-center justify-between">
+                <div id="saved-progress-info" className="flex items-center">
+                  <div id="saved-progress-icon" className="text-blue-600 mr-3">
                     💾
                   </div>
-                  <div>
-                    <h3 className="text-blue-900 font-medium">
+                  <div id="saved-progress-text">
+                    <h3 id="saved-progress-title" className="text-blue-900 font-medium">
                       Resume Previous Session
                     </h3>
-                    <p className="text-blue-700 text-sm">
+                    <p id="saved-progress-description" className="text-blue-700 text-sm">
                       You have saved progress for a {savedData.documentType} document. You can continue where you left off.
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div id="saved-progress-actions" className="flex gap-2">
                   <button
+                    id="resume-button"
                     onClick={() => setDocumentType(savedData.documentType)}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                   >
                     Resume
                   </button>
                   <button
+                    id="start-over-button"
                     onClick={() => {
                       if (window.confirm('Are you sure you want to start over? This will delete your saved progress.')) {
                         resetWizard();
@@ -101,34 +100,35 @@ export const DocumentTypeSelector: React.FC = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div id="document-types-grid" className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {documentTypes.map((docType) => {
             const IconComponent = docType.icon;
             return (
               <div
                 key={docType.type}
-                className="card hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
+                id={`${docType.type}-document-card`}
+                className="card hover:shadow-lg transition-shadow duration-300 cursor-pointer group flex flex-col"
                 onClick={() => setDocumentType(docType.type)}
               >
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-lg mb-4 group-hover:bg-primary-200 transition-colors duration-200">
-                    <IconComponent className="w-8 h-8 text-primary-600" />
+                <div id={`${docType.type}-card-header`} className="text-center mb-6">
+                  <div id={`${docType.type}-icon-container`} className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-lg mb-4 group-hover:bg-primary-200 transition-colors duration-200">
+                    <IconComponent id={`${docType.type}-icon`} className="w-8 h-8 text-primary-600" />
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                  <h3 id={`${docType.type}-title`} className="text-2xl font-semibold text-gray-900 mb-2">
                     {docType.title}
                   </h3>
-                  <p className="text-gray-600">
+                  <p id={`${docType.type}-description`} className="text-gray-600">
                     {docType.description}
                   </p>
                 </div>
 
-                <div className="space-y-3">
-                  <h4 className="font-medium text-gray-900 text-sm uppercase tracking-wide">
+                <div id={`${docType.type}-features-section`} className="space-y-3 flex-1">
+                  <h4 id={`${docType.type}-features-title`} className="font-medium text-gray-900 text-sm uppercase tracking-wide">
                     Includes:
                   </h4>
-                  <ul className="space-y-2">
+                  <ul id={`${docType.type}-features-list`} className="space-y-2">
                     {docType.features.map((feature, index) => (
-                      <li key={index} className="flex items-center text-gray-600">
+                      <li key={index} id={`${docType.type}-feature-${index}`} className="flex items-center text-gray-600">
                         <div className="w-1.5 h-1.5 bg-primary-500 rounded-full mr-3 flex-shrink-0" />
                         {feature}
                       </li>
@@ -136,8 +136,8 @@ export const DocumentTypeSelector: React.FC = () => {
                   </ul>
                 </div>
 
-                <div className="mt-8">
-                  <button className="btn-primary w-full group-hover:bg-primary-700">
+                <div id={`${docType.type}-action-section`} className="mt-8">
+                  <button id={`${docType.type}-start-button`} className="btn-primary w-full group-hover:bg-primary-700">
                     Start {docType.title}
                   </button>
                 </div>
@@ -146,8 +146,8 @@ export const DocumentTypeSelector: React.FC = () => {
           })}
         </div>
 
-        <div className="text-center mt-12">
-          <p className="text-sm text-gray-500">
+        <div id="selector-footer" className="text-center mt-12">
+          <p id="footer-note" className="text-sm text-gray-500">
             Both document types support markdown export and professional formatting
           </p>
         </div>

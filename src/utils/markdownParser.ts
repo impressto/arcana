@@ -227,7 +227,7 @@ function parseMeetingNotes(line: string, lines: string[], index: number, data: M
   }
 }
 
-function parseLessonsLearned(line: string, lines: string[], index: number, data: MemoryDocumentData, subsection: string) {
+function parseLessonsLearned(line: string, _lines: string[], _index: number, data: MemoryDocumentData, subsection: string) {
   if (subsection && !subsection.includes('No lessons')) {
     // Find or create lesson entry
     let lesson = data.lessonsLearned.find(l => l.title === subsection);
@@ -262,7 +262,7 @@ function parseLessonsLearned(line: string, lines: string[], index: number, data:
   }
 }
 
-function parseOnboardingNotes(line: string, lines: string[], index: number, data: MemoryDocumentData, subsection: string) {
+function parseOnboardingNotes(line: string, _lines: string[], _index: number, data: MemoryDocumentData, subsection: string) {
   if (subsection && !subsection.includes('New team member')) {
     // Parse name and role from subsection: "John Doe - Developer"
     const match = subsection.match(/^(.+?)\s*-\s*(.+)$/);
