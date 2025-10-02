@@ -32,6 +32,31 @@
     @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
   }
   
+  /* Override padding for input fields with custom padding utilities */
+  #arcana-app-root .input-field.pl-8 {
+    padding-left: 2rem !important;
+  }
+  
+  #arcana-app-root .input-field.pl-10 {
+    padding-left: 2.5rem !important;
+  }
+  
+  #arcana-app-root .input-field.pl-12 {
+    padding-left: 3rem !important;
+  }
+  
+  #arcana-app-root .input-field.pr-8 {
+    padding-right: 2rem !important;
+  }
+  
+  #arcana-app-root .input-field.pr-10 {
+    padding-right: 2.5rem !important;
+  }
+  
+  #arcana-app-root .input-field.pr-12 {
+    padding-right: 3rem !important;
+  }
+  
   #arcana-app-root .textarea-field {
     @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200 resize-y min-h-[100px];
   }

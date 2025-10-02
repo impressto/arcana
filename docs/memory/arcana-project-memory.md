@@ -61,11 +61,20 @@
 **Stakeholders:** Development Team, End Users  
 **Implementation:** Added confirmation modal with clear warning message about data loss and action irreversibility  
 
+### CSS Specificity Fix for Input Field Padding
+**Date:** October 2, 2025  
+**Description:** Fix issue where `pl-12` and other padding utilities don't work with `input-field` class  
+**Rationale:** The `input-field` class uses `@apply px-3` which has higher CSS specificity than utility classes, preventing custom padding from working  
+**Status:** Implemented  
+**Impact:** Developers can now use Tailwind padding utilities with input-field class for custom layouts (search inputs with icons, etc.)  
+**Stakeholders:** Development Team  
+**Implementation:** Added specific CSS overrides with `!important` for common padding utilities (pl-8, pl-10, pl-12, pr-8, pr-10, pr-12) in index.css
+
 ### Documentation Structure Organization
 **Date:** October 2, 2025  
 **Description:** Implement structured docs folder with spec and memory separation  
 **Rationale:** Better organization enables AI assistants to reference project context more effectively and improves maintainability  
-**Status:** In Progress  
+**Status:** Implemented  
 **Impact:** Enhanced AI assistant integration, clearer project documentation  
 **Stakeholders:** Development Team, AI Tools  
 **Implementation:** Created `/docs/spec/` and `/docs/memory/` structure with comprehensive project specification  
