@@ -317,7 +317,10 @@ export function buildWizardAIContext(
       if (specData.functionalRequirements.features.length > 0) {
         context += '**Features:**\n';
         specData.functionalRequirements.features.forEach((feature, i) => {
-          context += `${i + 1}. ${feature}\n`;
+          context += `${i + 1}. **${feature.name}** (${feature.priority} Priority, ${feature.status})\n`;
+          if (feature.description) {
+            context += `   ${feature.description}\n`;
+          }
         });
         context += '\n';
       }
@@ -328,7 +331,16 @@ export function buildWizardAIContext(
       context += '## API Information\n\n';
       context += '**Endpoints:**\n';
       specData.apis.endpoints.forEach((endpoint, i) => {
-        context += `${i + 1}. ${endpoint}\n`;
+        context += `${i + 1}. **${endpoint.method} ${endpoint.path}**\n`;
+        if (endpoint.description) {
+          context += `   ${endpoint.description}\n`;
+        }
+        if (endpoint.parameters.length > 0) {
+          context += `   Parameters: ${endpoint.parameters.join(', ')}\n`;
+        }
+        if (endpoint.response) {
+          context += `   Response: ${endpoint.response}\n`;
+        }
       });
       context += '\n';
       if (specData.apis.authentication) {
