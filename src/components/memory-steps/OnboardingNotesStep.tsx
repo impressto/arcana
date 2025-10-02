@@ -1,12 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useWizard } from '../../contexts/WizardContext';
 import type { OnboardingNote } from '../../types';
-import { Plus, Search, Users, CheckCircle, AlertCircle, Clock, Target, BookOpen, Trash2 } from 'lucide-react';
+import { Plus, Users, CheckCircle, AlertCircle, Clock, Target, BookOpen, Trash2 } from 'lucide-react';
 
 export function OnboardingNotesStep() {
   const { memoryData, updateMemoryData } = useWizard();
   const [showAddForm, setShowAddForm] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   
@@ -96,15 +95,12 @@ export function OnboardingNotesStep() {
 
   const filteredEntries = useMemo(() => {
     return onboardingEntries.filter((entry: OnboardingNote) => {
-      const matchesSearch = entry.newHireName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           entry.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           entry.department.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesRole = filterRole === 'all' || entry.role.toLowerCase().includes(filterRole.toLowerCase());
       const matchesStatus = filterStatus === 'all' || entry.status === filterStatus;
       
-      return matchesSearch && matchesRole && matchesStatus;
+      return matchesRole && matchesStatus;
     });
-  }, [onboardingEntries, searchTerm, filterRole, filterStatus]);
+  }, [onboardingEntries, filterRole, filterStatus]);
 
   const stats = useMemo(() => {
     const total = onboardingEntries.length;
@@ -193,16 +189,7 @@ export function OnboardingNotesStep() {
 
       {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search by name, role, or department..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
+
         <select
           value={filterRole}
           onChange={(e) => setFilterRole(e.target.value)}

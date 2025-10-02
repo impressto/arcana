@@ -2,7 +2,6 @@ import React from 'react';
 import { FileText, BookOpen } from 'lucide-react';
 import { useWizard } from '../contexts/WizardContext';
 import type { DocumentType } from '../types';
-import { HostPageTest } from './HostPageTest';
 
 export const DocumentTypeSelector: React.FC = () => {
   const { setDocumentType, resetWizard } = useWizard();
@@ -53,6 +52,13 @@ export const DocumentTypeSelector: React.FC = () => {
     <div id="document-type-selector" className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
       <div id="selector-container" className="max-w-6xl w-full">
         <div id="selector-header" className="text-center mb-12">
+          <div id="header-title-section" className="flex items-center justify-center mb-6">
+            <img 
+              src="https://impressto.ca/images/arcana.png" 
+              alt="Arcana Logo" 
+              className="h-12 sm:h-14 w-auto transition-transform duration-200 hover:scale-105"
+            />
+          </div>
           <p id="selector-description" className="text-xl text-gray-600 max-w-2xl mx-auto">
             Choose the type of documentation you want to create. Arcana will guide you through 
             each step to create professional, comprehensive documentation.
@@ -151,10 +157,10 @@ export const DocumentTypeSelector: React.FC = () => {
           <p id="footer-note" className="text-sm text-gray-500">
             Both document types support markdown export and professional formatting
           </p>
+             <p>
+              Like Arcana? Get the code here: <a href="https://github.com/impressto/arcana">https://github.com/impressto/arcana</a>
+          </p>
         </div>
-        
-        {/* Temporary test component for host page element control */}
-        <HostPageTest />
       </div>
     </div>
   );

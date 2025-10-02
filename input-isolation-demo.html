@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Field Isolation Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .host-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Aggressive host page CSS that would normally interfere with inputs */
+        input, textarea, select, button {
+            background-color: #ff0000 !important;
+            color: #ffffff !important;
+            border: 5px solid #00ff00 !important;
+            font-size: 24px !important;
+            font-family: "Comic Sans MS", cursive !important;
+            padding: 20px !important;
+            margin: 10px !important;
+            border-radius: 50px !important;
+            box-shadow: 0 0 20px #ff00ff !important;
+            text-transform: uppercase !important;
+            letter-spacing: 5px !important;
+        }
+        
+        input:focus, textarea:focus, select:focus, button:focus {
+            background-color: #ffff00 !important;
+            color: #ff0000 !important;
+            border-color: #0000ff !important;
+            outline: 10px solid #ff00ff !important;
+        }
+        
+        button {
+            background-color: #800080 !important;
+            font-weight: 900 !important;
+            text-decoration: underline !important;
+        }
+        
+        button:hover {
+            background-color: #008000 !important;
+            transform: scale(1.5) !important;
+        }
+        
+        #arcana-info-box {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        #arcana-info-box h3 {
+            color: #1976d2;
+            margin-top: 0;
+        }
+        
+        .demo-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .arcana-container {
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="host-container">
+        <h1>🔒 Input Field Isolation Demo</h1>
+        <p>This page demonstrates how the Arcana app's input fields are isolated from aggressive host page CSS.</p>
+        
+        <div id="arcana-info-box">
+            <h3>📋 Host Page Information</h3>
+            <p>This info box will be hidden when you start a wizard in the Arcana app below.</p>
+            <p><strong>Notice:</strong> The host page has very aggressive CSS that makes all inputs look terrible (red background, huge fonts, etc.). The Arcana app inputs should be completely unaffected.</p>
+        </div>
+        
+        <div class="demo-section">
+            <h3>🚨 Host Page Form (Affected by aggressive CSS)</h3>
+            <p>These inputs demonstrate how the host page's CSS affects normal form elements:</p>
+            <form>
+                <div style="margin: 10px 0;">
+                    <label for="host-input">Host Page Input:</label><br>
+                    <input type="text" id="host-input" placeholder="This input is styled by host page CSS" />
+                </div>
+                <div style="margin: 10px 0;">
+                    <label for="host-textarea">Host Page Textarea:</label><br>
+                    <textarea id="host-textarea" placeholder="This textarea has host page styling"></textarea>
+                </div>
+                <div style="margin: 10px 0;">
+                    <label for="host-select">Host Page Select:</label><br>
+                    <select id="host-select">
+                        <option>Option 1 (Host styled)</option>
+                        <option>Option 2 (Host styled)</option>
+                    </select>
+                </div>
+                <button type="button">Host Page Button</button>
+            </form>
+        </div>
+        
+        <div class="arcana-container">
+            <h3>✅ Arcana App Container (Isolated from host CSS)</h3>
+            <p>The Arcana app below should have perfectly normal input styling, completely unaffected by the host page's aggressive CSS:</p>
+            
+            <!-- This is where your Arcana app would be embedded -->
+            <div id="arcana-app-root">
+                <!-- In a real scenario, your React app would render here -->
+                <div style="padding: 20px; border: 1px dashed #ccc; background: white; border-radius: 8px;">
+                    <h4>Simulated Arcana App Inputs</h4>
+                    <p><em>These would be your actual React components with isolated styling:</em></p>
+                    
+                    <div style="margin: 10px 0;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #374151;">Project Name:</label>
+                        <input type="text" placeholder="Enter project name..." style="margin: 0 !important;" />
+                    </div>
+                    
+                    <div style="margin: 10px 0;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #374151;">Description:</label>
+                        <textarea placeholder="Enter project description..." style="margin: 0 !important;"></textarea>
+                    </div>
+                    
+                    <div style="margin: 10px 0;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #374151;">Priority:</label>
+                        <select style="margin: 0 !important;">
+                            <option>High Priority</option>
+                            <option>Medium Priority</option>
+                            <option>Low Priority</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <button type="button" style="margin: 0 !important; margin-right: 10px !important;">Save Project</button>
+                        <button type="button" style="margin: 0 !important;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>📋 Integration Instructions</h3>
+            <p>To test the real isolation:</p>
+            <ol>
+                <li>Build the Arcana app: <code>npm run build</code></li>
+                <li>Replace the simulated content above with:
+                    <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;"><code>&lt;link rel="stylesheet" href="dist/assets/index.css"&gt;
+&lt;script src="dist/assets/index.js"&gt;&lt;/script&gt;</code></pre>
+                </li>
+                <li>The app's input fields will be completely isolated from the host page's aggressive CSS</li>
+            </ol>
+            
+            <h4>🔍 What to Test:</h4>
+            <ul>
+                <li><strong>Input Styling:</strong> Arcana inputs should look normal (white background, normal fonts, proper borders)</li>
+                <li><strong>Focus States:</strong> Should show blue focus rings, not host page colors</li>
+                <li><strong>Button Styling:</strong> Should maintain app's button design</li>
+                <li><strong>Host Isolation:</strong> Changes to host page CSS shouldn't affect the app</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        console.log('🔒 Input isolation demo loaded');
+        console.log('Host page has aggressive CSS that would normally break input styling');
+        console.log('The Arcana app inputs should be completely unaffected');
+        
+        // Function to test dynamic CSS changes
+        function addMoreAggressiveCSS() {
+            const style = document.createElement('style');
+            style.textContent = `
+                input, textarea, select, button {
+                    background: linear-gradient(45deg, red, blue, green, yellow) !important;
+                    animation: spin 2s linear infinite !important;
+                    font-size: 40px !important;
+                }
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+            alert('Added even more aggressive CSS! Arcana app inputs should still be unaffected.');
+        }
+        
+        // Test function available in console
+        window.testAggressiveCSS = addMoreAggressiveCSS;
+        console.log('Run window.testAggressiveCSS() to add even more aggressive host page CSS');
+    </script>
+</body>
+</html>

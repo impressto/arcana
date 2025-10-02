@@ -42,14 +42,18 @@ export const DocumentWizard: React.FC = () => {
         <div id="wizard-header" className="mb-8">
           <div id="header-content" className="flex justify-between items-start mb-4">
             <div id="header-title-section" className="flex-1">
-              <h1 
+              <div 
                 id="wizard-title"
-                className="text-3xl font-bold text-gray-900 text-center mb-2 cursor-pointer hover:text-blue-600 transition-colors duration-200"
+                className="flex justify-center mb-2 cursor-pointer"
                 onClick={() => resetWizard()}
                 title="Return to document type selection"
               >
-                Arcana
-              </h1>
+                <img 
+                  src="https://impressto.ca/images/arcana.png" 
+                  alt="Arcana Logo" 
+                  className="h-10 w-auto transition-transform duration-200 hover:scale-105"
+                />
+              </div>
               <p id="wizard-subtitle" className="text-gray-600 text-center">
                 Create professional {documentType === 'spec' ? 'specification' : 'memory'} documentation
               </p>
