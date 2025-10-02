@@ -203,5 +203,5 @@ The app can automatically hide elements on the host page:
 
 ## 📄 License
 
-This project is completely open source and free
+This project is completely open source and free.
 
