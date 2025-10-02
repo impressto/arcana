@@ -1,0 +1,72 @@
+import React from 'react';
+import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { useWizard } from '../contexts/WizardContext';
+
+export const StepNavigation: React.FC = () => {
+  const { currentStep, steps, setCurrentStep, resetWizard } = useWizard();
+
+  const isFirstStep = currentStep === 0;
+  const isLastStep = currentStep === steps.length - 1;
+
+  const handlePrevious = () => {
+    if (!isFirstStep) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (!isLastStep) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  return (
+    <div className="mt-8 flex items-center justify-between">
+      <div className="flex items-center space-x-4">
+        <button
+          onClick={resetWizard}
+          className="btn-secondary flex items-center space-x-2"
+        >
+          <RotateCcw className="w-4 h-4" />
+          <span>Start Over</span>
+        </button>
+      </div>
+
+      <div className="flex items-center space-x-4">
+        <button
+          onClick={handlePrevious}
+          disabled={isFirstStep}
+          className={`
+            flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors duration-200
+            ${isFirstStep 
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+              : 'btn-secondary hover:bg-gray-300'
+            }
+          `}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span>Previous</span>
+        </button>
+
+        <div className="text-sm text-gray-500">
+          Step {currentStep + 1} of {steps.length}
+        </div>
+
+        <button
+          onClick={handleNext}
+          disabled={isLastStep}
+          className={`
+            flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors duration-200
+            ${isLastStep 
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+              : 'btn-primary'
+            }
+          `}
+        >
+          <span>{isLastStep ? 'Complete' : 'Next'}</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
