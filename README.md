@@ -1,4 +1,4 @@
-# Arcana - Documentation Wizard
+# Arcana - Spec and Memory Doc Wizard
 
 ![arcana](https://github.com/user-attachments/assets/9a44e50c-b0a0-49d2-aa5c-7f9c243b2e84)
 
