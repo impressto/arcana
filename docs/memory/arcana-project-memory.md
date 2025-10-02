@@ -101,7 +101,16 @@
 **Status:** Implemented  
 **Impact:** Enhanced AI assistant integration, clearer project documentation  
 **Stakeholders:** Development Team, AI Tools  
-**Implementation:** Created `/docs/spec/` and `/docs/memory/` structure with comprehensive project specification  
+**Implementation:** Created `/docs/spec/` and `/docs/memory/` structure with comprehensive project specification
+
+### Logo Confirmation Modal Implementation
+**Date:** December 12, 2024  
+**Description:** Add confirmation modal for Arcana logo clicks to prevent accidental data loss  
+**Rationale:** Logo previously called resetWizard() directly without confirmation, creating inconsistent UX pattern and risk of accidental data loss when users click logo thinking it's just branding  
+**Status:** Implemented  
+**Impact:** Prevents accidental data loss and maintains consistent confirmation patterns across entire application  
+**Stakeholders:** Development Team, UX Design, End Users  
+**Implementation:** Added showLogoConfirmModal state management, handleConfirmLogoReset handler, updated logo onClick to show confirmation modal with "danger" type styling and appropriate messaging  
 
 ### Technology Stack Selection
 **Date:** 2024 (Initial Project)  
@@ -136,6 +145,7 @@
 **CSS Specificity:** CSS rule precedence system where more specific selectors override less specific ones; important for utility framework integration  
 **useRef Hook:** React hook for creating persistent references to DOM elements across component re-renders  
 **Defensive Programming:** Coding practice including comprehensive error handling, input validation, and null checks to prevent runtime errors  
+**UX Consistency:** Design principle ensuring similar actions behave similarly across interface to meet user expectations and prevent errors  
 
 ## 🤝 Meeting Notes
 
@@ -271,7 +281,15 @@ Identified that Tailwind utility classes weren't working properly with custom CS
 **Situation:** Temptation to add many features vs. building solid core experience first  
 **Lesson:** Focus on core functionality and user experience before adding advanced features  
 **Application:** Prioritize wizard flow improvements and usability over new document types  
-**Impact:** High - Better user adoption with polished core experience  
+**Impact:** High - Better user adoption with polished core experience
+
+### Consistent UX Patterns Prevent User Errors
+**Date:** December 12, 2024  
+**Category:** User Experience Design  
+**Situation:** Logo click caused immediate data loss without confirmation while other destructive actions had confirmation modals  
+**Lesson:** All destructive actions should follow consistent confirmation patterns - users develop expectations about interface behavior  
+**Application:** Implemented confirmation modal for logo clicks to match "Start Over" button behavior and prevent accidental data loss  
+**Impact:** High - Reduced user frustration and accidental data loss, maintained professional UX standards  
 
 ## 👥 Onboarding Notes
 

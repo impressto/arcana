@@ -15,6 +15,7 @@ export const DocumentWizard: React.FC = () => {
   const [showImportModal, setShowImportModal] = useState(false);
   const [showClearConfirmModal, setShowClearConfirmModal] = useState(false);
   const [showSampleConfirmModal, setShowSampleConfirmModal] = useState(false);
+  const [showLogoConfirmModal, setShowLogoConfirmModal] = useState(false);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
 
   const handleClearProgress = () => {
@@ -22,6 +23,10 @@ export const DocumentWizard: React.FC = () => {
   };
 
   const handleConfirmClearProgress = () => {
+    resetWizard();
+  };
+
+  const handleConfirmLogoReset = () => {
     resetWizard();
   };
 
@@ -148,7 +153,7 @@ export const DocumentWizard: React.FC = () => {
               <div 
                 id="wizard-title"
                 className="flex justify-start mb-2 cursor-pointer"
-                onClick={() => resetWizard()}
+                onClick={() => setShowLogoConfirmModal(true)}
                 title="Return to document type selection"
               >
                 <img 
@@ -235,6 +240,17 @@ export const DocumentWizard: React.FC = () => {
         confirmText="Load Sample"
         cancelText="Cancel"
         type="warning"
+      />
+      
+      <ConfirmationModal
+        isOpen={showLogoConfirmModal}
+        onClose={() => setShowLogoConfirmModal(false)}
+        onConfirm={handleConfirmLogoReset}
+        title="Return to Document Selection?"
+        message="This will discard all current progress and return to the document type selection. Any work you've done will be lost. Are you sure you want to continue?"
+        confirmText="Start Over"
+        cancelText="Stay Here"
+        type="danger"
       />
     </div>
   );
