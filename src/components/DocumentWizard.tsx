@@ -14,6 +14,7 @@ export const DocumentWizard: React.FC = () => {
   const { documentType, currentStep, steps, resetWizard, manualSave, updateSpecData, updateMemoryData } = useWizard();
   const [showImportModal, setShowImportModal] = useState(false);
   const [showClearConfirmModal, setShowClearConfirmModal] = useState(false);
+  const [showSampleConfirmModal, setShowSampleConfirmModal] = useState(false);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
 
   const handleClearProgress = () => {
@@ -24,15 +25,13 @@ export const DocumentWizard: React.FC = () => {
     resetWizard();
   };
 
-  const handleUseSample = async () => {
+  const handleUseSample = () => {
     if (!documentType) return;
-    
-    const shouldProceed = window.confirm(
-      `This will replace all current data with sample ${documentType} document content. Continue?`
-    );
-    
-    if (!shouldProceed) return;
+    setShowSampleConfirmModal(true);
+  };
 
+  const handleConfirmUseSample = async () => {
+    setShowSampleConfirmModal(false);
     setIsLoadingSample(true);
     
     try {
@@ -225,6 +224,17 @@ export const DocumentWizard: React.FC = () => {
         confirmText="Clear Progress"
         cancelText="Cancel"
         type="danger"
+      />
+      
+      <ConfirmationModal
+        isOpen={showSampleConfirmModal}
+        onClose={() => setShowSampleConfirmModal(false)}
+        onConfirm={handleConfirmUseSample}
+        title="Load Sample Document?"
+        message={`This will replace all current data with the sample ${documentType} document content. Any existing work will be lost. Are you sure you want to continue?`}
+        confirmText="Load Sample"
+        cancelText="Cancel"
+        type="warning"
       />
     </div>
   );
