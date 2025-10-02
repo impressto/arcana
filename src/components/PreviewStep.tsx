@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Download, FileText, Eye } from 'lucide-react';
 import { useWizard } from '../contexts/WizardContext';
+import { WizardAIAssistant } from './WizardAIAssistant';
 
 export const PreviewStep: React.FC = () => {
   const { documentType, specData, memoryData } = useWizard();
@@ -130,6 +131,15 @@ export const PreviewStep: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* AI Assistant for generating prompts based on current wizard data */}
+      {documentType && (
+        <WizardAIAssistant 
+          documentType={documentType}
+          specData={documentType === 'spec' ? specData : undefined}
+          memoryData={documentType === 'memory' ? memoryData : undefined}
+        />
+      )}
     </div>
   );
 };

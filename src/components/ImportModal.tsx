@@ -728,8 +728,8 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
 
   return (
     <div id="import-modal-overlay" className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div id="import-modal" className="bg-white rounded-lg shadow-xl max-w-md w-full">
-        <div id="import-modal-header" className="flex items-center justify-between p-6 border-b border-gray-200">
+      <div id="import-modal" className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] flex flex-col">
+        <div id="import-modal-header" className="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
           <h2 id="import-modal-title" className="text-xl font-semibold text-gray-900 flex items-center gap-2">
             <Upload id="import-modal-icon" className="w-5 h-5" />
             Import {documentType === 'spec' ? 'Specification' : 'Memory'} Document
@@ -737,13 +737,13 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
           <button
             id="import-modal-close"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors z-10"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div id="import-modal-content" className="p-6">
+        <div id="import-modal-content" className="p-6 flex-1 overflow-y-auto">
           <div id="import-instructions" className="mb-4">
             <p id="import-description" className="text-gray-600 text-sm mb-4">
               Import a previously exported {documentType === 'spec' ? 'specification' : 'memory'} document (.md file) to populate the wizard fields.
@@ -768,6 +768,41 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
                 <p id="drag-drop-text" className="text-gray-500 text-sm mt-1">
                   or drag and drop your .md file here
                 </p>
+              </div>
+            </div>
+            
+            {/* Sample File Links */}
+            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <h4 className="text-sm font-medium text-blue-900 mb-3 flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Try a Sample File
+              </h4>
+              <p className="text-sm text-blue-800 mb-3">
+                Want to test the import functionality? Download one of our sample files and then import it above.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                {documentType === 'spec' ? (
+                  <a
+                    href="https://impressto.ca/arcana/public/sample-spec-document.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    📄 Download Sample Spec Document
+                  </a>
+                ) : (
+                  <a
+                    href="https://impressto.ca/arcana/public/sample-memory-document.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    📄 Download Sample Memory Document
+                  </a>
+                )}
+                <span className="text-xs text-blue-600 self-center">
+                  Right-click → "Save As" to download
+                </span>
               </div>
             </div>
           </div>
@@ -862,7 +897,7 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
           )}
         </div>
 
-        <div id="import-modal-footer" className="flex justify-end gap-3 p-6 border-t border-gray-200">
+        <div id="import-modal-footer" className="flex justify-end gap-3 p-6 border-t border-gray-200 flex-shrink-0">
           <button
             id="import-modal-close-button"
             onClick={onClose}
