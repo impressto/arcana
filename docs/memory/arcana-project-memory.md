@@ -61,6 +61,15 @@
 **Stakeholders:** Development Team, End Users  
 **Implementation:** Added confirmation modal with clear warning message about data loss and action irreversibility  
 
+### Smooth Scroll to Edit Forms
+**Date:** October 2, 2025  
+**Description:** Add smooth scrolling to edit forms when clicking "Edit" buttons in memory steps  
+**Rationale:** On longer pages with many entries, clicking "Edit" opens the form but users lose visual context of where the form is located, requiring manual scrolling  
+**Status:** Implemented  
+**Impact:** Improved user experience - users immediately see the edit form when clicking Edit, reducing confusion and improving workflow efficiency  
+**Stakeholders:** Development Team, End Users  
+**Implementation:** Added useRef and useEffect hooks to all memory step components (DecisionLogStep, MeetingNotesStep, LessonsLearnedStep, GlossaryStep) to scroll smoothly to form when editing existing entries
+
 ### CSS Specificity Fix for Input Field Padding
 **Date:** October 2, 2025  
 **Description:** Fix issue where `pl-12` and other padding utilities don't work with `input-field` class  

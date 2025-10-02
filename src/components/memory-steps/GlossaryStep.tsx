@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Edit, Trash2, BookOpen, Search, Tag } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
 import type { GlossaryEntry } from '../../types';
@@ -16,6 +16,19 @@ export const GlossaryStep: React.FC = () => {
   });
 
   const glossary = memoryData.glossary || [];
+  const formRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to form when editing a glossary entry
+  useEffect(() => {
+    if (isAddingNew && editingIndex !== null && formRef.current) {
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [isAddingNew, editingIndex]);
   
   // Get unique categories for filtering
   const categories = ['all', ...new Set(glossary.map(entry => entry.category).filter(Boolean))];
@@ -143,7 +156,7 @@ export const GlossaryStep: React.FC = () => {
 
       {/* Form for Adding/Editing */}
       {isAddingNew && (
-        <div className="card">
+        <div ref={formRef} className="card">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             {editingIndex !== null ? 'Edit Glossary Term' : 'Add New Term'}
           </h3>

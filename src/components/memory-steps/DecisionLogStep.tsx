@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Edit, Trash2, Calendar, FileText, Lightbulb } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
 import type { DecisionEntry } from '../../types';
@@ -19,6 +19,20 @@ export const DecisionLogStep: React.FC = () => {
   });
 
   const decisions = memoryData.decisionLog || [];
+  const formRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to form when editing a decision
+  useEffect(() => {
+    if (isAddingNew && editingIndex !== null && formRef.current) {
+      // Use setTimeout to ensure the form is rendered before scrolling
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [isAddingNew, editingIndex]);
 
   const resetForm = () => {
     setFormData({
@@ -115,7 +129,7 @@ export const DecisionLogStep: React.FC = () => {
 
       {/* Form for Adding/Editing */}
       {isAddingNew && (
-        <div id="decision-form-card" className="card">
+        <div ref={formRef} id="decision-form-card" className="card">
           <h3 id="decision-form-title" className="text-lg font-semibold text-gray-900 mb-4">
             {editingIndex !== null ? 'Edit Decision' : 'Add New Decision'}
           </h3>

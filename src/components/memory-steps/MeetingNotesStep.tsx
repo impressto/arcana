@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Edit, Trash2, Calendar, Users, FileText, CheckSquare, Clock, User } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
 import type { MeetingNote, ActionItem } from '../../types';
@@ -17,6 +17,19 @@ export const MeetingNotesStep: React.FC = () => {
   });
 
   const meetings = memoryData.meetingNotes || [];
+  const formRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to form when editing a meeting
+  useEffect(() => {
+    if (isAddingNew && editingIndex !== null && formRef.current) {
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [isAddingNew, editingIndex]);
 
   const resetForm = () => {
     setFormData({
@@ -154,7 +167,7 @@ export const MeetingNotesStep: React.FC = () => {
 
       {/* Form for Adding/Editing */}
       {isAddingNew && (
-        <div className="card">
+        <div ref={formRef} className="card">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             {editingIndex !== null ? 'Edit Meeting Notes' : 'Add New Meeting'}
           </h3>

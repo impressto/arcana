@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Edit, Trash2, Calendar, Lightbulb, Target, TrendingUp, Filter } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
 import type { LessonEntry } from '../../types';
@@ -20,6 +20,19 @@ export const LessonsLearnedStep: React.FC = () => {
   });
 
   const lessons = memoryData.lessonsLearned || [];
+  const formRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to form when editing a lesson
+  useEffect(() => {
+    if (isAddingNew && editingIndex !== null && formRef.current) {
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [isAddingNew, editingIndex]);
   
   // Get unique categories for filtering
   const categories = ['all', ...new Set(lessons.map(lesson => lesson.category).filter(Boolean))];
@@ -200,7 +213,7 @@ export const LessonsLearnedStep: React.FC = () => {
 
       {/* Form for Adding/Editing */}
       {isAddingNew && (
-        <div className="card">
+        <div ref={formRef} className="card">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             {editingIndex !== null ? 'Edit Lesson Learned' : 'Add New Lesson'}
           </h3>
