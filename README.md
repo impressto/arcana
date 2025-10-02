@@ -1,5 +1,7 @@
 # Arcana - Documentation Wizard
 
+![arcana](https://github.com/user-attachments/assets/9a44e50c-b0a0-49d2-aa5c-7f9c243b2e84)
+
 A modern React TypeScript application for creating professional specification and memory documentation with an intuitive step-by-step wizard interface. Arcana helps teams and individuals create comprehensive, well-structured documentation efficiently.
 
 ## ✨ Features
