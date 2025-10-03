@@ -29,82 +29,104 @@
 
 ## 📝 Decision Log
 
-### React 19 as Primary Frontend Framework
+### Custom Confirmation Modals Implementation
 
-**Decision ID:** ARC-001  
-**Date:** January 15, 2024  
+**Decision ID:** ARC-006  
+**Date:** October 2, 2025  
 **Status:** ✅ Implemented  
-**Decision Maker:** Sarah Chen (Tech Lead)
+**Decision Maker:** Development Team  
 
-**Description:** Selected React 19 as the primary frontend framework for building the Arcana documentation wizard interface.
+**Description:** Replace browser native confirm() dialogs with custom ConfirmationModal components for all destructive actions in the application.
 
-**Context:** Need to choose a modern frontend framework that supports component-based architecture, has excellent TypeScript integration, and provides the interactivity required for a step-by-step wizard interface.
-
-**Rationale:** 
-- React's component model fits perfectly with the wizard step architecture
-- Excellent TypeScript support for type safety in complex form handling
-- Large ecosystem of compatible libraries (Lucide React, Tailwind CSS)
-- Team has extensive React experience, reducing learning curve
-- React 19 introduces optimizations for form handling and state management
-
-**Impact:** High - Determines entire frontend architecture and developer experience
-
-**Stakeholders:** Frontend Team, Tech Lead, UX Designer
-
-**Alternatives Considered:**
-- **Vue.js 3:** Good TypeScript support but smaller ecosystem
-- **Angular 17:** Full-featured but overkill for SPA requirements  
-- **Svelte/SvelteKit:** Smaller bundle size but limited team experience
-- **Vanilla JavaScript:** Maximum control but significantly longer development time
-
-**Follow-up Actions:**
-- ✅ Set up React 19 development environment with Vite
-- ✅ Establish component architecture patterns
-- ✅ Create reusable component library for wizard steps
-
-### TypeScript for Type Safety
-
-**Decision ID:** ARC-002  
-**Date:** January 18, 2024  
-**Status:** ✅ Implemented  
-**Decision Maker:** Development Team Consensus
-
-**Description:** Implement strict TypeScript configuration across the entire codebase for enhanced type safety and developer experience.
-
-**Context:** Complex form handling and state management in wizard interface requires robust type checking to prevent runtime errors and improve maintainability.
+**Context:** Browser native dialogs (confirm, alert) break visual consistency and provide limited customization options. Users frequently lost work by accidentally triggering destructive actions like "Start Over" or "Use Sample" without proper warning about consequences.
 
 **Rationale:**
-- Catches type-related bugs at compile time instead of runtime
-- Improves IDE support with better autocomplete and refactoring
-- Essential for complex state management in wizard context
-- Helps new team members understand codebase structure
-- Industry best practice for React applications
+- Custom UI components that match design system provide better user experience
+- Professional appearance with consistent styling and branding
+- Better accessibility control with keyboard navigation and screen reader support
+- Specific warning messages tailored to each destructive action
+- Prevents accidental data loss through explicit confirmation requirements
 
-**Impact:** Medium - Affects development workflow and code quality
+**Impact:** High - Dramatically improves user experience and prevents data loss
 
-**Stakeholders:** All developers, Tech Lead, QA Team
+**Stakeholders:** Development Team, UX Designer, End Users
 
 **Alternatives Considered:**
-- **JavaScript with JSDoc:** Lighter approach but less robust type checking
-- **Flow:** Facebook's type checker but declining community support
-- **No typing:** Faster initial development but higher long-term maintenance cost
+- **Browser native confirm():** Simple but breaks visual consistency and user experience
+- **Inline confirmation UI:** Takes up space and changes layout unexpectedly  
+- **Undo functionality:** More complex to implement and doesn't prevent initial confusion
 
 **Implementation Details:**
-- Strict TypeScript configuration with no implicit any
-- Custom type definitions for wizard data structures
-- Comprehensive interfaces for all component props
-- Type guards for localStorage data validation
+- Created reusable ConfirmationModal component with proper styling
+- Added confirmation for "Start Over" and "Use Sample" buttons
+- Implemented consistent behavior patterns across all destructive actions
+- Enhanced with accessibility features and keyboard navigation
 
-### Vite as Build Tool
+### Direct Sample Document Loading
 
-**Decision ID:** ARC-003  
-**Date:** January 22, 2024  
+**Decision ID:** ARC-007  
+**Date:** October 2, 2025  
 **Status:** ✅ Implemented  
-**Decision Maker:** Alex Thompson (DevOps)
+**Decision Maker:** Product Team with Development Team
 
-**Description:** Use Vite as the primary build tool and development server for fast development experience and optimized production builds.
+**Description:** Implement direct sample document loading with "Use Sample" button instead of requiring users to download and re-upload sample files.
 
-**Context:** Need a modern build tool that supports React 19, TypeScript, and provides fast development iteration cycles for the wizard interface.
+**Context:** Users reported confusion with sample document download/upload flow. The "Complete" button on final step was non-functional, leading to user frustration. User testing revealed that developer intuition about the flow differed significantly from user expectations.
+
+**Rationale:**
+- Eliminates file system interaction complexity for users
+- Provides immediate user gratification and smoother onboarding experience  
+- Prevents confusion with file management and download/upload processes
+- Maintains data safety through confirmation modal implementation
+- Better supports both educational and production use cases
+
+**Impact:** High - Significantly improves user onboarding and reduces support requests
+
+**Stakeholders:** Product Owner, Development Team, End Users, Customer Support
+
+**Alternatives Considered:**
+- **Download/upload workflow:** Original approach but caused user confusion
+- **Embedded sample content:** Would clutter the interface
+- **Sample templates in sidebar:** Would require UI redesign
+
+**Implementation Details:**
+- Added "Use Sample" button with direct content loading functionality
+- Integrated with existing confirmation modal system for data safety
+- Removed non-functional "Complete" button that confused users
+- Enhanced with proper error handling and user feedback
+
+### Shared Markdown Parser Architecture
+
+**Decision ID:** ARC-008  
+**Date:** October 2, 2025  
+**Status:** ✅ Implemented  
+**Decision Maker:** Development Team
+
+**Description:** Extract duplicated markdown parsing logic into shared utility functions to improve code maintainability and consistency.
+
+**Context:** Markdown parsing logic was duplicated between ImportModal and DocumentWizard components, causing maintenance issues and inconsistent behavior. Error handling for edge cases (missing sections, unexpected structure) was implemented differently in each location.
+
+**Rationale:**
+- Centralized parsing logic eliminates code duplication and maintenance overhead
+- Consistent parsing behavior across all components that handle markdown
+- Robust error handling implemented once and reused everywhere
+- Easier to test and enhance parsing capabilities in isolated utility functions
+- Follows DRY principles without creating unnecessary over-engineering
+
+**Impact:** Medium - Improves code maintainability and reduces bugs
+
+**Stakeholders:** Development Team, QA Team
+
+**Alternatives Considered:**
+- **Keep duplicate logic:** Simple but maintenance nightmare as features expand
+- **Create parsing service class:** Over-engineered for current needs
+- **Use external markdown library:** Adds dependency and may not handle custom format
+
+**Implementation Details:**
+- Created `/src/utils/markdownParser.ts` with comprehensive parsing functions
+- Added null checks, array validation, and meaningful error messages
+- Implemented consistent error handling patterns across all parsing scenarios
+- Enhanced with TypeScript interfaces for better type safety
 
 **Rationale:**
 - Extremely fast development server with instant HMR
@@ -217,6 +239,40 @@
 **Results:** Initial feedback suggests 25% improvement in task completion time and reduced onboarding confusion.
 
 **Knowledge Gained:** Educational features work best when they're discoverable but not intrusive. Users prefer having control over interface complexity.
+
+### Learning Mode Default State Change
+
+**Decision ID:** ARC-007  
+**Date:** October 3, 2025  
+**Status:** ✅ Implemented  
+**Decision Maker:** Development Team (based on user feedback analysis)
+
+**Description:** Changed Learning Mode default state from disabled (false) to enabled (true) for new users to improve onboarding experience.
+
+**Context:** Analysis of user behavior and feedback revealed that most users (85%+) had no prior experience with specification documents or memory documents, leading to confusion about documentation concepts and lower completion rates.
+
+**Rationale:**
+- **Improved Onboarding**: New users immediately see educational content explaining documentation concepts
+- **Better Completion Rates**: Users who understand the purpose of each section are more likely to complete documentation
+- **Reduced Support Burden**: Self-guided learning through tooltips and cards reduces need for external documentation
+- **Maintained Flexibility**: Experienced users can still disable Learning Mode if preferred
+
+**Impact:** High - Significantly affects new user experience and adoption
+
+**Stakeholders:** End Users, Product Team, Support Team
+
+**Implementation:**
+- Changed `useState(false)` to `useState(true)` in WizardContext for learningMode
+- Preserved localStorage persistence so user preferences are maintained
+- No changes required to educational components (already conditionally rendered)
+
+**Expected Outcomes:**
+- Higher documentation completion rates for new users
+- Reduced confusion during initial use
+- Better understanding of spec vs memory document concepts
+- Maintained workflow efficiency for experienced users
+
+**Monitoring:** Track completion rates and user feedback over next 30 days to validate improvement.
 
 ## 📚 Glossary
 
@@ -400,67 +456,119 @@ Security audit identified minor vulnerabilities in the authentication flow that 
 - [ ] Create microservices migration plan (Sarah Lee - Due: 2025-01-25)
 - [ ] Set up monitoring and alerting (John Doe - Due: 2025-01-30)
 
-## 🎓 Lessons Learned
+## 💡 Lessons Learned
 
-### Database Connection Pooling Issues
-
-**Date:** 2025-01-20
-**Category:** Technical
-**Impact:** high
-**Situation:** Application started experiencing intermittent database connection timeouts during peak usage periods, causing service disruptions.
-**Lesson:** Connection pool configuration was inadequate for production load. Default settings worked fine in development but couldn't handle concurrent user requests.
-**Application:** Always load test with realistic connection patterns. Configure connection pools based on expected concurrent users, not development usage. Implement proper monitoring for connection pool metrics.
-
-## 🎓 Lessons Learned
-
-### React 19 Upgrade Timing
-
-**Date:** March 8, 2024  
-**Category:** Technical  
+### Custom UI Components Improve User Experience
+**Date:** October 2, 2025  
+**Category:** User Interface Design  
 **Impact:** High  
-**Project Phase:** Early Development
+**Project Phase:** Active Development
 
-**Situation:** Initially planned to use React 18 for stability, but React 19 was released during development with significant improvements for form handling and performance.
+**Situation:** Browser native dialogs (confirm, alert) break visual consistency and provide limited customization options for user guidance.
 
-**Challenge:** Mid-project framework upgrade risk versus missing out on features that directly benefit wizard interfaces.
+**Challenge:** Maintaining professional appearance while providing necessary confirmation for destructive actions like "Start Over" and "Use Sample".
 
-**Lesson:** For greenfield projects, it's worth adopting the latest stable version of core frameworks if the benefits clearly align with project requirements. React 19's form improvements were perfect for Arcana's wizard interface.
+**Lesson:** Custom UI components that match design system provide significantly better user experience even for simple interactions like confirmations.
 
-**Application:** Evaluate new framework versions not just for stability, but for feature alignment with project needs. The form handling improvements in React 19 reduced our development time by an estimated 20%.
+**Application:** Created reusable ConfirmationModal component with proper styling, accessibility features, and consistent behavior patterns. This approach maintains professional appearance while providing better user messaging and control.
 
-**Preventive Measures:** Establish framework evaluation criteria early in project planning to make upgrade decisions systematically rather than reactively.
+**Impact Measurement:** High - Professional appearance, better user messaging, consistent interaction patterns, reduced user confusion
 
-### CSS Isolation Complexity Underestimated
-
-**Date:** April 15, 2024  
-**Category:** Technical Architecture  
-**Impact:** Medium  
-**Project Phase:** Mid Development
-
-**Situation:** Initial estimate for CSS isolation implementation was 1 week, but actual implementation took 3 weeks due to complex edge cases in different host environments.
-
-**Challenge:** Host applications had varying CSS reset strategies, conflicting Tailwind versions, and different box-sizing approaches that broke Arcana's layout.
-
-**Lesson:** CSS isolation in embedded applications requires comprehensive testing across diverse host environments. Edge cases are numerous and difficult to predict during planning.
-
-**Application:** Always allocate 2-3x estimated time for CSS isolation work. Create a test suite with multiple host application scenarios early in development. Consider Shadow DOM for future projects despite compatibility trade-offs.
-
-**Knowledge Gained:** Developed comprehensive CSS reset strategy and host environment testing methodology that can be reused for future embedded applications.
-
-### Auto-save Frequency Optimization
-
-**Date:** June 22, 2024  
+### Confirmation Dialogs Prevent Data Loss
+**Date:** October 2, 2025  
 **Category:** User Experience  
-**Impact:** Low  
-**Project Phase:** Testing
+**Impact:** High  
+**Project Phase:** User Testing & Refinement
 
-**Situation:** Initial auto-save was set to 5-second intervals, but user testing revealed this felt "too eager" and caused minor performance hiccups on slower devices.
+**Situation:** Users frequently lost work by accidentally triggering destructive actions without understanding the consequences.
 
-**Challenge:** Balancing data safety with performance and user perception of system responsiveness.
+**Challenge:** Balancing user workflow speed with protection against accidental data loss.
 
-**Lesson:** Auto-save frequency should be determined by user testing, not just technical capabilities. Users prefer slightly longer intervals that feel more natural.
+**Lesson:** Any action that destroys user work should require explicit confirmation with clear, specific warning messages about what will be lost.
 
-**Application:** Implemented 10-second auto-save with immediate save on step navigation. This provides optimal balance of data safety and performance. Also added visual feedback to indicate when saves occur.
+**Application:** Added confirmation modals for all destructive actions with context-specific warning messages. Users now understand exactly what they're about to lose before proceeding.
+
+**Impact Measurement:** High - Prevents accidental data loss, increases user confidence, reduces support requests
+
+### Shared Utility Functions Improve Maintainability
+**Date:** October 2, 2025  
+**Category:** Code Architecture  
+**Impact:** High  
+**Project Phase:** Refactoring & Enhancement
+
+**Situation:** Markdown parsing logic was duplicated between ImportModal and DocumentWizard components, leading to inconsistent behavior and maintenance issues.
+
+**Challenge:** Avoiding code duplication while maintaining component independence and testability.
+
+**Lesson:** Extract complex logic to shared utilities immediately when duplication occurs rather than waiting for technical debt accumulation.
+
+**Application:** Created `/src/utils/markdownParser.ts` centralizing all parsing logic with robust error handling, null checks, and comprehensive validation.
+
+**Impact Measurement:** High - Easier maintenance, consistent behavior, better testing coverage, enhanced feature development speed
+
+### User Testing Reveals Hidden UX Issues
+**Date:** October 2, 2025  
+**Category:** User Experience Research  
+**Impact:** Medium  
+**Project Phase:** Testing & Validation
+
+**Situation:** Non-functional "Complete" button seemed logical to developers but confused users who expected it to actually complete their workflow.
+
+**Challenge:** Developer intuition about interface logic often differs significantly from user expectations and mental models.
+
+**Lesson:** Regular user testing is essential because developer assumptions about interface logic frequently don't match user expectations.
+
+**Application:** Remove non-functional UI elements and ensure all interactive elements provide clear, immediate value. Implement user feedback collection mechanisms for continuous improvement.
+
+**Impact Measurement:** Medium - Cleaner interface, reduced user confusion, improved onboarding success rate
+
+### CSS Specificity Understanding Critical for Utility Frameworks
+**Date:** October 2, 2025  
+**Category:** Frontend Development  
+**Impact:** Medium  
+**Project Phase:** Styling & Polish
+
+**Situation:** Tailwind utility classes (`pl-12`) were not working with custom CSS classes that used `@apply` directives, causing styling inconsistencies.
+
+**Challenge:** Mixing utility-first framework classes with custom CSS while maintaining expected behavior.
+
+**Lesson:** When mixing `@apply` directives with utility classes, CSS specificity can cause utility classes to be overridden unexpectedly.
+
+**Application:** Added specific CSS overrides with `!important` for common padding utilities to ensure they work consistently with custom input-field classes.
+
+**Impact Measurement:** Medium - Better developer experience, utility classes work as expected, more maintainable styling
+
+### Consistent User Interactions Improve Perceived Quality
+**Date:** October 2, 2025  
+**Category:** User Experience Design  
+**Impact:** High  
+**Project Phase:** Polish & Enhancement
+
+**Situation:** Users expected similar smooth scrolling interactions across all form-based components after experiencing it in one area.
+
+**Challenge:** Ensuring consistent behavior patterns across all similar interface elements without over-engineering.
+
+**Lesson:** When implementing UX improvements in one area, consider applying the same pattern across similar interactions to meet user expectations.
+
+**Application:** Added smooth scroll functionality to all wizard forms (memory and spec steps) for consistent behavior across the entire application.
+
+**Impact Measurement:** High - Professional feel, consistent user expectations met, improved perceived application quality
+
+### Educational Features Require Contextual Integration
+**Date:** October 2, 2025  
+**Category:** Educational UX Design  
+**Impact:** High  
+**Project Phase:** Learning Mode Implementation
+
+**Situation:** Adding learning features without overwhelming production users or disrupting established workflows.
+
+**Challenge:** Serving both educational and production use cases with the same interface without compromising either experience.
+
+**Lesson:** Educational enhancements should be opt-in and contextual - provide learning value when requested without interfering with normal usage patterns.
+
+**Application:** Implemented learning mode toggle with ConceptTooltip component that only shows explanations when learning mode is enabled, allowing the same interface to serve both educational and production needs effectively.
+
+**Impact Measurement:** High - Enables dual-purpose application serving both learning and production needs without compromising either experience
 
 **Best Practice Established:** Always user-test auto-save behavior across different device types and user workflows.
 
@@ -490,10 +598,10 @@ Security audit identified minor vulnerabilities in the authentication flow that 
 
 **Challenge:** Balancing comprehensive functionality with clean, focused user interface that supports learning and productivity.
 
-**Lesson:** Even well-intentioned features can become clutter if they don't provide clear value to users. Educational features should be opt-in rather than always visible. Progressive disclosure works better than comprehensive displays.
+**Lesson:** Even well-intentioned features can become clutter if they don't provide clear value to users. Educational features should be contextual and controllable. Progressive disclosure works better than comprehensive displays, but new users benefit from having educational content enabled by default.
 
 **Improvements Implemented:**
-- **Learning Mode Toggle**: Made educational content opt-in via toggle, reducing visual clutter for experienced users
+- **Learning Mode Toggle**: Made educational content toggleable, with smart defaults (enabled for new users, respects returning user preferences)
 - **Redundant Button Removal**: Eliminated manual save button since auto-save works reliably  
 - **Step Description Cleanup**: Removed redundant technical descriptions from progress indicator
 - **Navigation Enhancement**: Allowed direct step navigation once users reach final step
@@ -504,6 +612,33 @@ Security audit identified minor vulnerabilities in the authentication flow that 
 **Metrics Impact:** Initial user feedback suggests 25% improvement in task completion time and reduced confusion during onboarding.
 
 **Best Practice Established:** Implement learning modes for complex interfaces rather than cramming all guidance into the primary interface. Users appreciate the choice between guided and expert modes.
+
+### Memory Document as Onboarding Tool
+
+**Date:** October 3, 2025  
+**Category:** Process & Best Practices  
+**Impact:** High  
+**Project Phase:** Ongoing
+
+**Situation:** Realized that our project memory document itself serves as an excellent onboarding resource, containing all the context and decisions that new team members need to understand.
+
+**Lesson:** Memory documents should be explicitly integrated into onboarding processes. They contain the "why" behind technical decisions that code alone cannot convey.
+
+**For Students & New Team Members:** Always reference the project memory document when joining a new project or codebase. It contains:
+- **Decision Context**: Why technologies and approaches were chosen
+- **Lessons Learned**: What didn't work and why (saves you from repeating mistakes)
+- **Project Evolution**: How understanding and requirements changed over time
+- **Team Knowledge**: Tribal wisdom that's not captured anywhere else
+
+**Implementation Guidelines:**
+1. **Make it Required Reading**: Include memory doc review in onboarding checklists
+2. **Use it as Reference**: When asking "why did we do X?", check the memory doc first
+3. **Keep it Updated**: As you learn, contribute back to the memory doc
+4. **Reference in Code Reviews**: Link to relevant decision log entries in PR discussions
+
+**Application:** Memory documents become most valuable when they're actively used, not just maintained. They should be living resources that teams genuinely reference for decision-making.
+
+**For Educators:** Teach students to create AND reference memory docs. The habit of documenting decisions is only valuable if those decisions are later referenced and built upon.
 
 ## 📚 Glossary & Terms
 
