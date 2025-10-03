@@ -174,5 +174,6 @@ export interface WizardContextType {
   updateMemoryData: (section: keyof MemoryDocumentData, data: any) => void;
   markStepCompleted: (stepIndex: number) => void;
   resetWizard: () => void;
+  navigateToDocumentSelection: () => void;
   setLearningMode: (enabled: boolean) => void;
 }

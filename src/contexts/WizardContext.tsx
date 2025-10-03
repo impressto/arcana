@@ -224,6 +224,12 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     }
   };
 
+  const navigateToDocumentSelection = () => {
+    // Navigate back to document selection without losing data
+    setDocumentType(null);
+    setCurrentStep(0);
+  };
+
 
 
   const handleSetDocumentType = (type: DocumentType) => {
@@ -244,6 +250,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     updateMemoryData,
     markStepCompleted,
     resetWizard,
+    navigateToDocumentSelection,
     setLearningMode,
   };
 

@@ -12,17 +12,17 @@ import { TemplatesModal } from './TemplatesModal';
 import { parseSpecMarkdownContent, parseMemoryMarkdownContent } from '../utils/markdownParsers';
 
 export const DocumentWizard: React.FC = () => {
-  const { documentType, currentStep, steps, resetWizard, updateSpecData, updateMemoryData, learningMode, setLearningMode } = useWizard();
+  const { documentType, currentStep, steps, updateSpecData, updateMemoryData, learningMode, setLearningMode, navigateToDocumentSelection } = useWizard();
   const [showImportModal, setShowImportModal] = useState(false);
   const [showSampleConfirmModal, setShowSampleConfirmModal] = useState(false);
-  const [showLogoConfirmModal, setShowLogoConfirmModal] = useState(false);
   const [showTemplatesModal, setShowTemplatesModal] = useState(false);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
 
 
 
-  const handleConfirmLogoReset = () => {
-    resetWizard();
+  const handleLogoNavigation = () => {
+    // Navigate back to document selection without losing data
+    navigateToDocumentSelection();
   };
 
   const handleUseSample = () => {
@@ -148,7 +148,7 @@ export const DocumentWizard: React.FC = () => {
               <div 
                 id="wizard-title"
                 className="flex justify-start mb-2 cursor-pointer"
-                onClick={() => setShowLogoConfirmModal(true)}
+                onClick={handleLogoNavigation}
                 title="Return to document type selection"
               >
                 <img 
@@ -228,17 +228,6 @@ export const DocumentWizard: React.FC = () => {
         confirmText="Load Sample"
         cancelText="Cancel"
         type="warning"
-      />
-      
-      <ConfirmationModal
-        isOpen={showLogoConfirmModal}
-        onClose={() => setShowLogoConfirmModal(false)}
-        onConfirm={handleConfirmLogoReset}
-        title="Return to Document Selection?"
-        message="This will discard all current progress and return to the document type selection. Any work you've done will be lost. Are you sure you want to continue?"
-        confirmText="Start Over"
-        cancelText="Stay Here"
-        type="danger"
       />
       
       <TemplatesModal
