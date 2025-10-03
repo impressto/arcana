@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Edit, Trash2, Calendar, FileText, Lightbulb } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
 import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 import type { DecisionEntry } from '../../types';
 
 export const DecisionLogStep: React.FC = () => {
@@ -117,6 +118,21 @@ export const DecisionLogStep: React.FC = () => {
           Document important project decisions, their rationale, and impact on the project.
         </p>
       </div>
+
+      {/* Learning Mode Content */}
+      <LearningCard
+        type="why-matters"
+        title="Why Decision Logs Matter"
+        content="Decision logs create a historical record that prevents teams from repeatedly debating settled questions. They also provide AI assistants with crucial context about why certain approaches were chosen over alternatives."
+        className="mb-4"
+      />
+
+      <LearningCard
+        type="tip"
+        title="Pro Tip: Include Context"
+        content="Always document the situation that led to the decision. Future team members (and AI assistants) will thank you for explaining not just what was decided, but why it was needed."
+        className="mb-4"
+      />
 
       {/* Add New Button */}
       {!isAddingNew && (

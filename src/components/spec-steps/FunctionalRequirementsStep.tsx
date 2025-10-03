@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Plus, X, Edit2 } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
 import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 import type { Feature } from '../../types';
 
 export const FunctionalRequirementsStep: React.FC = () => {
@@ -121,6 +122,14 @@ export const FunctionalRequirementsStep: React.FC = () => {
         <ConceptTooltip concept="user-stories">
           <h3 className="text-lg font-semibold text-gray-800 inline-block">User Stories</h3>
         </ConceptTooltip>
+        
+        <LearningCard
+          type="explanation"
+          title="User Story Best Practices"
+          content="Good user stories follow the format 'As a [role], I want [feature] so that [benefit]'. This helps AI assistants understand not just what to build, but why users need it."
+          className="mb-4"
+        />
+        
         <div className="space-y-3">
           <div className="flex space-x-2">
             <input

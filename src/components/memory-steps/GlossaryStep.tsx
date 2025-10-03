@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Edit, Trash2, BookOpen, Search, Tag } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 import type { GlossaryEntry } from '../../types';
 
 export const GlossaryStep: React.FC = () => {
@@ -107,11 +109,28 @@ export const GlossaryStep: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Glossary</h2>
+        <ConceptTooltip concept="glossary">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 inline-block">Glossary</h2>
+        </ConceptTooltip>
         <p className="text-gray-600">
           Define technical terms, concepts, and project-specific vocabulary for clear communication.
         </p>
       </div>
+
+      {/* Learning Mode Content */}
+      <LearningCard
+        type="why-matters"
+        title="Why Glossaries Prevent Confusion"
+        content="A shared vocabulary ensures everyone (including AI assistants) understands project-specific terms. This prevents miscommunication and helps AI tools use consistent terminology when generating code and documentation."
+        className="mb-4"
+      />
+
+      <LearningCard
+        type="tip"
+        title="Pro Tip: Define Terms as They Emerge"
+        content="Don't wait until the end of the project. Add terms to your glossary as soon as they become important. This helps new team members and AI assistants understand context immediately."
+        className="mb-4"
+      />
 
       {/* Search and Filter Controls */}
       {glossary.length > 0 && (

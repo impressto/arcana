@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Edit, Trash2, Calendar, Lightbulb, Target, TrendingUp, Filter } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 import type { LessonEntry } from '../../types';
 
 export const LessonsLearnedStep: React.FC = () => {
@@ -148,11 +150,28 @@ export const LessonsLearnedStep: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Lessons Learned</h2>
+        <ConceptTooltip concept="lessons-learned-step">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 inline-block">Lessons Learned</h2>
+        </ConceptTooltip>
         <p className="text-gray-600">
           Capture valuable insights, retrospective findings, and key learnings to improve future projects.
         </p>
       </div>
+
+      {/* Learning Mode Content */}
+      <LearningCard
+        type="why-matters"
+        title="Why Lessons Learned Drive Success"
+        content="Teams that systematically capture lessons learned avoid repeating mistakes and compound their successes. AI assistants can reference these lessons to provide advice based on your actual experience rather than generic solutions."
+        className="mb-4"
+      />
+
+      <LearningCard
+        type="tip"
+        title="Pro Tip: Include Context and Impact"
+        content="Don't just record what happened - explain the circumstances, what you'd do differently, and the expected impact. This context helps AI assistants understand when and how to apply these lessons."
+        className="mb-4"
+      />
 
       {/* Filter Controls */}
       {lessons.length > 0 && (

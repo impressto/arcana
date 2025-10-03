@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 import type { OnboardingNote } from '../../types';
 import { Plus, Users, CheckCircle, AlertCircle, Clock, Target, BookOpen, Trash2 } from 'lucide-react';
 
@@ -136,7 +138,9 @@ export function OnboardingNotesStep() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Onboarding Notes</h2>
+          <ConceptTooltip concept="onboarding-notes">
+            <h2 className="text-2xl font-bold text-gray-900 inline-block">Onboarding Notes</h2>
+          </ConceptTooltip>
           <p className="text-gray-600 mt-1">Track new team member onboarding progress and resources</p>
         </div>
         <button
@@ -147,6 +151,21 @@ export function OnboardingNotesStep() {
           Add New Hire
         </button>
       </div>
+
+      {/* Learning Mode Content */}
+      <LearningCard
+        type="why-matters"
+        title="Why Onboarding Documentation Matters"
+        content="Structured onboarding documentation ensures consistent team integration and helps AI assistants understand team structure and knowledge levels when providing guidance to different team members."
+        className="mb-4"
+      />
+
+      <LearningCard
+        type="tip"
+        title="Pro Tip: Create Reusable Templates"
+        content="Standardize your onboarding process with checklists and templates. This ensures nothing gets missed and helps AI assistants understand your team's knowledge transfer patterns."
+        className="mb-4"
+      />
 
       {/* Statistics Dashboard */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">

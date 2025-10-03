@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Edit, Trash2, Calendar, Users, FileText, CheckSquare, Clock, User } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 import type { MeetingNote, ActionItem } from '../../types';
 
 export const MeetingNotesStep: React.FC = () => {
@@ -148,11 +150,28 @@ export const MeetingNotesStep: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Meeting Notes</h2>
+        <ConceptTooltip concept="meeting-notes">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 inline-block">Meeting Notes</h2>
+        </ConceptTooltip>
         <p className="text-gray-600">
           Record meeting minutes, attendees, agenda items, and track action items.
         </p>
       </div>
+
+      {/* Learning Mode Content */}
+      <LearningCard
+        type="why-matters"
+        title="Why Meeting Notes Are Essential"
+        content="Meeting notes create accountability and ensure decisions don't get lost. They help AI assistants understand your team's collaborative decision-making process and suggest solutions that align with past discussions."
+        className="mb-4"
+      />
+
+      <LearningCard
+        type="tip"
+        title="Pro Tip: Structure for Clarity"
+        content="Use consistent formatting for agenda items, decisions, and action items. This makes notes easier to search and helps AI assistants extract key information about project direction."
+        className="mb-4"
+      />
 
       {/* Add New Button */}
       {!isAddingNew && (

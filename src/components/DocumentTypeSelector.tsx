@@ -1,6 +1,7 @@
 import React from 'react';
 import { FileText, BookOpen } from 'lucide-react';
 import { useWizard } from '../contexts/WizardContext';
+import { LearningCard } from './LearningCard';
 import type { DocumentType } from '../types';
 
 export const DocumentTypeSelector: React.FC = () => {
@@ -106,6 +107,21 @@ export const DocumentTypeSelector: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Learning Mode Content */}
+        <div className="max-w-4xl mx-auto mb-8 space-y-4">
+          <LearningCard
+            type="why-matters"
+            title="Why Documentation Matters for AI Development"
+            content="Good documentation is the foundation of effective AI-assisted development. AI tools like GitHub Copilot and ChatGPT work better when they understand your project's context, decisions, and requirements."
+          />
+          
+          <LearningCard
+            type="explanation"
+            title="Spec vs Memory Documents"
+            content="Specification documents define what to build (requirements, features, architecture). Memory documents capture knowledge and context (decisions, lessons learned, team wisdom). Together, they give AI assistants complete project understanding."
+          />
+        </div>
 
         <div id="document-types-grid" className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {documentTypes.map((docType) => {
