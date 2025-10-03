@@ -89,9 +89,6 @@ export const ProgressIndicator: React.FC = () => {
                   >
                     {step.title}
                   </div>
-                  <div id={`step-${step.id}-description`} className="text-xs text-gray-500 mt-1 max-w-24">
-                    {step.description}
-                  </div>
                 </div>
               </div>
               

@@ -11,7 +11,7 @@ import { ConfirmationModal } from './ConfirmationModal';
 import { parseSpecMarkdownContent, parseMemoryMarkdownContent } from '../utils/markdownParsers';
 
 export const DocumentWizard: React.FC = () => {
-  const { documentType, currentStep, steps, resetWizard, manualSave, updateSpecData, updateMemoryData, learningMode, setLearningMode } = useWizard();
+  const { documentType, currentStep, steps, resetWizard, updateSpecData, updateMemoryData, learningMode, setLearningMode } = useWizard();
   const [showImportModal, setShowImportModal] = useState(false);
   const [showSampleConfirmModal, setShowSampleConfirmModal] = useState(false);
   const [showLogoConfirmModal, setShowLogoConfirmModal] = useState(false);
@@ -188,14 +188,6 @@ export const DocumentWizard: React.FC = () => {
                 title={`Import ${documentType} document from .md file`}
               >
                 📁 Import
-              </button>
-              <button
-                id="save-button"
-                onClick={manualSave}
-                className="bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 transition-colors duration-200 font-medium text-sm px-3 py-1.5"
-                title="Save progress manually"
-              >
-                💾 Save
               </button>
             </div>
           </div>

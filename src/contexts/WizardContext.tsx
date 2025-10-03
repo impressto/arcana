@@ -224,15 +224,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     }
   };
 
-  const manualSave = () => {
-    const dataToSave = {
-      documentType,
-      currentStep,
-      specData,
-      memoryData,
-    };
-    saveToStorage(dataToSave, true); // Show notification for manual saves
-  };
+
 
   const handleSetDocumentType = (type: DocumentType) => {
     setDocumentType(type);
@@ -252,7 +244,6 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     updateMemoryData,
     markStepCompleted,
     resetWizard,
-    manualSave,
     setLearningMode,
   };
 
