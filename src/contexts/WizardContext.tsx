@@ -8,6 +8,36 @@ import type {
   WizardContextType,
 } from '../types';
 
+// URL hash management
+const parseHashUrl = () => {
+  const hash = window.location.hash.slice(1); // Remove #
+  if (!hash || hash === '/') {
+    return { documentType: null, step: 0 };
+  }
+  
+  const parts = hash.split('/').filter(Boolean);
+  const docType = parts[0];
+  const step = parts[1] ? parseInt(parts[1], 10) : 0;
+  
+  if (docType === 'spec' || docType === 'memory') {
+    return { 
+      documentType: docType as DocumentType, 
+      step: isNaN(step) ? 0 : Math.max(0, step)
+    };
+  }
+  
+  return { documentType: null, step: 0 };
+};
+
+const updateHashUrl = (documentType: DocumentType | null, step: number = 0) => {
+  if (!documentType) {
+    window.history.replaceState(null, '', '#/');
+  } else {
+    const url = step > 0 ? `#/${documentType}/${step}` : `#/${documentType}`;
+    window.history.replaceState(null, '', url);
+  }
+};
+
 // localStorage key
 const STORAGE_KEY = 'arcana-state';
 
@@ -146,13 +176,23 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
   const [learningMode, setLearningMode] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load data from localStorage on component mount
+  // Load data from localStorage and URL hash on component mount
   useEffect(() => {
+    // First, try to get state from URL hash
+    const urlState = parseHashUrl();
+    
+    // Then load from localStorage
     const savedData = loadFromStorage();
+    
+    // URL takes precedence over localStorage for navigation state
+    const finalDocumentType = urlState.documentType || savedData?.documentType || null;
+    const finalCurrentStep = urlState.documentType ? urlState.step : (savedData?.currentStep || 0);
+    
+    if (finalDocumentType) setDocumentType(finalDocumentType);
+    if (finalCurrentStep !== undefined) setCurrentStep(finalCurrentStep);
+    if (savedData?.learningMode !== undefined) setLearningMode(savedData.learningMode);
+    
     if (savedData) {
-      if (savedData.documentType) setDocumentType(savedData.documentType);
-      if (savedData.currentStep !== undefined) setCurrentStep(savedData.currentStep);
-      if (savedData.learningMode !== undefined) setLearningMode(savedData.learningMode);
       if (savedData.specData) {
         setSpecData(prev => ({
           ...prev,
@@ -175,6 +215,18 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
       }
     }
     setIsLoaded(true);
+  }, []);
+
+  // Listen for hash changes (browser back/forward navigation)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const urlState = parseHashUrl();
+      setDocumentType(urlState.documentType);
+      setCurrentStep(urlState.step);
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   // Save to localStorage whenever data changes (but only after initial load)
@@ -228,13 +280,18 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     // Navigate back to document selection without losing data
     setDocumentType(null);
     setCurrentStep(0);
+    updateHashUrl(null, 0);
   };
-
-
 
   const handleSetDocumentType = (type: DocumentType) => {
     setDocumentType(type);
     setCurrentStep(0);
+    updateHashUrl(type, 0);
+  };
+
+  const handleSetCurrentStep = (step: number) => {
+    setCurrentStep(step);
+    updateHashUrl(documentType, step);
   };
 
   const value: WizardContextType = {
@@ -245,7 +302,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     memoryData,
     learningMode,
     setDocumentType: handleSetDocumentType,
-    setCurrentStep,
+    setCurrentStep: handleSetCurrentStep,
     updateSpecData,
     updateMemoryData,
     markStepCompleted,

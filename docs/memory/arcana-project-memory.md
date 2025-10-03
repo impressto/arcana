@@ -48,6 +48,15 @@
 **Description:** Remove disabled "Complete" button from final wizard step  
 **Rationale:** Button appeared clickable but was disabled with no functionality, causing user confusion and support requests  
 **Status:** Implemented  
+
+### Hash URL Navigation System
+**Date:** October 3, 2025  
+**Description:** Implement URL hash-based navigation to control wizard state and allow bookmarking  
+**Rationale:** Users wanted ability to bookmark specific wizard states, share direct links to documentation wizards, and use browser back/forward navigation. Improves UX and enables better workflow integration  
+**Status:** Implemented  
+**Impact:** Enhanced user experience with bookmarkable states, better browser integration, shareable wizard links  
+**Stakeholders:** Development Team, End Users  
+**Implementation:** Added hash URL parsing and management in WizardContext with format `#/spec`, `#/spec/2`, `#/memory/1` etc. Includes browser back/forward support and automatic URL synchronization  
 **Impact:** Cleaner UI, reduced user confusion, eliminated false affordances  
 **Stakeholders:** Development Team, UX, Support Team  
 **Implementation:** Modified StepNavigation.tsx to conditionally render Next button only when not on final step  
@@ -217,6 +226,47 @@
 **Comprehensive Coverage:** Design principle ensuring all major features have consistent educational treatment for complete learning experience  
 **Contextual Learning:** Educational approach providing relevant information at the point of need rather than separate training modules  
 
+## 🔗 Hash URL Navigation Guide
+
+### Available URL Routes
+The application now supports hash-based URL navigation for improved user experience and bookmarking:
+
+**Document Selection:**
+- `#/` or no hash - Main document type selection page
+
+**Specification Wizard:**
+- `#/spec` - Specification wizard, step 1 (Project Overview)
+- `#/spec/0` - Specification wizard, step 1 (Project Overview) 
+- `#/spec/1` - Specification wizard, step 2 (Functional Requirements)
+- `#/spec/2` - Specification wizard, step 3 (Technical Requirements)
+- `#/spec/3` - Specification wizard, step 4 (API Documentation)
+- `#/spec/4` - Specification wizard, step 5 (Non-Functional Requirements)
+- `#/spec/5` - Specification wizard, step 6 (Roadmap)
+- `#/spec/6` - Specification wizard, step 7 (Preview & Export)
+
+**Memory Wizard:**
+- `#/memory` - Memory wizard, step 1 (Project Info)
+- `#/memory/0` - Memory wizard, step 1 (Project Info)
+- `#/memory/1` - Memory wizard, step 2 (Decision Log)
+- `#/memory/2` - Memory wizard, step 3 (Glossary)
+- `#/memory/3` - Memory wizard, step 4 (Meeting Notes)
+- `#/memory/4` - Memory wizard, step 5 (Lessons Learned)
+- `#/memory/5` - Memory wizard, step 6 (Onboarding Notes)
+- `#/memory/6` - Memory wizard, step 7 (Preview & Export)
+
+### Features
+- **Bookmarkable States:** Users can bookmark any wizard step for quick access
+- **Shareable Links:** Direct links to specific wizard states can be shared with team members
+- **Browser Navigation:** Back/forward buttons work naturally with wizard navigation
+- **URL Synchronization:** URL automatically updates as users navigate through the wizard
+- **Deep Linking:** External links can navigate directly to specific wizard steps
+
+### Technical Implementation
+- Hash-based routing to avoid server configuration requirements
+- URL state takes precedence over localStorage for navigation
+- Automatic hash change detection for browser back/forward support
+- State validation ensures only valid wizard steps are accessible
+
 ## 🤝 Meeting Notes
 
 ### Custom Modal Implementation Session
@@ -326,6 +376,22 @@ Discovered markdown parsing issues where Action Items were importing as blank en
 **Lesson:** Developer intuition often differs from user expectations; regular user testing essential  
 **Application:** Remove non-functional UI elements, ensure all interactive elements provide clear value  
 **Impact:** Medium - Cleaner interface, reduced user confusion  
+
+### URL State Management Enhances User Experience  
+**Date:** October 3, 2025  
+**Category:** Navigation & UX  
+**Situation:** Users wanted to bookmark wizard states and share direct links to specific documentation wizards  
+**Lesson:** URL state management is crucial for user workflows involving bookmarking, sharing, and browser navigation  
+**Application:** Implemented hash-based URL navigation with format like `#/spec/2` for specific wizard states, includes browser back/forward support  
+**Impact:** High - Users can bookmark wizard states, share direct links, use browser navigation naturally  
+
+### Emoji Dependencies Create Cross-Platform Compatibility Issues
+**Date:** October 3, 2025  
+**Category:** Data Processing  
+**Situation:** Student document imports failed because emoji characters in section headers varied across platforms and editing environments  
+**Lesson:** Critical application logic should never depend on visual elements like emojis that may render differently across systems  
+**Application:** Implemented emoji-agnostic parsing using keyword detection instead of exact character matching  
+**Impact:** High - Ensures consistent parsing across all platforms and editing environments  
 
 ### Error Handling Should Be Defensive
 **Date:** October 2, 2025  

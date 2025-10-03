@@ -140,7 +140,6 @@ src/
 │   ├── markdownParsers.ts
 │   └── hostPageUtils.ts
 └── styles/              # CSS files
-    └── input-isolation.css
 
 memory/                   # Project memory documents
 ├── arcana-project-memory.md  # Actual project documentation
