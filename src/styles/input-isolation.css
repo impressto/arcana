@@ -198,6 +198,34 @@
   transform: none !important;
 }
 
+/* Exception for concept tooltip buttons - completely unstyled with higher specificity */
+#arcana-app-root button.concept-tooltip-button:not(.btn-primary):not(.btn-secondary),
+#arcana-app-root button.concept-tooltip-button {
+  background: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+  text-align: inherit !important;
+  text-decoration: none !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  filter: none !important;
+  transform: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#arcana-app-root button.concept-tooltip-button:not(.btn-primary):not(.btn-secondary):hover,
+#arcana-app-root button.concept-tooltip-button:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 /* Checkbox and radio inputs */
 #arcana-app-root input[type="checkbox"],
 #arcana-app-root input[type="radio"] {

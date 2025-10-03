@@ -231,9 +231,17 @@ export const ConceptTooltip: React.FC<ConceptTooltipProps> = ({
       {children}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="ml-1 inline-flex items-center justify-center w-4 h-4 text-blue-500 hover:text-blue-700 transition-colors duration-200"
+        className="ml-1 inline-flex items-center justify-center w-4 h-4 text-blue-500 hover:text-blue-700 transition-colors duration-200 concept-tooltip-button"
         title="Learn more about this concept"
         type="button"
+        style={{
+          border: 'none !important',
+          background: 'transparent !important',
+          boxShadow: 'none !important',
+          borderRadius: '0 !important',
+          fontSize: 'inherit !important',
+          fontWeight: 'inherit !important'
+        }}
       >
         <HelpCircle className="w-4 h-4" />
       </button>
