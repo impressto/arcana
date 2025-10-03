@@ -34,8 +34,10 @@ export const parseMemoryMarkdownContent = (content: string) => {
         currentSection = line.replace('## ', '').trim();
       }
       
-      // Parse project info
-      if (currentSection.includes('Project Information')) {
+      // Parse project info (ignore emojis and special characters)
+      const sectionText = currentSection.replace(/[^\w\s]/g, '').trim().toLowerCase();
+      
+      if (sectionText.includes('project information')) {
         if (line.startsWith('**Description:**')) {
           data.projectInfo.description = line.replace('**Description:**', '').trim();
         } else if (line.startsWith('**Team:**')) {
@@ -45,7 +47,7 @@ export const parseMemoryMarkdownContent = (content: string) => {
       }
 
       // Basic glossary parsing
-      if (currentSection.includes('Glossary') && line.startsWith('**') && line.includes(':**')) {
+      if (sectionText.includes('glossary') && line.startsWith('**') && line.includes(':**')) {
         const match = line.match(/\*\*(.+?):\*\*\s*(.+)/);
         if (match) {
           data.glossary.push({
@@ -57,7 +59,7 @@ export const parseMemoryMarkdownContent = (content: string) => {
       }
 
       // Enhanced decision log parsing
-      if (currentSection.includes('Decision Log') && line.startsWith('### ') && !line.includes('No decisions')) {
+      if (sectionText.includes('decision log') && line.startsWith('### ') && !line.includes('No decisions')) {
         const title = line.replace('### ', '').trim();
         let j = i + 1;
         const decision: any = {
@@ -102,7 +104,7 @@ export const parseMemoryMarkdownContent = (content: string) => {
       }
 
       // Enhanced meeting notes parsing
-      if (currentSection.includes('Meeting Notes') && line.startsWith('### ') && !line.includes('No meeting')) {
+      if (sectionText.includes('meeting notes') && line.startsWith('### ') && !line.includes('No meeting')) {
         const titleMatch = line.match(/^### (.+?)(?: - (\d{4}-\d{2}-\d{2}))?$/);
         const title = titleMatch ? titleMatch[1].trim() : line.replace('### ', '').trim();
         const date = titleMatch && titleMatch[2] ? titleMatch[2].trim() : '';
@@ -188,7 +190,7 @@ export const parseMemoryMarkdownContent = (content: string) => {
       }
 
       // Enhanced lessons learned parsing
-      if (currentSection.includes('Lessons Learned') && line.startsWith('### ') && !line.includes('No lessons')) {
+      if (sectionText.includes('lessons learned') && line.startsWith('### ') && !line.includes('No lessons')) {
         const title = line.replace('### ', '').trim();
         let j = i + 1;
         const lesson: any = {
@@ -228,7 +230,7 @@ export const parseMemoryMarkdownContent = (content: string) => {
       }
 
       // Enhanced onboarding notes parsing
-      if (currentSection.includes('Onboarding Notes') && line.startsWith('### ') && !line.includes('New team member')) {
+      if (sectionText.includes('onboarding notes') && line.startsWith('### ') && !line.includes('New team member')) {
         const nameAndRole = line.replace('### ', '').trim();
         const match = nameAndRole.match(/^(.+?)\s*-\s*(.+)$/);
         const newHireName = match ? match[1].trim() : nameAndRole;
@@ -408,31 +410,21 @@ export const parseSpecMarkdownContent = (content: string) => {
         continue;
       }
 
-      // Parse based on current section
-      switch (currentSection) {
-        case '📋 Project Overview':
-          parseSpecProjectOverview(line, data);
-          break;
-        
-        case '🎯 Functional Requirements':
-          parseSpecFunctionalRequirements(line, data, currentSubsection);
-          break;
-        
-        case '⚙️ Technical Requirements':
-          parseSpecTechnicalRequirements(line, data, currentSubsection);
-          break;
-        
-        case '🔌 API Documentation':
-          parseSpecApiDocumentation(line, lines, i, data);
-          break;
-        
-        case '📊 Non-Functional Requirements':
-          parseSpecNonFunctionalRequirements(line, data);
-          break;
-        
-        case '🗓️ Roadmap':
-          parseSpecRoadmap(line, data, currentSubsection);
-          break;
+      // Parse based on current section (ignore emojis, match text content)
+      const sectionText = currentSection.replace(/[^\w\s]/g, '').trim().toLowerCase();
+      
+      if (sectionText.includes('project overview')) {
+        parseSpecProjectOverview(line, data);
+      } else if (sectionText.includes('functional requirements')) {
+        parseSpecFunctionalRequirements(line, data, currentSubsection);
+      } else if (sectionText.includes('technical requirements')) {
+        parseSpecTechnicalRequirements(line, data, currentSubsection);
+      } else if (sectionText.includes('api') && (sectionText.includes('specifications') || sectionText.includes('documentation'))) {
+        parseSpecApiDocumentation(line, lines, i, data);
+      } else if (sectionText.includes('non') && sectionText.includes('functional') && sectionText.includes('requirements')) {
+        parseSpecNonFunctionalRequirements(line, data);
+      } else if (sectionText.includes('roadmap') || sectionText.includes('implementation')) {
+        parseSpecRoadmap(line, data, currentSubsection);
       }
     }
 
@@ -457,6 +449,7 @@ const parseSpecProjectOverview = (line: string, data: SpecDocumentData) => {
 };
 
 const parseSpecFunctionalRequirements = (line: string, data: SpecDocumentData, subsection: string) => {
+  // Handle traditional subsection-based format
   if (subsection.includes('User Stories') && line.startsWith('- ')) {
     data.functionalRequirements.userStories.push(line.replace('- ', '').trim());
   } else if (subsection.includes('Features') && line.startsWith('- **')) {
@@ -473,9 +466,41 @@ const parseSpecFunctionalRequirements = (line: string, data: SpecDocumentData, s
   } else if (subsection.includes('Acceptance Criteria') && line.startsWith('- ')) {
     data.functionalRequirements.acceptanceCriteria.push(line.replace('- ', '').trim());
   }
+  
+  // Handle embedded format within functional requirements section
+  else if (line.startsWith('#### ')) {
+    // Feature defined as a heading (e.g., "#### Environment Build and Setup")
+    const featureName = line.replace('#### ', '').trim();
+    data.functionalRequirements.features.push({
+      id: `feat-${data.functionalRequirements.features.length + 1}`,
+      name: featureName,
+      description: '',
+      priority: 'Medium' as const,
+      status: 'Planned' as const
+    });
+  } else if (line.startsWith('**User Story:**')) {
+    // User story field (e.g., "**User Story:** As a developer, I want...")
+    const userStory = line.replace('**User Story:**', '').trim();
+    data.functionalRequirements.userStories.push(userStory);
+  } else if (line.startsWith('- [ ]') || line.startsWith('- [x]')) {
+    // Acceptance criteria as checkboxes
+    const criteria = line.replace(/^- \[[x ]\]\s*/, '').trim();
+    data.functionalRequirements.acceptanceCriteria.push(criteria);
+  } else if (line.startsWith('**Priority:**')) {
+    // Update the priority of the last added feature
+    const priority = line.replace('**Priority:**', '').trim();
+    const lastFeature = data.functionalRequirements.features[data.functionalRequirements.features.length - 1];
+    if (lastFeature && ['High', 'Medium', 'Low'].includes(priority)) {
+      lastFeature.priority = priority as 'High' | 'Medium' | 'Low';
+    } else if (lastFeature && priority === 'Critical') {
+      // Map Critical to High since Critical is not in the type definition
+      lastFeature.priority = 'High';
+    }
+  }
 };
 
 const parseSpecTechnicalRequirements = (line: string, data: SpecDocumentData, subsection: string) => {
+  // Handle traditional subsection-based format
   if (subsection.includes('Architecture') && line.startsWith('**Architecture:**')) {
     data.technicalRequirements.architecture = line.replace('**Architecture:**', '').trim();
   } else if (subsection.includes('Technologies') && line.startsWith('- ')) {
@@ -484,6 +509,24 @@ const parseSpecTechnicalRequirements = (line: string, data: SpecDocumentData, su
     data.technicalRequirements.infrastructure = line.replace('**Infrastructure:**', '').trim();
   } else if (subsection.includes('Dependencies') && line.startsWith('- ')) {
     data.technicalRequirements.dependencies.push(line.replace('- ', '').trim());
+  }
+  
+  // Handle embedded format within technical requirements section
+  else if (line.startsWith('- **')) {
+    // Technology items formatted as "- **Category:** Description"
+    const techMatch = line.match(/^- \*\*(.+?):\*\*\s*(.+)/);
+    if (techMatch) {
+      data.technicalRequirements.technologies.push(`${techMatch[1]}: ${techMatch[2]}`);
+    }
+  } else if (line.startsWith('**Technology Stack:**')) {
+    // Section header - skip
+    return;
+  } else if (line.startsWith('**System Requirements:**')) {
+    // Section header - skip  
+    return;
+  } else if (line.startsWith('**Development Environment:**')) {
+    // Section header - skip
+    return;
   }
 };
 
@@ -508,9 +551,33 @@ const parseSpecNonFunctionalRequirements = (line: string, data: SpecDocumentData
 };
 
 const parseSpecRoadmap = (line: string, data: SpecDocumentData, subsection: string) => {
-  if (subsection.includes('Phases') || subsection.includes('Phase')) {
+  // Handle subsection-based phases (e.g., "Phase 1: Core Infrastructure - Completed")
+  if (subsection.includes('Phase ')) {
+    // Extract phase info from subsection name
+    const phaseMatch = subsection.match(/Phase\s+(\d+):\s*(.+?)(?:\s*-\s*(.+))?$/);
+    if (phaseMatch && data.roadmap.phases.find(p => p.name === `Phase ${phaseMatch[1]}`) === undefined) {
+      const phase = {
+        name: `Phase ${phaseMatch[1]}`,
+        description: phaseMatch[2].trim(),
+        duration: phaseMatch[3]?.trim() || '',
+        deliverables: [] as string[]
+      };
+      data.roadmap.phases.push(phase);
+    }
+    
+    // Add deliverables or objectives to the current phase
+    if (line.startsWith('**Deliverables:**') || line.startsWith('**Objectives:**')) {
+      // Skip headers
+      return;
+    } else if (line.startsWith('- ')) {
+      const currentPhase = data.roadmap.phases[data.roadmap.phases.length - 1];
+      if (currentPhase) {
+        currentPhase.deliverables.push(line.replace('- ', '').trim());
+      }
+    }
+  } else if (subsection.includes('Phases') || subsection.includes('Phase')) {
+    // Handle traditional phase format: **Phase 1:** Description
     if (line.startsWith('**Phase ')) {
-      // Parse phase: **Phase 1:** Description (Duration: 3 months)
       const phaseMatch = line.match(/\*\*Phase (\d+):\*\*\s*(.+?)(?:\s*\(Duration:\s*(.+?)\))?$/);
       if (phaseMatch) {
         const phase = {
