@@ -73,14 +73,17 @@ export function parseMemoryDocumentMarkdown(markdown: string): ParsedMemoryDocum
           parseGlossary(line, data, currentSubsection);
           break;
         
+        case '🤝 Meeting Notes':
         case '📅 Meeting Notes':
           parseMeetingNotes(line, lines, i, data, currentSubsection);
           break;
         
+        case '💡 Lessons Learned':
         case '🎓 Lessons Learned':
           parseLessonsLearned(line, lines, i, data, currentSubsection);
           break;
         
+        case '👥 Onboarding Notes':
         case '🚀 Onboarding Notes':
           parseOnboardingNotes(line, lines, i, data, currentSubsection);
           break;
@@ -208,8 +211,8 @@ function parseMeetingNotes(line: string, lines: string[], index: number, data: M
     } else if (line.startsWith('**Action Items:**')) {
       // Skip header, action items follow
     } else if (line.match(/^- \[[ x]\]/)) {
-      // Parse action items: - [ ] Task (Assignee - Due: Date)
-      const actionMatch = line.match(/^- \[([x ])\]\s*(.+?)(?:\s*\((.+?)\s*-\s*Due:\s*(.+?)\))?$/);
+      // Parse action items: - [x] Task (Assignee - Date) or - [x] Task (Assignee - Due: Date)
+      const actionMatch = line.match(/^- \[([x ])\]\s*(.+?)(?:\s*\((.+?)\s*-\s*(?:Due:\s*)?(.+?)\))?$/);
       if (actionMatch) {
         const completed = actionMatch[1] === 'x';
         const description = actionMatch[2].trim();

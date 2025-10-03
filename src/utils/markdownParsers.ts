@@ -148,12 +148,29 @@ export const parseMemoryMarkdownContent = (content: string) => {
           } else if (currentMeetingSection === 'agenda' && detailLine.startsWith('- ')) {
             meeting.agenda.push(detailLine.replace('- ', '').trim());
           } else if (currentMeetingSection === 'actions' && detailLine.startsWith('- ')) {
-            meeting.actionItems.push({
-              item: detailLine.replace('- ', '').trim(),
-              assignee: '',
-              dueDate: '',
-              status: 'pending'
-            });
+            // Parse action items: - [x] Task (Assignee - Date) or - [x] Task (Assignee - Due: Date)
+            const actionMatch = detailLine.match(/^- \[([x ])\]\s*(.+?)(?:\s*\((.+?)\s*-\s*(?:Due:\s*)?(.+?)\))?$/);
+            if (actionMatch) {
+              const completed = actionMatch[1] === 'x';
+              const description = actionMatch[2].trim();
+              const assignee = actionMatch[3]?.trim() || '';
+              const dueDate = actionMatch[4]?.trim() || '';
+              
+              meeting.actionItems.push({
+                description,
+                assignee,
+                dueDate,
+                status: completed ? 'complete' : 'open'
+              });
+            } else {
+              // Fallback for simple format
+              meeting.actionItems.push({
+                description: detailLine.replace('- ', '').trim(),
+                assignee: '',
+                dueDate: '',
+                status: 'open'
+              });
+            }
           } else if (collectingNotes && detailLine && !detailLine.startsWith('**')) {
             notesContent += (notesContent ? '\n' : '') + detailLine;
           }

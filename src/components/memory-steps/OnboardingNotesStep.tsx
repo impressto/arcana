@@ -1,13 +1,14 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useWizard } from '../../contexts/WizardContext';
 import { ConceptTooltip } from '../ConceptTooltip';
 import { LearningCard } from '../LearningCard';
 import type { OnboardingNote } from '../../types';
-import { Plus, Users, CheckCircle, AlertCircle, Clock, Target, BookOpen, Trash2 } from 'lucide-react';
+import { Plus, Users, CheckCircle, AlertCircle, Clock, Target, BookOpen, Trash2, Edit } from 'lucide-react';
 
 export function OnboardingNotesStep() {
   const { memoryData, updateMemoryData } = useWizard();
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [filterRole, setFilterRole] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   
@@ -29,17 +30,43 @@ export function OnboardingNotesStep() {
 
   const [newTask, setNewTask] = useState('');
   const [newResource, setNewResource] = useState({ title: '', url: '', type: 'document' });
+  const formRef = useRef<HTMLDivElement>(null);
 
-  const handleAddEntry = () => {
+  // Scroll to form when editing an entry
+  useEffect(() => {
+    if (showAddForm && editingIndex !== null && formRef.current) {
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [showAddForm, editingIndex]);
+
+  const handleSaveEntry = () => {
     if (!newEntry.newHireName.trim() || !newEntry.role.trim()) return;
 
-    const entry: OnboardingNote = {
-      ...newEntry,
-      id: Date.now().toString()
-    };
+    const updatedEntries = [...onboardingEntries];
+    
+    if (editingIndex !== null) {
+      // Editing existing entry
+      updatedEntries[editingIndex] = {
+        ...newEntry,
+        id: updatedEntries[editingIndex].id // Keep the original ID
+      };
+    } else {
+      // Adding new entry
+      const entry: OnboardingNote = {
+        ...newEntry,
+        id: Date.now().toString()
+      };
+      updatedEntries.push(entry);
+    }
 
-    updateMemoryData('onboardingNotes', [...onboardingEntries, entry]);
+    updateMemoryData('onboardingNotes', updatedEntries);
 
+    // Reset form and states
     setNewEntry({
       newHireName: '',
       role: '',
@@ -54,10 +81,21 @@ export function OnboardingNotesStep() {
       notes: ''
     });
     setShowAddForm(false);
+    setEditingIndex(null);
   };
 
   const handleDeleteEntry = (id: string) => {
     updateMemoryData('onboardingNotes', onboardingEntries.filter((entry: OnboardingNote) => entry.id !== id));
+  };
+
+  const handleEditEntry = (index: number) => {
+    const entryToEdit = filteredEntries[index];
+    // Find the original index in the unfiltered array
+    const originalIndex = onboardingEntries.findIndex((entry: OnboardingNote) => entry.id === entryToEdit.id);
+    
+    setNewEntry(entryToEdit);
+    setEditingIndex(originalIndex);
+    setShowAddForm(true);
   };
 
   const handleUpdateEntry = (id: string, updates: Partial<OnboardingNote>) => {
@@ -233,10 +271,12 @@ export function OnboardingNotesStep() {
         </select>
       </div>
 
-      {/* Add Form */}
+      {/* Add/Edit Form */}
       {showAddForm && (
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Hire</h3>
+        <div ref={formRef} className="bg-white p-6 rounded-lg border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            {editingIndex !== null ? 'Edit Team Member' : 'Add New Hire'}
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <input
               type="text"
@@ -370,14 +410,30 @@ export function OnboardingNotesStep() {
 
           <div className="flex gap-2">
             <button
-              onClick={handleAddEntry}
+              onClick={handleSaveEntry}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               disabled={!newEntry.newHireName.trim() || !newEntry.role.trim()}
             >
-              Add Entry
+              {editingIndex !== null ? 'Update Entry' : 'Add Entry'}
             </button>
             <button
-              onClick={() => setShowAddForm(false)}
+              onClick={() => {
+                setShowAddForm(false);
+                setEditingIndex(null);
+                setNewEntry({
+                  newHireName: '',
+                  role: '',
+                  startDate: '',
+                  mentor: '',
+                  department: '',
+                  status: 'in-progress',
+                  onboardingTasks: [],
+                  resources: [],
+                  feedback: '',
+                  completionDate: '',
+                  notes: ''
+                });
+              }}
               className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
             >
               Cancel
@@ -420,12 +476,22 @@ export function OnboardingNotesStep() {
                     <div><strong>Completion:</strong> {entry.completionDate || 'In progress'}</div>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleDeleteEntry(entry.id)}
-                  className="text-red-600 hover:text-red-800 transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEditEntry(filteredEntries.findIndex((e: OnboardingNote) => e.id === entry.id))}
+                    className="text-blue-600 hover:text-blue-800 transition-colors"
+                    title="Edit entry"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteEntry(entry.id)}
+                    className="text-red-600 hover:text-red-800 transition-colors"
+                    title="Delete entry"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
               {/* Tasks */}
