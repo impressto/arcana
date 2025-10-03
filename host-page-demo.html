@@ -21,20 +21,8 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        #arcana-info-box {
-            background: #e3f2fd;
-            border: 1px solid #2196f3;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        #arcana-info-box h3 {
-            color: #1976d2;
-            margin-top: 0;
-        }
-        
+ 
+
         .arcana-container {
             border: 2px dashed #ccc;
             border-radius: 8px;
@@ -49,15 +37,6 @@
         <h1>Host Page - Arcana Documentation Wizard</h1>
         <p>This is a demo of the host page that contains the Arcana app.</p>
         
-        <div id="arcana-info-box">
-            <h3>📋 Documentation Wizard</h3>
-            <p>Welcome! This info box will automatically hide when you start using one of the documentation wizards below.</p>
-            <ul>
-                <li><strong>Spec Wizard:</strong> Create comprehensive project specifications</li>
-                <li><strong>Memory Wizard:</strong> Document project decisions and knowledge</li>
-            </ul>
-            <p><em>This box should disappear when you select a document type and reappear when you reset the wizard.</em></p>
-        </div>
         
         <div class="arcana-container">
             <h3>Arcana App Container</h3>
@@ -79,18 +58,9 @@
                 <li>Build the app: <code>npm run build</code></li>
                 <li>Include the CSS: <code>&lt;link rel="stylesheet" href="dist/assets/index.css"&gt;</code></li>
                 <li>Include the JS: <code>&lt;script src="dist/assets/index.js"&gt;&lt;/script&gt;</code></li>
-                <li>The app will automatically hide the <code>#arcana-info-box</code> when wizards start</li>
             </ol>
         </div>
     </div>
 
-    <script>
-        // Demo script to simulate the behavior
-        console.log('Host page loaded. Element with ID "arcana-info-box" is ready to be controlled by the Arcana app.');
-        
-        // You can test the functionality manually in the browser console:
-        // - To hide: document.getElementById('arcana-info-box').style.display = 'none'
-        // - To show: document.getElementById('arcana-info-box').style.display = 'block'
-    </script>
 </body>
 </html>

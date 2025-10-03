@@ -222,9 +222,9 @@ Arcana is designed to be embeddable in other applications. It includes:
 
 ### Host Page Integration
 
-The app can automatically hide elements on the host page:
-- Elements with ID `arcana-info-box` are hidden when the wizard starts
-- Elements are restored when the wizard is reset or completed
+The app provides utilities to control elements on the host page:
+- Host page elements can be hidden/shown using utility functions
+- Elements are automatically restored when needed
 
 ## 📝 Data Persistence
 

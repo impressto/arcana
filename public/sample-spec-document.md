@@ -259,11 +259,11 @@ isElementVisible(elementId: string): boolean
 
 **Usage Examples:**
 ```javascript
-// Automatically triggered when wizard starts
-hideHostElementWithMemory('arcana-info-box');
+// Hide any host page element
+hideHostElementWithMemory('some-element-id');
 
-// Automatically triggered when wizard resets
-restoreHostElement('arcana-info-box');
+// Restore a previously hidden element
+restoreHostElement('some-element-id');
 ```
 
 ## 📊 Non-Functional Requirements

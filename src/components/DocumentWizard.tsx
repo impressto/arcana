@@ -13,18 +13,11 @@ import { parseSpecMarkdownContent, parseMemoryMarkdownContent } from '../utils/m
 export const DocumentWizard: React.FC = () => {
   const { documentType, currentStep, steps, resetWizard, manualSave, updateSpecData, updateMemoryData, learningMode, setLearningMode } = useWizard();
   const [showImportModal, setShowImportModal] = useState(false);
-  const [showClearConfirmModal, setShowClearConfirmModal] = useState(false);
   const [showSampleConfirmModal, setShowSampleConfirmModal] = useState(false);
   const [showLogoConfirmModal, setShowLogoConfirmModal] = useState(false);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
 
-  const handleClearProgress = () => {
-    setShowClearConfirmModal(true);
-  };
 
-  const handleConfirmClearProgress = () => {
-    resetWizard();
-  };
 
   const handleConfirmLogoReset = () => {
     resetWizard();
@@ -204,14 +197,6 @@ export const DocumentWizard: React.FC = () => {
               >
                 💾 Save
               </button>
-              <button
-                id="clear-progress-button"
-                onClick={handleClearProgress}
-                className="btn-secondary text-sm px-3 py-1.5"
-                title="Clear all progress and start over"
-              >
-                Clear Progress
-              </button>
             </div>
           </div>
         </div>
@@ -230,17 +215,6 @@ export const DocumentWizard: React.FC = () => {
       <ImportModal 
         isOpen={showImportModal} 
         onClose={() => setShowImportModal(false)} 
-      />
-      
-      <ConfirmationModal
-        isOpen={showClearConfirmModal}
-        onClose={() => setShowClearConfirmModal(false)}
-        onConfirm={handleConfirmClearProgress}
-        title="Clear Progress?"
-        message="Are you sure you want to clear all progress? This will delete all your work and start over from the beginning. This action cannot be undone."
-        confirmText="Clear Progress"
-        cancelText="Cancel"
-        type="danger"
       />
       
       <ConfirmationModal

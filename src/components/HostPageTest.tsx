@@ -6,17 +6,19 @@ import { hideHostElement, showHostElement, hostElementExists } from '../utils/ho
  * This can be used for testing the host page utilities
  */
 export const HostPageTest: React.FC = () => {
+  const testElementId = 'host-test-element';
+
   const testHideElement = () => {
-    hideHostElement('arcana-info-box');
+    hideHostElement(testElementId);
   };
 
   const testShowElement = () => {
-    showHostElement('arcana-info-box');
+    showHostElement(testElementId);
   };
 
   const testElementExists = () => {
-    const exists = hostElementExists('arcana-info-box');
-    alert(`Element "arcana-info-box" exists: ${exists}`);
+    const exists = hostElementExists(testElementId);
+    alert(`Element "${testElementId}" exists: ${exists}`);
   };
 
   return (
@@ -44,7 +46,7 @@ export const HostPageTest: React.FC = () => {
         </button>
       </div>
       <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
-        Target element ID: <code>arcana-info-box</code>
+        Target element ID: <code>{testElementId}</code>
       </p>
     </div>
   );
