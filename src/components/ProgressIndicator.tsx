@@ -35,7 +35,9 @@ export const ProgressIndicator: React.FC = () => {
     }
   };
 
-  const canNavigateDirectly = hasContent();
+  // Allow navigation if there's content OR if user has reached the final step (Preview & Export)
+  const hasReachedFinalStep = currentStep >= steps.length - 1;
+  const canNavigateDirectly = hasContent() || hasReachedFinalStep;
 
   const handleStepClick = (stepIndex: number) => {
     if (canNavigateDirectly && stepIndex !== currentStep) {
