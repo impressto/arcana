@@ -147,6 +147,67 @@ const conceptExplanations: Record<string, {
       'Include feedback from both mentors and new hires'
     ],
     whyItMatters: 'Good onboarding documentation ensures consistent team integration and helps AI assistants provide appropriate guidance based on team member experience levels.'
+  },
+  'project-overview': {
+    title: 'Project Overview',
+    explanation: 'The project overview provides high-level context about what you\'re building, why it\'s needed, and who will use it.',
+    aiContext: 'A clear project overview helps AI assistants understand the business context and generate solutions that align with your project goals and constraints.',
+    tips: [
+      'Start with the problem you\'re solving',
+      'Define clear success criteria',
+      'Identify all key stakeholders',
+      'Include timeline and budget constraints'
+    ],
+    whyItMatters: 'Project overview provides the foundational context that guides all technical decisions and helps AI assistants understand the bigger picture.'
+  },
+  'technical-architecture': {
+    title: 'Technical Architecture',
+    explanation: 'Technical architecture defines the system structure, technology choices, and how components interact with each other.',
+    aiContext: 'Architecture documentation helps AI assistants suggest code that follows your patterns, recommend compatible libraries, and maintain consistency across the system.',
+    tips: [
+      'Document architectural patterns and principles',
+      'Specify technology stack and versions',
+      'Include deployment and infrastructure details',
+      'Note any constraints or compliance requirements'
+    ],
+    whyItMatters: 'Clear architecture ensures AI assistants generate code that fits your system design and follows established patterns.'
+  },
+  'non-functional-requirements': {
+    title: 'Non-Functional Requirements',
+    explanation: 'Non-functional requirements specify quality attributes like performance, security, scalability, and usability standards.',
+    aiContext: 'These requirements help AI assistants suggest optimizations, security measures, and implementation approaches that meet your quality standards.',
+    tips: [
+      'Be specific with measurable criteria',
+      'Include performance benchmarks',
+      'Document security and compliance needs',
+      'Consider scalability and availability requirements'
+    ],
+    whyItMatters: 'Non-functional requirements ensure AI assistants help you build systems that perform well and meet quality standards, not just functional needs.'
+  },
+  'roadmap-planning': {
+    title: 'Roadmap Planning',
+    explanation: 'Roadmap planning breaks down project development into phases, milestones, and deliverables with timelines.',
+    aiContext: 'A clear roadmap helps AI assistants prioritize suggestions, recommend incremental approaches, and understand which features to focus on first.',
+    tips: [
+      'Break work into manageable phases',
+      'Define clear milestones and success criteria',
+      'Include dependencies between features',
+      'Plan for testing and deployment phases'
+    ],
+    whyItMatters: 'Roadmaps provide temporal context that helps AI assistants suggest solutions appropriate for your current development phase.'
+  },
+  'api-design': {
+    title: 'API Design',
+    explanation: 'API design defines how different parts of your application communicate, including endpoints, data formats, authentication, and error handling.',
+    aiContext: 'Well-documented APIs enable AI assistants to generate correct integration code, suggest proper error handling, and maintain consistency across your application.',
+    tips: [
+      'Follow REST conventions or GraphQL standards consistently',
+      'Include comprehensive examples for each endpoint',
+      'Document error responses and status codes',
+      'Specify authentication and rate limiting clearly',
+      'Version your APIs to support backward compatibility'
+    ],
+    whyItMatters: 'Clear API specifications reduce development time, prevent integration issues, and help AI assistants generate better code suggestions.'
   }
 };
 

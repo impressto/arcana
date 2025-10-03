@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, X, Edit2 } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 import type { APIEndpoint } from '../../types';
 
 export const ApiStep: React.FC = () => {
@@ -63,11 +65,28 @@ export const ApiStep: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">API Documentation</h2>
+        <ConceptTooltip concept="api-design">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 inline-block">API Documentation</h2>
+        </ConceptTooltip>
         <p className="text-gray-600">
           Document your API endpoints, authentication, and usage guidelines.
         </p>
       </div>
+
+      {/* Learning Mode Content */}
+      <LearningCard
+        type="why-matters"
+        title="Why API Documentation Powers Better Development"
+        content="Clear API docs enable AI assistants to generate correct integration code, suggest proper error handling, and maintain consistency. It's the contract that defines how different parts of your system communicate."
+        className="mb-4"
+      />
+
+      <LearningCard
+        type="tip"
+        title="Pro Tip: Include Real Examples"
+        content="Document actual request/response examples for each endpoint. AI assistants can then generate code that matches your exact data structures and naming conventions."
+        className="mb-4"
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 import type { RoadmapPhase, Milestone } from '../../types';
 
 export const RoadmapStep: React.FC = () => {
@@ -23,11 +25,28 @@ export const RoadmapStep: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Project Roadmap</h2>
+        <ConceptTooltip concept="roadmap-planning">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 inline-block">Project Roadmap</h2>
+        </ConceptTooltip>
         <p className="text-gray-600">
           Define project phases and key milestones.
         </p>
       </div>
+
+      {/* Learning Mode Content */}
+      <LearningCard
+        type="why-matters"
+        title="Why Roadmaps Guide AI Development Decisions"
+        content="A clear roadmap helps AI assistants understand your priorities and suggest solutions that align with your timeline. It provides context for making trade-offs between features and technical debt."
+        className="mb-4"
+      />
+
+      <LearningCard
+        type="tip"
+        title="Pro Tip: Think in Phases, Not Features"
+        content="Structure your roadmap around development phases rather than individual features. This helps AI assistants understand dependencies and suggest incremental approaches to complex problems."
+        className="mb-4"
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Phases */}

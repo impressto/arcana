@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 
 export const TechnicalRequirementsStep: React.FC = () => {
   const { specData, updateSpecData } = useWizard();
@@ -65,11 +67,28 @@ export const TechnicalRequirementsStep: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Technical Requirements</h2>
+        <ConceptTooltip concept="technical-architecture">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 inline-block">Technical Requirements</h2>
+        </ConceptTooltip>
         <p className="text-gray-600">
           Define the technical architecture and technology stack for your project.
         </p>
       </div>
+
+      {/* Learning Mode Content */}
+      <LearningCard
+        type="why-matters"
+        title="Why Technical Architecture Drives Development"
+        content="Clear technical requirements ensure AI assistants suggest code that follows your patterns, uses compatible libraries, and maintains system consistency. It's the blueprint for all development decisions."
+        className="mb-4"
+      />
+
+      <LearningCard
+        type="tip"
+        title="Pro Tip: Document Patterns and Principles"
+        content="Don't just list technologies - explain the architectural patterns and principles you're following. This helps AI assistants understand not just what you're using, but how you're using it."
+        className="mb-4"
+      />
 
       <div className="space-y-6">
         <div>

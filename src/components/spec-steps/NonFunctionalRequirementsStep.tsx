@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 
 export const NonFunctionalRequirementsStep: React.FC = () => {
   const { specData, updateSpecData } = useWizard();
@@ -20,11 +22,28 @@ export const NonFunctionalRequirementsStep: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Non-Functional Requirements</h2>
+        <ConceptTooltip concept="non-functional-requirements">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 inline-block">Non-Functional Requirements</h2>
+        </ConceptTooltip>
         <p className="text-gray-600">
           Define quality attributes and constraints for your system.
         </p>
       </div>
+
+      {/* Learning Mode Content */}
+      <LearningCard
+        type="why-matters"
+        title="Why Quality Attributes Shape System Design"
+        content="Non-functional requirements like performance, security, and scalability determine how AI assistants architect solutions. They're the invisible requirements that make systems production-ready."
+        className="mb-4"
+      />
+
+      <LearningCard
+        type="explanation"
+        title="Understanding Quality vs Features"
+        content="While functional requirements define what your system does, non-functional requirements define how well it does it. They're often the difference between a prototype and a production system."
+        className="mb-4"
+      />
 
       <div className="space-y-6">
         <div>

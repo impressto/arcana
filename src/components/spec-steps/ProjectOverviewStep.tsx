@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
+import { LearningCard } from '../LearningCard';
 
 export const ProjectOverviewStep: React.FC = () => {
   const { specData, updateSpecData } = useWizard();
@@ -45,11 +47,28 @@ export const ProjectOverviewStep: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Project Overview</h2>
+        <ConceptTooltip concept="project-overview">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 inline-block">Project Overview</h2>
+        </ConceptTooltip>
         <p className="text-gray-600">
           Provide basic information about your project to establish context and scope.
         </p>
       </div>
+
+      {/* Learning Mode Content */}
+      <LearningCard
+        type="why-matters"
+        title="Why Project Overview Sets the Foundation"
+        content="A clear project overview provides the business context that guides all technical decisions. It helps AI assistants understand your goals and suggest solutions that align with your project's purpose and constraints."
+        className="mb-4"
+      />
+
+      <LearningCard
+        type="tip"
+        title="Pro Tip: Start with the Problem"
+        content="Begin by clearly defining the problem you're solving. This helps everyone (including AI assistants) understand why the project exists and what success looks like."
+        className="mb-4"
+      />
 
       <div className="grid grid-cols-1 gap-6">
         <div>
