@@ -143,7 +143,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [specData, setSpecData] = useState<SpecDocumentData>(defaultSpecData);
   const [memoryData, setMemoryData] = useState<MemoryDocumentData>(defaultMemoryData);
-  const [learningMode, setLearningMode] = useState(false);
+  const [learningMode, setLearningMode] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Load data from localStorage on component mount
