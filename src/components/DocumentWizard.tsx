@@ -8,6 +8,7 @@ import { MemorySteps } from './memory-steps';
 import { PreviewStep } from './PreviewStep';
 import { ImportModal } from './ImportModal';
 import { ConfirmationModal } from './ConfirmationModal';
+import { TemplatesModal } from './TemplatesModal';
 import { parseSpecMarkdownContent, parseMemoryMarkdownContent } from '../utils/markdownParsers';
 
 export const DocumentWizard: React.FC = () => {
@@ -15,6 +16,7 @@ export const DocumentWizard: React.FC = () => {
   const [showImportModal, setShowImportModal] = useState(false);
   const [showSampleConfirmModal, setShowSampleConfirmModal] = useState(false);
   const [showLogoConfirmModal, setShowLogoConfirmModal] = useState(false);
+  const [showTemplatesModal, setShowTemplatesModal] = useState(false);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
 
 
@@ -189,6 +191,14 @@ export const DocumentWizard: React.FC = () => {
               >
                 📁 Import
               </button>
+              <button
+                id="get-templates-button"
+                onClick={() => setShowTemplatesModal(true)}
+                className="bg-green-100 text-green-700 border border-green-300 rounded-lg hover:bg-green-200 transition-colors duration-200 font-medium text-sm px-3 py-1.5"
+                title="Download templates for AI-assisted documentation"
+              >
+                📋 Get Templates
+              </button>
             </div>
           </div>
         </div>
@@ -229,6 +239,11 @@ export const DocumentWizard: React.FC = () => {
         confirmText="Start Over"
         cancelText="Stay Here"
         type="danger"
+      />
+      
+      <TemplatesModal
+        isOpen={showTemplatesModal}
+        onClose={() => setShowTemplatesModal(false)}
       />
     </div>
   );

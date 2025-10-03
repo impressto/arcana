@@ -10,6 +10,24 @@ A modern React TypeScript application for creating professional specification an
 - **[Project Memory](docs/memory/arcana-project-memory.md)** - Living documentation of decisions, lessons learned, and project knowledge  
 - **[AI Copilot Guide](docs/AI_COPILOT_GUIDE.md)** - GitHub Copilot integration guide with context prompts
 
+## 📋 Templates
+
+Ready-to-use templates for creating Arcana-compatible documentation:
+
+- **[Document Templates](templates/README.md)** - Comprehensive guide to using Arcana templates
+- **[Memory Document Template](templates/memory-document-template.md)** - Template for organizational knowledge documentation
+- **[Spec Document Template](templates/spec-document-template.md)** - Template for technical specification documentation  
+- **[Quick Reference](templates/QUICK-REFERENCE.md)** - Essential formatting rules and AI prompt examples
+
+### 🤖 AI-Friendly Documentation
+
+These templates are specifically designed for AI agent collaboration. Use prompts like:
+- "Update my spec docs with the new API requirements"
+- "Add this decision to my memory document" 
+- "Document this lesson learned in the proper format"
+
+The standardized format ensures your AI-generated updates will import seamlessly into Arcana.
+
 ## ✨ Features
 
 ### Document Types
