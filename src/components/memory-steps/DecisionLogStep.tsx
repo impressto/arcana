@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Edit, Trash2, Calendar, FileText, Lightbulb } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
 import type { DecisionEntry } from '../../types';
 
 export const DecisionLogStep: React.FC = () => {
@@ -109,7 +110,9 @@ export const DecisionLogStep: React.FC = () => {
   return (
     <div id="decision-log-step" className="space-y-6">
       <div id="decision-log-header">
-        <h2 id="decision-log-title" className="text-2xl font-bold text-gray-900 mb-2">Decision Log</h2>
+        <ConceptTooltip concept="decision-log">
+          <h2 id="decision-log-title" className="text-2xl font-bold text-gray-900 mb-2 inline-block">Decision Log</h2>
+        </ConceptTooltip>
         <p id="decision-log-description" className="text-gray-600">
           Document important project decisions, their rationale, and impact on the project.
         </p>

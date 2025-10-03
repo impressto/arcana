@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, X, Edit2 } from 'lucide-react';
 import { useWizard } from '../../contexts/WizardContext';
+import { ConceptTooltip } from '../ConceptTooltip';
 import type { Feature } from '../../types';
 
 export const FunctionalRequirementsStep: React.FC = () => {
@@ -117,7 +118,9 @@ export const FunctionalRequirementsStep: React.FC = () => {
 
       {/* User Stories */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-800">User Stories</h3>
+        <ConceptTooltip concept="user-stories">
+          <h3 className="text-lg font-semibold text-gray-800 inline-block">User Stories</h3>
+        </ConceptTooltip>
         <div className="space-y-3">
           <div className="flex space-x-2">
             <input

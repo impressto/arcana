@@ -11,7 +11,7 @@ import { ConfirmationModal } from './ConfirmationModal';
 import { parseSpecMarkdownContent, parseMemoryMarkdownContent } from '../utils/markdownParsers';
 
 export const DocumentWizard: React.FC = () => {
-  const { documentType, currentStep, steps, resetWizard, manualSave, updateSpecData, updateMemoryData } = useWizard();
+  const { documentType, currentStep, steps, resetWizard, manualSave, updateSpecData, updateMemoryData, learningMode, setLearningMode } = useWizard();
   const [showImportModal, setShowImportModal] = useState(false);
   const [showClearConfirmModal, setShowClearConfirmModal] = useState(false);
   const [showSampleConfirmModal, setShowSampleConfirmModal] = useState(false);
@@ -165,6 +165,18 @@ export const DocumentWizard: React.FC = () => {
               <p id="wizard-subtitle" className="text-gray-600 text-left">
                 Create professional {documentType === 'spec' ? 'specification' : 'memory'} documentation
               </p>
+              <div id="learning-mode-toggle" className="mt-3">
+                <label className="flex items-center space-x-2 text-sm cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={learningMode}
+                    onChange={(e) => setLearningMode(e.target.checked)}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <span className="text-gray-700 font-medium">Learning Mode</span>
+                  <span className="text-gray-500 text-xs">Show explanations and tips</span>
+                </label>
+              </div>
             </div>
             <div id="header-actions" className="flex gap-2 ml-4 flex-shrink-0">
               <button

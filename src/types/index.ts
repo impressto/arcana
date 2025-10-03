@@ -167,6 +167,7 @@ export interface WizardContextType {
   steps: WizardStep[];
   specData: SpecDocumentData;
   memoryData: MemoryDocumentData;
+  learningMode: boolean;
   setDocumentType: (type: DocumentType) => void;
   setCurrentStep: (step: number) => void;
   updateSpecData: (section: keyof SpecDocumentData, data: any) => void;
@@ -174,4 +175,5 @@ export interface WizardContextType {
   markStepCompleted: (stepIndex: number) => void;
   resetWizard: () => void;
   manualSave: () => void;
+  setLearningMode: (enabled: boolean) => void;
 }

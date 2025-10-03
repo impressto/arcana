@@ -144,6 +144,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [specData, setSpecData] = useState<SpecDocumentData>(defaultSpecData);
   const [memoryData, setMemoryData] = useState<MemoryDocumentData>(defaultMemoryData);
+  const [learningMode, setLearningMode] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Load data from localStorage on component mount
@@ -152,6 +153,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     if (savedData) {
       if (savedData.documentType) setDocumentType(savedData.documentType);
       if (savedData.currentStep !== undefined) setCurrentStep(savedData.currentStep);
+      if (savedData.learningMode !== undefined) setLearningMode(savedData.learningMode);
       if (savedData.specData) {
         setSpecData(prev => ({
           ...prev,
@@ -184,10 +186,11 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
         currentStep,
         specData,
         memoryData,
+        learningMode,
       };
       saveToStorage(dataToSave, false); // Don't show notification for automatic saves
     }
-  }, [documentType, currentStep, specData, memoryData, isLoaded]);
+  }, [documentType, currentStep, specData, memoryData, learningMode, isLoaded]);
 
   const steps = documentType === 'spec' ? specSteps : memorySteps;
 
@@ -249,6 +252,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     steps,
     specData,
     memoryData,
+    learningMode,
     setDocumentType: handleSetDocumentType,
     setCurrentStep,
     updateSpecData,
@@ -256,6 +260,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     markStepCompleted,
     resetWizard,
     manualSave,
+    setLearningMode,
   };
 
   return (

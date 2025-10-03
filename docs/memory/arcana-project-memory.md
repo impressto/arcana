@@ -110,7 +110,16 @@
 **Status:** Implemented  
 **Impact:** Prevents accidental data loss and maintains consistent confirmation patterns across entire application  
 **Stakeholders:** Development Team, UX Design, End Users  
-**Implementation:** Added showLogoConfirmModal state management, handleConfirmLogoReset handler, updated logo onClick to show confirmation modal with "danger" type styling and appropriate messaging  
+**Implementation:** Added showLogoConfirmModal state management, handleConfirmLogoReset handler, updated logo onClick to show confirmation modal with "danger" type styling and appropriate messaging
+
+### Learning Mode Toggle Implementation
+**Date:** October 2, 2025  
+**Description:** Add educational learning mode toggle to help developers and students understand spec and memory documentation concepts  
+**Rationale:** Transform Arcana from documentation tool into educational platform by providing contextual learning about AI-assisted development practices  
+**Status:** Implemented  
+**Impact:** Enables educational use case - users can learn why documentation matters for AI assistance while creating real documents  
+**Stakeholders:** Development Team, Educators, Students, New Developers  
+**Implementation:** Added learningMode state to WizardContext with localStorage persistence, created ConceptTooltip component with educational explanations about decision logs, user stories, and AI context benefits, integrated learning mode toggle in DocumentWizard header  
 
 ### Technology Stack Selection
 **Date:** 2024 (Initial Project)  
@@ -146,6 +155,9 @@
 **useRef Hook:** React hook for creating persistent references to DOM elements across component re-renders  
 **Defensive Programming:** Coding practice including comprehensive error handling, input validation, and null checks to prevent runtime errors  
 **UX Consistency:** Design principle ensuring similar actions behave similarly across interface to meet user expectations and prevent errors  
+**Learning Mode:** Educational feature toggle that shows contextual explanations and tips about documentation concepts and AI assistance benefits  
+**ConceptTooltip:** Educational UI component that provides contextual explanations about documentation concepts when learning mode is enabled  
+**Progressive Disclosure:** UX pattern revealing information gradually based on user needs and context rather than overwhelming with all details upfront  
 
 ## 🤝 Meeting Notes
 
@@ -297,7 +309,15 @@ Identified that Tailwind utility classes weren't working properly with custom CS
 **Situation:** AI context builder displaying "[object Object]" instead of readable content for features and API endpoints  
 **Lesson:** When processing complex objects, always extract specific properties instead of converting entire object to string  
 **Application:** Fixed AI context builder to display feature.name, feature.description, endpoint.method, endpoint.path etc. instead of raw objects  
-**Impact:** Medium - Better AI context generation and improved developer debugging experience  
+**Impact:** Medium - Better AI context generation and improved developer debugging experience
+
+### Educational Features Require Contextual Integration
+**Date:** October 2, 2025  
+**Category:** Educational UX Design  
+**Situation:** Adding learning features without overwhelming production users or disrupting workflow  
+**Lesson:** Educational enhancements should be opt-in and contextual - provide learning value when requested without interfering with normal usage  
+**Application:** Implemented learning mode toggle with ConceptTooltip component that only shows explanations when learning mode is enabled, allowing same interface to serve both educational and production use cases  
+**Impact:** High - Enables dual-purpose application serving both learning and production needs without compromising either experience  
 
 ## 👥 Onboarding Notes
 
