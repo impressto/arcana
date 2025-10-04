@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, BookOpen } from 'lucide-react';
+import { FileText, BookOpen, Bot } from 'lucide-react';
 import { useWizard } from '../contexts/WizardContext';
 import { LearningCard } from './LearningCard';
 import type { DocumentType } from '../types';
@@ -146,14 +146,222 @@ export const DocumentTypeSelector: React.FC = () => {
           />
         </div>
 
-        <div id="document-types-grid" className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {documentTypes.map((docType) => {
+        <div id="document-types-container" className="max-w-4xl mx-auto">
+          {/* Mobile: Stack vertically with robot between */}
+          <div className="lg:hidden space-y-8">
+            {/* Spec Document Card */}
+            {documentTypes.filter(doc => doc.type === 'spec').map((docType) => {
+              const IconComponent = docType.icon;
+              return (
+                <div
+                  key={docType.type}
+                  id={`${docType.type}-document-card`}
+                  className="card hover:shadow-lg transition-shadow duration-300 cursor-pointer group flex flex-col"
+                  onClick={() => setDocumentType(docType.type)}
+                >
+                  <div id={`${docType.type}-card-header`} className="text-center mb-6">
+                    <div 
+                      id={`${docType.type}-icon-container`} 
+                      className={`inline-flex items-center justify-center w-16 h-16 rounded-lg mb-4 transition-colors duration-200 ${
+                        docType.type === 'memory' 
+                          ? 'bg-green-100 group-hover:bg-green-200' 
+                          : 'bg-primary-100 group-hover:bg-primary-200'
+                      }`}
+                    >
+                      <IconComponent 
+                        id={`${docType.type}-icon`} 
+                        className={`w-8 h-8 ${
+                          docType.type === 'memory' 
+                            ? 'text-green-600' 
+                            : 'text-primary-600'
+                        }`} 
+                      />
+                    </div>
+                    <h3 id={`${docType.type}-title`} className="text-2xl font-semibold text-gray-900 mb-2">
+                      {docType.title}
+                    </h3>
+                    <p id={`${docType.type}-description`} className="text-gray-600">
+                      {docType.description}
+                    </p>
+                  </div>
+
+                  <div id={`${docType.type}-features-section`} className="space-y-3 flex-1">
+                    <h4 id={`${docType.type}-features-title`} className="font-medium text-gray-900 text-sm uppercase tracking-wide">
+                      Includes:
+                    </h4>
+                    <ul id={`${docType.type}-features-list`} className="space-y-2">
+                      {docType.features.map((feature, index) => (
+                        <li key={index} id={`${docType.type}-feature-${index}`} className="flex items-center text-gray-600">
+                          <div className="w-1.5 h-1.5 bg-primary-500 rounded-full mr-3 flex-shrink-0" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div id={`${docType.type}-action-section`} className="mt-8">
+                    <button id={`${docType.type}-start-button`} className="btn-primary w-full group-hover:bg-primary-700">
+                      Start {docType.title}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+            
+            {/* AI Robot Icon */}
+            <div id="ai-agent-section" className="flex justify-center items-center">
+              <div className="flex flex-col items-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-lg mb-3">
+                  <Bot className="w-8 h-8 text-purple-600" />
+                </div>
+                <p className="text-sm text-gray-600 text-center max-w-32">
+                  AI Agent Uses Both
+                </p>
+              </div>
+            </div>
+            
+            {/* Memory Document Card */}
+            {documentTypes.filter(doc => doc.type === 'memory').map((docType) => {
+              const IconComponent = docType.icon;
+              return (
+                <div
+                  key={docType.type}
+                  id={`${docType.type}-document-card`}
+                  className="card hover:shadow-lg transition-shadow duration-300 cursor-pointer group flex flex-col"
+                  onClick={() => setDocumentType(docType.type)}
+                >
+                  <div id={`${docType.type}-card-header`} className="text-center mb-6">
+                    <div 
+                      id={`${docType.type}-icon-container`} 
+                      className={`inline-flex items-center justify-center w-16 h-16 rounded-lg mb-4 transition-colors duration-200 ${
+                        docType.type === 'memory' 
+                          ? 'bg-green-100 group-hover:bg-green-200' 
+                          : 'bg-primary-100 group-hover:bg-primary-200'
+                      }`}
+                    >
+                      <IconComponent 
+                        id={`${docType.type}-icon`} 
+                        className={`w-8 h-8 ${
+                          docType.type === 'memory' 
+                            ? 'text-green-600' 
+                            : 'text-primary-600'
+                        }`} 
+                      />
+                    </div>
+                    <h3 id={`${docType.type}-title`} className="text-2xl font-semibold text-gray-900 mb-2">
+                      {docType.title}
+                    </h3>
+                    <p id={`${docType.type}-description`} className="text-gray-600">
+                      {docType.description}
+                    </p>
+                  </div>
+
+                  <div id={`${docType.type}-features-section`} className="space-y-3 flex-1">
+                    <h4 id={`${docType.type}-features-title`} className="font-medium text-gray-900 text-sm uppercase tracking-wide">
+                      Includes:
+                    </h4>
+                    <ul id={`${docType.type}-features-list`} className="space-y-2">
+                      {docType.features.map((feature, index) => (
+                        <li key={index} id={`${docType.type}-feature-${index}`} className="flex items-center text-gray-600">
+                          <div className="w-1.5 h-1.5 bg-primary-500 rounded-full mr-3 flex-shrink-0" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div id={`${docType.type}-action-section`} className="mt-8">
+                    <button id={`${docType.type}-start-button`} className="btn-primary w-full group-hover:bg-primary-700">
+                      Start {docType.title}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          {/* Desktop: 3-column layout */}
+          <div className="hidden lg:grid lg:gap-8 lg:items-stretch" style={{ gridTemplateColumns: '1fr auto 1fr' }}>
+            {/* Spec Document Card */}
+            {documentTypes.filter(doc => doc.type === 'spec').map((docType) => {
             const IconComponent = docType.icon;
             return (
               <div
                 key={docType.type}
                 id={`${docType.type}-document-card`}
-                className="card hover:shadow-lg transition-shadow duration-300 cursor-pointer group flex flex-col"
+                className="card hover:shadow-lg transition-shadow duration-300 cursor-pointer group flex flex-col h-full"
+                onClick={() => setDocumentType(docType.type)}
+              >
+                <div id={`${docType.type}-card-header`} className="text-center mb-6">
+                  <div 
+                    id={`${docType.type}-icon-container`} 
+                    className={`inline-flex items-center justify-center w-16 h-16 rounded-lg mb-4 transition-colors duration-200 ${
+                      docType.type === 'memory' 
+                        ? 'bg-green-100 group-hover:bg-green-200' 
+                        : 'bg-primary-100 group-hover:bg-primary-200'
+                    }`}
+                  >
+                    <IconComponent 
+                      id={`${docType.type}-icon`} 
+                      className={`w-8 h-8 ${
+                        docType.type === 'memory' 
+                          ? 'text-green-600' 
+                          : 'text-primary-600'
+                      }`} 
+                    />
+                  </div>
+                  <h3 id={`${docType.type}-title`} className="text-2xl font-semibold text-gray-900 mb-2">
+                    {docType.title}
+                  </h3>
+                  <p id={`${docType.type}-description`} className="text-gray-600">
+                    {docType.description}
+                  </p>
+                </div>
+
+                <div id={`${docType.type}-features-section`} className="space-y-3 flex-1">
+                  <h4 id={`${docType.type}-features-title`} className="font-medium text-gray-900 text-sm uppercase tracking-wide">
+                    Includes:
+                  </h4>
+                  <ul id={`${docType.type}-features-list`} className="space-y-2">
+                    {docType.features.map((feature, index) => (
+                      <li key={index} id={`${docType.type}-feature-${index}`} className="flex items-center text-gray-600">
+                        <div className="w-1.5 h-1.5 bg-primary-500 rounded-full mr-3 flex-shrink-0" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div id={`${docType.type}-action-section`} className="mt-8">
+                  <button id={`${docType.type}-start-button`} className="btn-primary w-full group-hover:bg-primary-700">
+                    Start {docType.title}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+          
+          {/* AI Robot Icon - Center Column */}
+          <div id="ai-agent-section" className="flex justify-center items-center">
+            <div className="flex flex-col items-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl mb-4 shadow-sm">
+                <Bot className="w-10 h-10 text-purple-600" />
+              </div>
+              <h4 className="text-lg font-semibold text-gray-800 mb-2">AI Agent</h4>
+              <p className="text-sm text-gray-600 text-center max-w-40">
+                Uses both document types for complete project understanding
+              </p>
+            </div>
+          </div>
+          
+          {/* Memory Document Card - Right Column */}
+          {documentTypes.filter(doc => doc.type === 'memory').map((docType) => {
+            const IconComponent = docType.icon;
+            return (
+              <div
+                key={docType.type}
+                id={`${docType.type}-document-card`}
+                className="card hover:shadow-lg transition-shadow duration-300 cursor-pointer group flex flex-col h-full"
                 onClick={() => setDocumentType(docType.type)}
               >
                 <div id={`${docType.type}-card-header`} className="text-center mb-6">
@@ -205,7 +413,8 @@ export const DocumentTypeSelector: React.FC = () => {
             );
           })}
         </div>
-
+        </div>
+        
         <div id="selector-footer" className="text-center mt-12">
           <p id="footer-note" className="text-sm text-gray-500 mb-3">
             Both document types support markdown export and professional formatting

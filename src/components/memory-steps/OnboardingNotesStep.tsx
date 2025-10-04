@@ -463,7 +463,7 @@ export function OnboardingNotesStep() {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="text-lg font-semibold text-gray-900">{entry.newHireName}</h3>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(entry.status)}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium border flex items-center ${getStatusColor(entry.status)}`}>
                       {getStatusIcon(entry.status)}
                       <span className="ml-1">{entry.status.replace('-', ' ')}</span>
                     </span>
