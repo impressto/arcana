@@ -60,10 +60,33 @@ export const DocumentTypeSelector: React.FC = () => {
               className="h-12 sm:h-14 w-auto transition-transform duration-200 hover:scale-105"
             />
           </div>
-          <p id="selector-description" className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p id="selector-description" className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
             Choose the type of documentation you want to create. Arcana will guide you through 
             each step to create professional, comprehensive documentation.
           </p>
+          
+          {/* Explanatory Image Section */}
+          <div id="concept-explanation" className="max-w-4xl mx-auto mb-8">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+              <div className="p-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-3 text-center">
+                  Understanding Document Types for AI Agents
+                </h3>
+                <div className="relative">
+                  <img 
+                    src={import.meta.env.VITE_CONCEPT_IMAGE_URL || "/spec-mem-docs.jpg"} 
+                    alt="Specification vs Memory Documents - A visual guide showing how different document types serve AI agents in project development and knowledge management"
+                    className="w-full h-auto rounded-lg shadow-sm"
+                    loading="lazy"
+                  />
+                </div>
+                <p className="text-sm text-gray-600 mt-3 text-center">
+                  <strong>Spec Documents</strong> define what to build, while <strong>Memory Documents</strong> capture what was learned. 
+                  Both are essential for effective AI-assisted development.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {hasSavedProgress && (

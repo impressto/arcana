@@ -52,7 +52,7 @@ export const PreviewStep: React.FC = () => {
       <div id="preview-header">
         <h2 id="preview-title" className="text-2xl font-bold text-gray-900 mb-2">Preview & Export</h2>
         <p id="preview-description" className="text-gray-600">
-          Review your document and export it as Markdown.
+          Review your document and export it as markdown you can easily add to your project.
         </p>
       </div>
 
