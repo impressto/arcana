@@ -157,8 +157,22 @@ export const DocumentTypeSelector: React.FC = () => {
                 onClick={() => setDocumentType(docType.type)}
               >
                 <div id={`${docType.type}-card-header`} className="text-center mb-6">
-                  <div id={`${docType.type}-icon-container`} className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-lg mb-4 group-hover:bg-primary-200 transition-colors duration-200">
-                    <IconComponent id={`${docType.type}-icon`} className="w-8 h-8 text-primary-600" />
+                  <div 
+                    id={`${docType.type}-icon-container`} 
+                    className={`inline-flex items-center justify-center w-16 h-16 rounded-lg mb-4 transition-colors duration-200 ${
+                      docType.type === 'memory' 
+                        ? 'bg-green-100 group-hover:bg-green-200' 
+                        : 'bg-primary-100 group-hover:bg-primary-200'
+                    }`}
+                  >
+                    <IconComponent 
+                      id={`${docType.type}-icon`} 
+                      className={`w-8 h-8 ${
+                        docType.type === 'memory' 
+                          ? 'text-green-600' 
+                          : 'text-primary-600'
+                      }`} 
+                    />
                   </div>
                   <h3 id={`${docType.type}-title`} className="text-2xl font-semibold text-gray-900 mb-2">
                     {docType.title}
@@ -193,11 +207,19 @@ export const DocumentTypeSelector: React.FC = () => {
         </div>
 
         <div id="selector-footer" className="text-center mt-12">
-          <p id="footer-note" className="text-sm text-gray-500">
+          <p id="footer-note" className="text-sm text-gray-500 mb-3">
             Both document types support markdown export and professional formatting
           </p>
-             <p>
-              Like Arcana? Get the code here: <a href="https://github.com/impressto/arcana">https://github.com/impressto/arcana</a>
+          <p className="text-sm text-gray-600">
+            Like Arcana? 
+            <a 
+              href="https://github.com/impressto/arcana" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="ml-1 text-primary-600 hover:text-primary-700 hover:underline font-medium transition-colors duration-200"
+            >
+              Get the code here
+            </a>
           </p>
         </div>
       </div>

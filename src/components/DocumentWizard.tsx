@@ -212,6 +212,23 @@ export const DocumentWizard: React.FC = () => {
         </div>
 
         <StepNavigation />
+        
+        {/* Footer */}
+        <footer className="mt-12 py-6 border-t border-gray-200 bg-gray-50 rounded-lg">
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              Like Arcana? 
+              <a 
+                href="https://github.com/impressto/arcana" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="ml-1 text-primary-600 hover:text-primary-700 hover:underline font-medium transition-colors duration-200"
+              >
+                Get the code here
+              </a>
+            </p>
+          </div>
+        </footer>
       </div>
       
       <ImportModal 
