@@ -25,6 +25,67 @@
 
 ## 📋 Decision Log
 
+### Comprehensive Wizard Section Updates for Document Preservation
+**Date:** October 5, 2025  
+**Description:** Extend document preservation system to handle wizard edits for ALL specification and memory document sections  
+**Rationale:** Initial fix only handled project overview section edits. Users needed complete wizard functionality across all sections including functional requirements, technical requirements, APIs, roadmap, decision logs, glossary, etc. This ensures the document preservation system works comprehensively with all wizard features.  
+**Status:** Implemented  
+**Impact:** Critical - Complete wizard functionality for imported documents across all sections, comprehensive edit preservation  
+**Stakeholders:** All users importing existing documents, Technical Writers, Project Managers, Development Teams  
+**Implementation:** Comprehensive enhancement of document preservation system with section-specific update methods:
+
+**Specification Document Sections:**
+- `updateFunctionalRequirementsInContent()` - Updates user stories, features, acceptance criteria
+- `updateTechnicalRequirementsInContent()` - Updates architecture, infrastructure, technologies, dependencies
+- `updateApisInContent()` - Updates authentication, rate limits, API endpoints
+- `updateNonFunctionalRequirementsInContent()` - Updates performance, security, scalability, availability
+- `updateRoadmapInContent()` - Updates project phases and milestones
+
+**Memory Document Sections:**
+- `updateDecisionLogInContent()` - Updates decision entries with full metadata
+- `updateGlossaryInContent()` - Updates term definitions
+- `updateMeetingNotesInContent()` - Updates meeting records and action items
+- `updateLessonsLearnedInContent()` - Updates lesson entries with categories and applications
+- `updateOnboardingNotesInContent()` - Updates onboarding guidance and resources
+
+**Helper Methods for Complex Content:**
+- `updateUserStoriesInSection()`, `updateFeaturesInSection()`, `updateAcceptanceCriteriaInSection()`
+- `updateTechnologiesInSection()`, `updateDependenciesInSection()`, `updateEndpointsInSection()`
+- `updatePhasesInSection()`, `updateMilestonesInSection()` for roadmap content
+
+**Technical Details:**
+- Enhanced `/src/utils/documentPreservationSystem.ts` with 15+ new section-specific update methods
+- Each method preserves original document formatting while merging wizard changes
+- Intelligent content detection and replacement without affecting unparsed sections
+- Maintains document structure integrity across all wizard operations
+- Full round-trip editing capability for imported documents
+
+### Initial Wizard Edits Fix for Project Overview
+**Date:** October 5, 2025  
+**Description:** Fix critical issue where wizard form edits on imported documents were not appearing in the final exported document  
+**Rationale:** Users reported that after importing a document and editing fields (like Project Description) in the wizard, their changes did not appear in the Preview & Export page. The document preservation system was prioritizing original content over updated wizard data, making the wizard appear non-functional for imported documents.  
+**Status:** Superseded by comprehensive section updates  
+**Impact:** Critical - Initial foundation for wizard functionality with imported documents  
+**Stakeholders:** All users importing existing documents, Technical Writers, Project Managers  
+**Implementation:** Enhanced `DocumentPreservationSystem.reconstructWithPreservation()` to intelligently merge wizard changes with preserved content:
+- Created `mergeSpecWizardChanges()` and `mergeMemoryWizardChanges()` methods to handle document-specific merging
+- Implemented `updateProjectOverviewInContent()` and `updateProjectInfoInContent()` to update specific sections
+- Added `updateFieldInSection()` utility to update individual fields while preserving document formatting
+- Modified fallback behavior to use full reconstruction instead of returning unchanged original content
+
+### Start Over Button Preserved Document Clearing Fix
+**Date:** October 5, 2025  
+**Description:** Fix bug where "Start Over" button was not clearing preserved document state from imported documents  
+**Rationale:** Users reported that clicking "Start Over" was not fully resetting the wizard - imported document data was persisting even after reset. This created confusion and prevented users from truly starting fresh.  
+**Status:** Implemented  
+**Impact:** High - Ensures proper data clearing, prevents user confusion, maintains expected behavior  
+**Stakeholders:** All users, especially those working with imported documents  
+**Implementation:** Updated `resetWizard()` function in WizardContext to include `setPreservedDocument(null)` and also clear preserved document when switching document types in `handleSetDocumentType()`. This ensures complete state clearing for both "Start Over" and document type changes.  
+**Technical Details:**
+- Modified `/src/contexts/WizardContext.tsx` resetWizard function to clear preservedDocument state
+- Added preservedDocument clearing to handleSetDocumentType for consistency
+- Maintained preservedDocument in navigateToDocumentSelection to allow users to return to their work
+
 ### Living Document Notices for Sample and Template Files
 **Date:** October 5, 2025  
 **Description:** Add AI Coding Agent notices to all sample documents and templates to encourage living document best practices  

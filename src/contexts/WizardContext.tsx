@@ -272,6 +272,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     setCurrentStep(0);
     setSpecData(defaultSpecData);
     setMemoryData(defaultMemoryData);
+    setPreservedDocument(null); // Clear preserved document state
     clearStorage();
     
     if ((window as any).showToast) {
@@ -289,6 +290,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
   const handleSetDocumentType = (type: DocumentType) => {
     setDocumentType(type);
     setCurrentStep(0);
+    setPreservedDocument(null); // Clear preserved document when switching types
     updateHashUrl(type, 0);
   };
 

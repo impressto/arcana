@@ -107,28 +107,26 @@ export class DocumentPreservationSystem {
    */
   private static reconstructWithPreservation(preservedDoc: PreservedDocument): string {
     try {
-      // Use a hybrid approach: preserve original structure but allow selective updates
+      // Use a hybrid approach: preserve original structure but merge updated wizard data
       let content = preservedDoc.originalContent;
       const data = preservedDoc.parsedData;
       
-      // If we have parsed data changes, we need to merge them back intelligently
-      // For the first iteration, let's focus on preserving everything
-      // and just ensuring the project name is updated if changed
-      
-      if (preservedDoc.metadata.documentType === 'spec' && data.projectOverview?.name) {
-        content = this.updateProjectNameInContent(content, data.projectOverview.name, 'spec');
-      } else if (preservedDoc.metadata.documentType === 'memory' && data.projectInfo?.name) {
-        content = this.updateProjectNameInContent(content, data.projectInfo.name, 'memory');
+      if (preservedDoc.metadata.documentType === 'spec') {
+        content = this.mergeSpecWizardChanges(content, data);
+      } else if (preservedDoc.metadata.documentType === 'memory') {
+        content = this.mergeMemoryWizardChanges(content, data);
       }
-      
-      // TODO: In future iterations, we can add more sophisticated merging
-      // For example, updating specific sections that were parsed while preserving others
       
       return content;
       
     } catch (error) {
-      console.warn('Error in preservation reconstruction, falling back to original:', error);
-      return preservedDoc.originalContent;
+      console.warn('Error in preservation reconstruction, falling back to full reconstruction:', error);
+      // Fallback to full reconstruction instead of returning unchanged original
+      if (preservedDoc.metadata.documentType === 'spec') {
+        return this.reconstructSpecDocument(preservedDoc);
+      } else {
+        return this.reconstructMemoryDocument(preservedDoc);
+      }
     }
   }
 
@@ -161,6 +159,727 @@ export class DocumentPreservationSystem {
     }
     
     return content;
+  }
+
+  /**
+   * Merge wizard changes for spec documents while preserving unparsed sections
+   */
+  private static mergeSpecWizardChanges(content: string, data: SpecDocumentData): string {
+    let updatedContent = content;
+    
+    // Update project name in title
+    if (data.projectOverview?.name) {
+      updatedContent = this.updateProjectNameInContent(updatedContent, data.projectOverview.name, 'spec');
+    }
+    
+    // Update project overview section
+    if (data.projectOverview) {
+      updatedContent = this.updateProjectOverviewInContent(updatedContent, data.projectOverview);
+    }
+    
+    // Update functional requirements section
+    if (data.functionalRequirements) {
+      updatedContent = this.updateFunctionalRequirementsInContent(updatedContent, data.functionalRequirements);
+    }
+    
+    // Update technical requirements section
+    if (data.technicalRequirements) {
+      updatedContent = this.updateTechnicalRequirementsInContent(updatedContent, data.technicalRequirements);
+    }
+    
+    // Update API section
+    if (data.apis) {
+      updatedContent = this.updateApisInContent(updatedContent, data.apis);
+    }
+    
+    // Update non-functional requirements section
+    if (data.nonFunctionalRequirements) {
+      updatedContent = this.updateNonFunctionalRequirementsInContent(updatedContent, data.nonFunctionalRequirements);
+    }
+    
+    // Update roadmap section
+    if (data.roadmap) {
+      updatedContent = this.updateRoadmapInContent(updatedContent, data.roadmap);
+    }
+    
+    return updatedContent;
+  }
+
+  /**
+   * Merge wizard changes for memory documents while preserving unparsed sections
+   */
+  private static mergeMemoryWizardChanges(content: string, data: any): string {
+    let updatedContent = content;
+    
+    // Update project name in title
+    if (data.projectInfo?.name) {
+      updatedContent = this.updateProjectNameInContent(updatedContent, data.projectInfo.name, 'memory');
+    }
+    
+    // Update project info section
+    if (data.projectInfo) {
+      updatedContent = this.updateProjectInfoInContent(updatedContent, data.projectInfo);
+    }
+    
+    // Update decision log section
+    if (data.decisionLog && data.decisionLog.length > 0) {
+      updatedContent = this.updateDecisionLogInContent(updatedContent, data.decisionLog);
+    }
+    
+    // Update glossary section
+    if (data.glossary && data.glossary.length > 0) {
+      updatedContent = this.updateGlossaryInContent(updatedContent, data.glossary);
+    }
+    
+    // Update meeting notes section
+    if (data.meetingNotes && data.meetingNotes.length > 0) {
+      updatedContent = this.updateMeetingNotesInContent(updatedContent, data.meetingNotes);
+    }
+    
+    // Update lessons learned section
+    if (data.lessonsLearned && data.lessonsLearned.length > 0) {
+      updatedContent = this.updateLessonsLearnedInContent(updatedContent, data.lessonsLearned);
+    }
+    
+    // Update onboarding notes section
+    if (data.onboardingNotes && data.onboardingNotes.length > 0) {
+      updatedContent = this.updateOnboardingNotesInContent(updatedContent, data.onboardingNotes);
+    }
+    
+    return updatedContent;
+  }
+
+  /**
+   * Update project overview section content while preserving format
+   */
+  private static updateProjectOverviewInContent(content: string, projectOverview: any): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isProjectOverviewSection(sectionTitle || '')) {
+        // Update the project overview section with wizard data
+        let updatedSection = section;
+        
+        // Update description if present
+        if (projectOverview.description) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'description', projectOverview.description);
+        }
+        
+        // Update purpose if present
+        if (projectOverview.purpose) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'purpose', projectOverview.purpose);
+        }
+        
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update project info section content while preserving format
+   */
+  private static updateProjectInfoInContent(content: string, projectInfo: any): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isProjectInfoSection(sectionTitle || '')) {
+        // Update the project info section with wizard data
+        let updatedSection = section;
+        
+        // Update description if present
+        if (projectInfo.description) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'description', projectInfo.description);
+        }
+        
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update a specific field within a section while preserving format
+   */
+  private static updateFieldInSection(section: string, fieldName: string, newValue: string): string {
+    const lines = section.split('\n');
+    let foundField = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      // Look for field patterns like "**Description:**", "Description:", or paragraph descriptions
+      if (line.toLowerCase().includes(fieldName.toLowerCase())) {
+        // Check if this is a labeled field (e.g., "**Description:** value")
+        const labelMatch = line.match(/^(\*\*[^*]+\*\*:?\s*|[^:]+:\s*)(.*)/);
+        if (labelMatch) {
+          lines[i] = lines[i].replace(labelMatch[0], labelMatch[1] + newValue);
+          foundField = true;
+          break;
+        }
+      }
+      
+      // Also look for paragraph content after project overview header
+      if (!foundField && fieldName.toLowerCase() === 'description' && 
+          (line.toLowerCase().includes('project overview') || 
+           line.toLowerCase().includes('description') ||
+           (i > 0 && lines[i-1].toLowerCase().includes('project overview')))) {
+        
+        // Find the next paragraph and replace it
+        for (let j = i + 1; j < lines.length; j++) {
+          if (lines[j].trim() && !lines[j].startsWith('#') && !lines[j].startsWith('**')) {
+            lines[j] = newValue;
+            foundField = true;
+            break;
+          }
+        }
+        if (foundField) break;
+      }
+    }
+    
+    return lines.join('\n');
+  }
+
+  /**
+   * Update functional requirements section content while preserving format
+   */
+  private static updateFunctionalRequirementsInContent(content: string, functionalReqs: any): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isFunctionalRequirementsSection(sectionTitle || '')) {
+        let updatedSection = section;
+        
+        // Update user stories if present
+        if (functionalReqs.userStories && functionalReqs.userStories.length > 0) {
+          updatedSection = this.updateUserStoriesInSection(updatedSection, functionalReqs.userStories);
+        }
+        
+        // Update features if present
+        if (functionalReqs.features && functionalReqs.features.length > 0) {
+          updatedSection = this.updateFeaturesInSection(updatedSection, functionalReqs.features);
+        }
+        
+        // Update acceptance criteria if present
+        if (functionalReqs.acceptanceCriteria && functionalReqs.acceptanceCriteria.length > 0) {
+          updatedSection = this.updateAcceptanceCriteriaInSection(updatedSection, functionalReqs.acceptanceCriteria);
+        }
+        
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update technical requirements section content while preserving format
+   */
+  private static updateTechnicalRequirementsInContent(content: string, techReqs: any): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isTechnicalRequirementsSection(sectionTitle || '')) {
+        let updatedSection = section;
+        
+        // Update architecture if present
+        if (techReqs.architecture) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'architecture', techReqs.architecture);
+        }
+        
+        // Update infrastructure if present
+        if (techReqs.infrastructure) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'infrastructure', techReqs.infrastructure);
+        }
+        
+        // Update technologies if present
+        if (techReqs.technologies && techReqs.technologies.length > 0) {
+          updatedSection = this.updateTechnologiesInSection(updatedSection, techReqs.technologies);
+        }
+        
+        // Update dependencies if present
+        if (techReqs.dependencies && techReqs.dependencies.length > 0) {
+          updatedSection = this.updateDependenciesInSection(updatedSection, techReqs.dependencies);
+        }
+        
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update APIs section content while preserving format
+   */
+  private static updateApisInContent(content: string, apis: any): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isApiSection(sectionTitle || '')) {
+        let updatedSection = section;
+        
+        // Update authentication if present
+        if (apis.authentication) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'authentication', apis.authentication);
+        }
+        
+        // Update rate limit if present
+        if (apis.rateLimit) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'rate limit', apis.rateLimit);
+        }
+        
+        // Update endpoints if present
+        if (apis.endpoints && apis.endpoints.length > 0) {
+          updatedSection = this.updateEndpointsInSection(updatedSection, apis.endpoints);
+        }
+        
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update non-functional requirements section content while preserving format
+   */
+  private static updateNonFunctionalRequirementsInContent(content: string, nonFuncReqs: any): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isNonFunctionalRequirementsSection(sectionTitle || '')) {
+        let updatedSection = section;
+        
+        // Update performance if present
+        if (nonFuncReqs.performance) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'performance', nonFuncReqs.performance);
+        }
+        
+        // Update security if present
+        if (nonFuncReqs.security) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'security', nonFuncReqs.security);
+        }
+        
+        // Update scalability if present
+        if (nonFuncReqs.scalability) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'scalability', nonFuncReqs.scalability);
+        }
+        
+        // Update availability if present
+        if (nonFuncReqs.availability) {
+          updatedSection = this.updateFieldInSection(updatedSection, 'availability', nonFuncReqs.availability);
+        }
+        
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update roadmap section content while preserving format
+   */
+  private static updateRoadmapInContent(content: string, roadmap: any): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isRoadmapSection(sectionTitle || '')) {
+        let updatedSection = section;
+        
+        // Update phases if present
+        if (roadmap.phases && roadmap.phases.length > 0) {
+          updatedSection = this.updatePhasesInSection(updatedSection, roadmap.phases);
+        }
+        
+        // Update milestones if present
+        if (roadmap.milestones && roadmap.milestones.length > 0) {
+          updatedSection = this.updateMilestonesInSection(updatedSection, roadmap.milestones);
+        }
+        
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update user stories in a section while preserving format
+   */
+  private static updateUserStoriesInSection(section: string, userStories: string[]): string {
+    const lines = section.split('\n');
+    let storyStartIndex = -1;
+    let storyEndIndex = -1;
+    
+    // Find the user stories subsection
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes('User Stories') || lines[i].includes('user stories')) {
+        storyStartIndex = i + 1;
+        break;
+      }
+    }
+    
+    if (storyStartIndex > -1) {
+      // Find the end of user stories section (next ### or ## or end of section)
+      for (let i = storyStartIndex; i < lines.length; i++) {
+        if (lines[i].startsWith('###') || lines[i].startsWith('##') || lines[i].trim().length === 0) {
+          storyEndIndex = i;
+          break;
+        }
+      }
+      
+      if (storyEndIndex === -1) storyEndIndex = lines.length;
+      
+      // Replace the user stories content
+      const newStories = userStories.map(story => `- **${story}**`);
+      lines.splice(storyStartIndex, storyEndIndex - storyStartIndex, ...newStories, '');
+    }
+    
+    return lines.join('\n');
+  }
+
+  /**
+   * Update features in a section while preserving format
+   */
+  private static updateFeaturesInSection(section: string, features: any[]): string {
+    const lines = section.split('\n');
+    let featuresStartIndex = -1;
+    
+    // Find the features subsection
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].toLowerCase().includes('features') || lines[i].toLowerCase().includes('key features')) {
+        featuresStartIndex = i + 1;
+        break;
+      }
+    }
+    
+    if (featuresStartIndex > -1) {
+      // Find existing features and update or add new ones
+      const newFeatures = features.map(feature => 
+        `- **${feature.name}**: ${feature.description || 'No description provided'}`
+      );
+      
+      // Replace or insert features
+      lines.splice(featuresStartIndex, 0, ...newFeatures, '');
+    }
+    
+    return lines.join('\n');
+  }
+
+  /**
+   * Update acceptance criteria in a section while preserving format
+   */
+  private static updateAcceptanceCriteriaInSection(section: string, criteria: string[]): string {
+    const lines = section.split('\n');
+    let criteriaStartIndex = -1;
+    
+    // Find the acceptance criteria subsection
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].toLowerCase().includes('acceptance criteria') || lines[i].toLowerCase().includes('acceptance')) {
+        criteriaStartIndex = i + 1;
+        break;
+      }
+    }
+    
+    if (criteriaStartIndex > -1) {
+      const newCriteria = criteria.map(criterion => `- ✅ ${criterion}`);
+      lines.splice(criteriaStartIndex, 0, ...newCriteria, '');
+    }
+    
+    return lines.join('\n');
+  }
+
+  /**
+   * Update technologies in a section while preserving format
+   */
+  private static updateTechnologiesInSection(section: string, technologies: string[]): string {
+    const lines = section.split('\n');
+    
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].toLowerCase().includes('technologies') || lines[i].toLowerCase().includes('tech stack')) {
+        const techList = technologies.map(tech => `- ${tech}`);
+        lines.splice(i + 1, 0, ...techList, '');
+        break;
+      }
+    }
+    
+    return lines.join('\n');
+  }
+
+  /**
+   * Update dependencies in a section while preserving format
+   */
+  private static updateDependenciesInSection(section: string, dependencies: string[]): string {
+    const lines = section.split('\n');
+    
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].toLowerCase().includes('dependencies')) {
+        const depList = dependencies.map(dep => `- ${dep}`);
+        lines.splice(i + 1, 0, ...depList, '');
+        break;
+      }
+    }
+    
+    return lines.join('\n');
+  }
+
+  /**
+   * Update endpoints in a section while preserving format
+   */
+  private static updateEndpointsInSection(section: string, endpoints: any[]): string {
+    const lines = section.split('\n');
+    
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].toLowerCase().includes('endpoints') || lines[i].toLowerCase().includes('api endpoints')) {
+        const endpointList = endpoints.map(endpoint => 
+          `- **${endpoint.method}** \`${endpoint.path}\` - ${endpoint.description || 'No description'}`
+        );
+        lines.splice(i + 1, 0, ...endpointList, '');
+        break;
+      }
+    }
+    
+    return lines.join('\n');
+  }
+
+  /**
+   * Update phases in a section while preserving format
+   */
+  private static updatePhasesInSection(section: string, phases: any[]): string {
+    const lines = section.split('\n');
+    
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].toLowerCase().includes('phases') || lines[i].toLowerCase().includes('project phases')) {
+        const phaseList = phases.map(phase => 
+          `- **${phase.name}** (${phase.duration || 'TBD'}): ${phase.description || 'No description'}`
+        );
+        lines.splice(i + 1, 0, ...phaseList, '');
+        break;
+      }
+    }
+    
+    return lines.join('\n');
+  }
+
+  /**
+   * Update milestones in a section while preserving format
+   */
+  private static updateMilestonesInSection(section: string, milestones: any[]): string {
+    const lines = section.split('\n');
+    
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].toLowerCase().includes('milestones')) {
+        const milestoneList = milestones.map(milestone => 
+          `- **${milestone.name}** (${milestone.date || 'TBD'}): ${milestone.description || 'No description'}`
+        );
+        lines.splice(i + 1, 0, ...milestoneList, '');
+        break;
+      }
+    }
+    
+    return lines.join('\n');
+  }
+
+  /**
+   * Update decision log section content while preserving format
+   */
+  private static updateDecisionLogInContent(content: string, decisionLog: any[]): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isDecisionLogSection(sectionTitle || '')) {
+        let updatedSection = section;
+        
+        // Add new decisions to the section
+        const decisionEntries = decisionLog.map(decision => {
+          let entry = `\n### ${decision.title}\n`;
+          if (decision.date) entry += `**Date:** ${decision.date}  \n`;
+          if (decision.description) entry += `**Description:** ${decision.description}  \n`;
+          if (decision.rationale) entry += `**Rationale:** ${decision.rationale}  \n`;
+          if (decision.status) entry += `**Status:** ${decision.status}  \n`;
+          if (decision.impact) entry += `**Impact:** ${decision.impact}  \n`;
+          if (decision.stakeholders) entry += `**Stakeholders:** ${decision.stakeholders}  \n`;
+          return entry;
+        });
+        
+        // Append new decisions to the section
+        updatedSection += '\n' + decisionEntries.join('\n');
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update glossary section content while preserving format
+   */
+  private static updateGlossaryInContent(content: string, glossary: any[]): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isGlossarySection(sectionTitle || '')) {
+        let updatedSection = section;
+        
+        // Add new glossary terms
+        const glossaryEntries = glossary.map(term => 
+          `**${term.term}:** ${term.definition}`
+        );
+        
+        updatedSection += '\n\n' + glossaryEntries.join('  \n');
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update meeting notes section content while preserving format
+   */
+  private static updateMeetingNotesInContent(content: string, meetingNotes: any[]): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isMeetingNotesSection(sectionTitle || '')) {
+        let updatedSection = section;
+        
+        // Add new meeting notes
+        const meetingEntries = meetingNotes.map(meeting => {
+          let entry = `\n### ${meeting.title}\n`;
+          if (meeting.date) entry += `**Date:** ${meeting.date}  \n`;
+          if (meeting.attendees) entry += `**Attendees:** ${meeting.attendees}  \n`;
+          if (meeting.agenda) entry += `**Agenda:** ${meeting.agenda}  \n`;
+          if (meeting.notes) entry += `**Notes:** ${meeting.notes}  \n`;
+          if (meeting.actionItems && meeting.actionItems.length > 0) {
+            entry += `**Action Items:**\n`;
+            meeting.actionItems.forEach((item: any) => {
+              entry += `- [ ] ${item.task} (${item.assignee} - ${item.dueDate})\n`;
+            });
+          }
+          return entry;
+        });
+        
+        updatedSection += '\n' + meetingEntries.join('\n');
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update lessons learned section content while preserving format
+   */
+  private static updateLessonsLearnedInContent(content: string, lessonsLearned: any[]): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isLessonsLearnedSection(sectionTitle || '')) {
+        let updatedSection = section;
+        
+        // Add new lessons learned
+        const lessonEntries = lessonsLearned.map(lesson => {
+          let entry = `\n### ${lesson.title}\n`;
+          if (lesson.date) entry += `**Date:** ${lesson.date}  \n`;
+          if (lesson.category) entry += `**Category:** ${lesson.category}  \n`;
+          if (lesson.situation) entry += `**Situation:** ${lesson.situation}  \n`;
+          if (lesson.lesson) entry += `**Lesson:** ${lesson.lesson}  \n`;
+          if (lesson.application) entry += `**Application:** ${lesson.application}  \n`;
+          if (lesson.impact) entry += `**Impact:** ${lesson.impact}  \n`;
+          return entry;
+        });
+        
+        updatedSection += '\n' + lessonEntries.join('\n');
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  /**
+   * Update onboarding notes section content while preserving format
+   */
+  private static updateOnboardingNotesInContent(content: string, onboardingNotes: any[]): string {
+    const sections = content.split(/(?=^## )/m);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTitle = section.match(/^## (.+?)$/m)?.[1]?.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      
+      if (this.isOnboardingNotesSection(sectionTitle || '')) {
+        let updatedSection = section;
+        
+        // Add new onboarding notes
+        const onboardingEntries = onboardingNotes.map(note => {
+          let entry = `\n### ${note.title}\n`;
+          if (note.role) entry += `**Role:** ${note.role}  \n`;
+          if (note.content) entry += `**Content:** ${note.content}  \n`;
+          if (note.resources && note.resources.length > 0) {
+            entry += `**Resources:**\n`;
+            note.resources.forEach((resource: string) => {
+              entry += `- ${resource}\n`;
+            });
+          }
+          return entry;
+        });
+        
+        updatedSection += '\n' + onboardingEntries.join('\n');
+        sections[i] = updatedSection;
+        break;
+      }
+    }
+    
+    return sections.join('');
   }
 
   /**
