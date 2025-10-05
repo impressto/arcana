@@ -312,6 +312,14 @@ export class DocumentPreservationSystem {
    * Update a specific field within a section while preserving format
    */
   private static updateFieldInSection(section: string, fieldName: string, newValue: string): string {
+    // Create a more specific pattern that matches exactly what we expect
+    const pattern = new RegExp(`(\\*\\*${fieldName}:\\*\\*\\s*)([^\\n]*)`);
+    
+    if (pattern.test(section)) {
+      return section.replace(pattern, `$1${newValue}`);
+    }
+    
+    // Fallback to line-by-line approach for other patterns
     const lines = section.split('\n');
     let foundField = false;
     
@@ -321,7 +329,7 @@ export class DocumentPreservationSystem {
       // Look for field patterns like "**Description:**", "Description:", or paragraph descriptions
       if (line.toLowerCase().includes(fieldName.toLowerCase())) {
         // Check if this is a labeled field (e.g., "**Description:** value")
-        const labelMatch = line.match(/^(\*\*[^*]+\*\*:?\s*|[^:]+:\s*)(.*)/);
+        const labelMatch = line.match(/^(\*\*[^*]*:\*\*\s*|[^:]+:\s*)(.*)/);
         if (labelMatch) {
           lines[i] = lines[i].replace(labelMatch[0], labelMatch[1] + newValue);
           foundField = true;
@@ -1054,51 +1062,71 @@ export class DocumentPreservationSystem {
 
   // Section type detection methods
   private static isProjectOverviewSection(title: string): boolean {
-    return title.includes('project overview') || title.includes('overview');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('project overview') || normalized.includes('overview');
   }
 
   private static isFunctionalRequirementsSection(title: string): boolean {
-    return title.includes('functional requirements') || title.includes('user requirements');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('functional requirements') || normalized.includes('user requirements');
   }
 
   private static isTechnicalRequirementsSection(title: string): boolean {
-    return title.includes('technical requirements') || title.includes('system requirements');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('technical requirements') || normalized.includes('system requirements');
   }
 
   private static isApiSection(title: string): boolean {
-    return title.includes('api') || title.includes('endpoints');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('api') || normalized.includes('endpoints');
   }
 
   private static isNonFunctionalRequirementsSection(title: string): boolean {
-    return title.includes('non functional') || title.includes('nonfunctional') || title.includes('quality attributes');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('non functional') || normalized.includes('nonfunctional') || normalized.includes('quality attributes');
   }
 
   private static isRoadmapSection(title: string): boolean {
-    return title.includes('roadmap') || title.includes('timeline') || title.includes('milestones');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('roadmap') || normalized.includes('timeline') || normalized.includes('milestones');
+  }
+
+  /**
+   * Remove emoji characters from text for consistent matching
+   */
+  private static removeEmojis(text: string): string {
+    return text.replace(/[\u{1F000}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').trim();
   }
 
   private static isProjectInfoSection(title: string): boolean {
-    return title.includes('project information') || title.includes('project info');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('project information') || 
+           normalized.includes('project info');
   }
 
   private static isDecisionLogSection(title: string): boolean {
-    return title.includes('decision log') || title.includes('decisions');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('decision log') || normalized.includes('decisions');
   }
 
   private static isGlossarySection(title: string): boolean {
-    return title.includes('glossary') || title.includes('definitions');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('glossary') || normalized.includes('definitions');
   }
 
   private static isMeetingNotesSection(title: string): boolean {
-    return title.includes('meeting notes') || title.includes('meetings');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('meeting notes') || normalized.includes('meetings');
   }
 
   private static isLessonsLearnedSection(title: string): boolean {
-    return title.includes('lessons learned') || title.includes('lessons');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('lessons learned') || normalized.includes('lessons');
   }
 
   private static isOnboardingNotesSection(title: string): boolean {
-    return title.includes('onboarding') || title.includes('team onboarding');
+    const normalized = this.removeEmojis(title).toLowerCase();
+    return normalized.includes('onboarding') || normalized.includes('team onboarding');
   }
 
   // Parsing methods for each section type
