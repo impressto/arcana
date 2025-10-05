@@ -16,149 +16,51 @@ export interface AIContextOptions {
 }
 
 export class AIContextBuilder {
-  private specDocument: string = '';
-  private memoryDocument: string = '';
-
-  constructor(specDoc?: string, memoryDoc?: string) {
-    this.specDocument = specDoc || '';
-    this.memoryDocument = memoryDoc || '';
+  constructor() {
+    // Constructor simplified since we no longer load document content
   }
 
   /**
-   * Load documents from the public folder
+   * Documents are assumed to exist - no loading needed
    */
   async loadSampleDocuments(): Promise<void> {
-    try {
-      const [specResponse, memoryResponse] = await Promise.all([
-        fetch('/sample-spec-document.md'),
-        fetch('/sample-memory-document.md')
-      ]);
-      
-      this.specDocument = await specResponse.text();
-      this.memoryDocument = await memoryResponse.text();
-    } catch (error) {
-      console.error('Failed to load sample documents:', error);
-    }
+    // No-op: Documents are referenced, not loaded
+    return Promise.resolve();
   }
 
   /**
-   * Extract project overview for AI context
+   * Generate project overview reference for AI context
    */
   extractProjectOverview(): string {
-    const specLines = this.specDocument.split('\n');
-    let overview = '';
-    let inOverview = false;
-
-    for (const line of specLines) {
-      if (line.includes('## 📋 Project Overview')) {
-        inOverview = true;
-        continue;
-      }
-      if (inOverview && line.startsWith('## ')) {
-        break;
-      }
-      if (inOverview) {
-        overview += line + '\n';
-      }
-    }
-
-    return overview.trim();
+    return 'Project overview details are available in the "Project Overview" section of the technical specification document. Please reference this document for comprehensive project information including goals, stakeholders, timeline, and scope.';
   }
 
   /**
-   * Extract technical architecture decisions
+   * Generate architecture decisions reference for AI context
    */
   extractArchitectureDecisions(): string {
-    const memoryLines = this.memoryDocument.split('\n');
-    let decisions = '';
-    let inDecisions = false;
-
-    for (const line of memoryLines) {
-      if (line.includes('## 📝 Decision Log')) {
-        inDecisions = true;
-        continue;
-      }
-      if (inDecisions && line.startsWith('## ')) {
-        break;
-      }
-      if (inDecisions) {
-        decisions += line + '\n';
-      }
-    }
-
-    return decisions.trim();
+    return 'Architecture decisions and their rationale are documented in the "Decision Log" section of the memory document. Please reference this section for detailed information about past architectural choices, alternatives considered, and implementation decisions.';
   }
 
   /**
-   * Extract lessons learned for AI guidance
+   * Generate lessons learned reference for AI guidance
    */
   extractLessonsLearned(): string {
-    const memoryLines = this.memoryDocument.split('\n');
-    let lessons = '';
-    let inLessons = false;
-
-    for (const line of memoryLines) {
-      if (line.includes('## 🎓 Lessons Learned')) {
-        inLessons = true;
-        continue;
-      }
-      if (inLessons && line.startsWith('## ')) {
-        break;
-      }
-      if (inLessons) {
-        lessons += line + '\n';
-      }
-    }
-
-    return lessons.trim();
+    return 'Lessons learned from past development experiences are documented in the "Lessons Learned" section of the memory document. Please reference this section for insights on what worked well, challenges encountered, and recommendations for future development.';
   }
 
   /**
-   * Extract technical requirements and constraints
+   * Generate technical requirements reference and constraints
    */
   extractTechnicalRequirements(): string {
-    const specLines = this.specDocument.split('\n');
-    let techReqs = '';
-    let inTechReqs = false;
-
-    for (const line of specLines) {
-      if (line.includes('## ⚙️ Technical Requirements')) {
-        inTechReqs = true;
-        continue;
-      }
-      if (inTechReqs && line.startsWith('## ')) {
-        break;
-      }
-      if (inTechReqs) {
-        techReqs += line + '\n';
-      }
-    }
-
-    return techReqs.trim();
+    return 'Technical requirements including architecture, technologies, infrastructure, and dependencies are detailed in the "Technical Requirements" section of the specification document. Please reference this section for comprehensive technical constraints and implementation guidelines.';
   }
 
   /**
-   * Extract glossary for domain understanding
+   * Generate glossary reference for domain understanding
    */
   extractGlossary(): string {
-    const memoryLines = this.memoryDocument.split('\n');
-    let glossary = '';
-    let inGlossary = false;
-
-    for (const line of memoryLines) {
-      if (line.includes('## 📚 Glossary')) {
-        inGlossary = true;
-        continue;
-      }
-      if (inGlossary && line.startsWith('## ')) {
-        break;
-      }
-      if (inGlossary) {
-        glossary += line + '\n';
-      }
-    }
-
-    return glossary.trim();
+    return 'Project-specific terminology and definitions are available in the "Glossary" section of the memory document. Please reference this section for clarification of domain-specific terms, acronyms, and technical concepts used throughout the project.';
   }
 
   /**
@@ -174,29 +76,34 @@ export class AIContextBuilder {
     } = options;
 
     let context = '# Project Context for AI Assistant\n\n';
+    context += '## Document Availability\n\n';
+    context += 'This project has comprehensive documentation available:\n';
+    context += '- **Technical Specification Document**: Full project requirements, architecture, and specifications\n';
+    context += '- **Memory Document**: Decisions, lessons learned, glossary, and institutional knowledge\n\n';
+    context += '**Important**: Instead of including document content in this context, you should guide the user to reference specific sections of these documents when detailed information is needed.\n\n';
 
     if (includeSpecs) {
-      context += '## Project Overview\n';
+      context += '## Project Overview Reference\n';
       context += this.extractProjectOverview() + '\n\n';
     }
 
     if (includeArchitecture) {
-      context += '## Technical Requirements\n';
+      context += '## Technical Requirements Reference\n';
       context += this.extractTechnicalRequirements() + '\n\n';
     }
 
     if (includeDecisions) {
-      context += '## Architecture Decisions\n';
+      context += '## Architecture Decisions Reference\n';
       context += this.extractArchitectureDecisions() + '\n\n';
     }
 
     if (includeLessonsLearned) {
-      context += '## Lessons Learned\n';
+      context += '## Lessons Learned Reference\n';
       context += this.extractLessonsLearned() + '\n\n';
     }
 
     if (includeGlossary) {
-      context += '## Domain Glossary\n';
+      context += '## Domain Glossary Reference\n';
       context += this.extractGlossary() + '\n\n';
     }
 
@@ -253,175 +160,63 @@ export async function getAIContextForTask(
 }
 
 /**
- * Build AI context from current wizard data instead of sample documents
+ * Build AI context with document references (no actual content included)
  */
 export function buildWizardAIContext(
   documentType: 'spec' | 'memory',
-  specData?: SpecDocumentData,
-  memoryData?: MemoryDocumentData,
+  _specData?: SpecDocumentData,
+  _memoryData?: MemoryDocumentData,
   taskType: 'feature' | 'bug' | 'refactor' | 'architecture' = 'feature'
 ): string {
   let context = '# Project Context for AI Assistant\n\n';
   context += `*This context is generated from your current ${documentType} document wizard data.*\n\n`;
+  
+  // Document availability notice
+  context += '## Document Availability\n\n';
+  context += 'This project has comprehensive documentation that you can reference:\n';
+  context += '- **Technical Specification Document**: Contains detailed project overview, functional requirements, technical requirements, API specifications, non-functional requirements, and roadmap\n';
+  context += '- **Memory Document**: Contains project information, decision log, glossary, meeting notes, lessons learned, and onboarding notes\n\n';
+  context += '**Important**: When you need specific details not provided in this context, please ask the user to reference the relevant section of these documents rather than asking for extensive details to be typed out.\n\n';
 
-  if (documentType === 'spec' && specData) {
-    // Add Project Overview
-    if (specData.projectOverview.name || specData.projectOverview.description) {
-      context += '## Project Overview\n\n';
-      if (specData.projectOverview.name) {
-        context += `**Project Name:** ${specData.projectOverview.name}\n\n`;
-      }
-      if (specData.projectOverview.description) {
-        context += `**Description:** ${specData.projectOverview.description}\n\n`;
-      }
-      if (specData.projectOverview.purpose) {
-        context += `**Purpose:** ${specData.projectOverview.purpose}\n\n`;
-      }
-      if (specData.projectOverview.stakeholders.length > 0) {
-        context += `**Stakeholders:** ${specData.projectOverview.stakeholders.join(', ')}\n\n`;
-      }
-      if (specData.projectOverview.timeline) {
-        context += `**Timeline:** ${specData.projectOverview.timeline}\n\n`;
-      }
-    }
+  if (documentType === 'spec') {
+    // Reference spec document sections
+    context += '## Specification Document References\n\n';
+    context += 'The following information is available in your specification document:\n';
+    context += '- **Project Overview**: Project name, description, purpose, stakeholders, and timeline\n';
+    context += '- **Functional Requirements**: User stories, features, and acceptance criteria\n';
+    context += '- **Technical Requirements**: Architecture, technologies, infrastructure, and dependencies\n';
+    context += '- **API Specifications**: Endpoints, authentication, and rate limiting\n';
+    context += '- **Non-Functional Requirements**: Performance, security, scalability, and availability\n';
+    context += '- **Roadmap**: Development phases and milestones\n\n';
+    context += 'Please reference the relevant sections of your spec document when you need specific details.\n\n';
 
-    // Add Technical Requirements based on task type
-    if (['feature', 'architecture', 'refactor'].includes(taskType) && 
-        (specData.technicalRequirements.architecture || 
-         specData.technicalRequirements.technologies.length > 0)) {
-      context += '## Technical Requirements\n\n';
-      if (specData.technicalRequirements.architecture) {
-        context += `**Architecture:** ${specData.technicalRequirements.architecture}\n\n`;
-      }
-      if (specData.technicalRequirements.technologies.length > 0) {
-        context += `**Technologies:** ${specData.technicalRequirements.technologies.join(', ')}\n\n`;
-      }
-      if (specData.technicalRequirements.infrastructure) {
-        context += `**Infrastructure:** ${specData.technicalRequirements.infrastructure}\n\n`;
-      }
-      if (specData.technicalRequirements.dependencies.length > 0) {
-        context += `**Dependencies:** ${specData.technicalRequirements.dependencies.join(', ')}\n\n`;
-      }
-    }
-
-    // Add Functional Requirements for feature tasks
-    if (taskType === 'feature' && specData.functionalRequirements.userStories.length > 0) {
-      context += '## Functional Requirements\n\n';
-      if (specData.functionalRequirements.userStories.length > 0) {
-        context += '**User Stories:**\n';
-        specData.functionalRequirements.userStories.forEach((story, i) => {
-          context += `${i + 1}. ${story}\n`;
-        });
-        context += '\n';
-      }
-      if (specData.functionalRequirements.features.length > 0) {
-        context += '**Features:**\n';
-        specData.functionalRequirements.features.forEach((feature, i) => {
-          context += `${i + 1}. **${feature.name}** (${feature.priority} Priority, ${feature.status})\n`;
-          if (feature.description) {
-            context += `   ${feature.description}\n`;
-          }
-        });
-        context += '\n';
-      }
-    }
-
-    // Add API information if relevant
-    if (specData.apis.endpoints.length > 0) {
-      context += '## API Information\n\n';
-      context += '**Endpoints:**\n';
-      specData.apis.endpoints.forEach((endpoint, i) => {
-        context += `${i + 1}. **${endpoint.method} ${endpoint.path}**\n`;
-        if (endpoint.description) {
-          context += `   ${endpoint.description}\n`;
-        }
-        if (endpoint.parameters.length > 0) {
-          context += `   Parameters: ${endpoint.parameters.join(', ')}\n`;
-        }
-        if (endpoint.response) {
-          context += `   Response: ${endpoint.response}\n`;
-        }
-      });
-      context += '\n';
-      if (specData.apis.authentication) {
-        context += `**Authentication:** ${specData.apis.authentication}\n\n`;
-      }
-    }
-
-    // Add Non-Functional Requirements for architecture/performance tasks
-    if (['architecture', 'bug'].includes(taskType)) {
-      const nfr = specData.nonFunctionalRequirements;
-      if (nfr.performance || nfr.security || nfr.scalability || nfr.availability) {
-        context += '## Non-Functional Requirements\n\n';
-        if (nfr.performance) context += `**Performance:** ${nfr.performance}\n\n`;
-        if (nfr.security) context += `**Security:** ${nfr.security}\n\n`;
-        if (nfr.scalability) context += `**Scalability:** ${nfr.scalability}\n\n`;
-        if (nfr.availability) context += `**Availability:** ${nfr.availability}\n\n`;
-      }
-    }
   }
 
-  if (documentType === 'memory' && memoryData) {
-    // Add Project Information
-    if (memoryData.projectInfo.name || memoryData.projectInfo.description) {
-      context += '## Project Information\n\n';
-      if (memoryData.projectInfo.name) {
-        context += `**Project Name:** ${memoryData.projectInfo.name}\n\n`;
-      }
-      if (memoryData.projectInfo.description) {
-        context += `**Description:** ${memoryData.projectInfo.description}\n\n`;
-      }
-      if (memoryData.projectInfo.team.length > 0) {
-        context += `**Team Members:** ${memoryData.projectInfo.team.join(', ')}\n\n`;
-      }
-    }
-
-    // Add Decision Log
-    if (memoryData.decisionLog.length > 0) {
-      context += '## Recent Decisions\n\n';
-      memoryData.decisionLog.slice(0, 5).forEach((decision, i) => {
-        context += `**Decision ${i + 1}:** ${decision.title || 'Untitled'}\n`;
-        if (decision.description) context += `${decision.description}\n`;
-        if (decision.rationale) context += `*Rationale:* ${decision.rationale}\n`;
-        context += '\n';
-      });
-    }
-
-    // Add Lessons Learned
-    if (memoryData.lessonsLearned.length > 0) {
-      context += '## Lessons Learned\n\n';
-      memoryData.lessonsLearned.slice(0, 3).forEach((lesson, i) => {
-        context += `**Lesson ${i + 1}:** ${lesson.title || 'Untitled'}\n`;
-        if (lesson.lesson) context += `${lesson.lesson}\n`;
-        if (lesson.application) context += `*Application:* ${lesson.application}\n`;
-        context += '\n';
-      });
-    }
-
-    // Add Glossary
-    if (memoryData.glossary.length > 0) {
-      context += '## Key Terms\n\n';
-      memoryData.glossary.forEach((term) => {
-        context += `**${term.term}:** ${term.definition}\n`;
-      });
-      context += '\n';
-    }
+  if (documentType === 'memory') {
+    // Reference memory document sections
+    context += '## Memory Document References\n\n';
+    context += 'The following information is available in your memory document:\n';
+    context += '- **Project Information**: Project name, description, and team members\n';
+    context += '- **Decision Log**: Architectural and implementation decisions with rationale\n';
+    context += '- **Glossary**: Project-specific terminology and definitions\n';
+    context += '- **Meeting Notes**: Important discussions and action items\n';
+    context += '- **Lessons Learned**: Insights from development experiences\n';
+    context += '- **Onboarding Notes**: Team member onboarding information\n\n';
+    context += 'Please reference the relevant sections of your memory document when you need specific details.\n\n';
   }
 
   // Add contextual guidance based on task type
   context += '## Context Notes\n\n';
   const taskGuidance = {
-    feature: 'This context includes project requirements, technical architecture, and user stories to help implement new features that align with the project goals.',
-    bug: 'This context focuses on technical requirements, architecture decisions, and known constraints to help debug issues effectively.',
-    refactor: 'This context emphasizes technical architecture, past decisions, and lessons learned to guide refactoring efforts.',
-    architecture: 'This context includes project overview, technical requirements, and past architectural decisions to inform new architectural choices.'
+    feature: 'This context includes key project requirements and technical architecture to help implement new features. For detailed specifications, reference the project\'s spec document.',
+    bug: 'This context focuses on technical requirements and architecture. For detailed troubleshooting history and past decisions, reference the project\'s memory document.',
+    refactor: 'This context emphasizes technical architecture and constraints. For comprehensive past decisions and lessons learned, reference the project\'s memory document.',
+    architecture: 'This context includes project overview and technical requirements. For detailed architectural decisions and constraints, reference both the spec and memory documents.'
   };
   
   context += taskGuidance[taskType] + '\n\n';
-  
-  if (!specData && !memoryData) {
-    context += '*Note: No wizard data available yet. Complete the wizard steps to generate more comprehensive context.*\n';
-  }
+  context += '**Working with Project Documents**: Instead of requesting large amounts of detailed information to be typed out, ask the user to reference specific sections of the existing project documents (e.g., "Please check the Technical Requirements section of your spec document" or "Refer to the Decision Log in your memory document").\n\n';
+  context += '**Document Location**: The project documents are located in the `docs/` folder of the project root. The spec document is typically named something like `spec.md` and the memory document is typically named something like `memory.md`.\n\n';
 
   return context;
 }
