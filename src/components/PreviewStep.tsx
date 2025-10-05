@@ -4,10 +4,21 @@ import { useWizard } from '../contexts/WizardContext';
 import { WizardAIAssistant } from './WizardAIAssistant';
 
 export const PreviewStep: React.FC = () => {
-  const { documentType, specData, memoryData } = useWizard();
+  const { documentType, specData, memoryData, exportDocument } = useWizard();
   const [previewMode, setPreviewMode] = useState<'formatted' | 'markdown'>('formatted');
 
   const generateMarkdown = () => {
+    // Use the new enhanced export system if available, fallback to legacy generation
+    try {
+      const exported = exportDocument();
+      if (exported && exported.trim()) {
+        return exported;
+      }
+    } catch (error) {
+      console.warn('Enhanced export failed, falling back to legacy:', error);
+    }
+    
+    // Legacy fallback
     if (documentType === 'spec') {
       return generateSpecMarkdown(specData);
     } else {

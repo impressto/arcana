@@ -50,6 +50,21 @@ export const NonFunctionalRequirementsStep: React.FC = () => {
           <label htmlFor="performance" className="block text-sm font-medium text-gray-700 mb-2">
             Performance Requirements
           </label>
+          
+          <LearningCard
+            type="explanation"
+            title="Performance Metrics That Matter"
+            content="Define specific, measurable performance targets: response times (< 200ms for API calls), throughput (1000 requests/second), page load times (< 3 seconds), and resource limits (memory, CPU usage). Concrete numbers help AI assistants optimize code effectively."
+            className="mb-4"
+          />
+          
+          <LearningCard
+            type="tip"
+            title="Performance Requirements Best Practices"
+            content="Consider different user scenarios: peak load vs normal usage, mobile vs desktop performance, and geographic variations. Include both average and worst-case scenarios to guide optimization strategies."
+            className="mb-4"
+          />
+          
           <textarea
             id="performance"
             value={formData.performance}
@@ -64,6 +79,21 @@ export const NonFunctionalRequirementsStep: React.FC = () => {
           <label htmlFor="security" className="block text-sm font-medium text-gray-700 mb-2">
             Security Requirements
           </label>
+          
+          <LearningCard
+            type="explanation"
+            title="Security Foundation Elements"
+            content="Cover key areas: authentication methods (JWT, OAuth), authorization levels, data encryption (at rest and in transit), input validation, and compliance requirements (GDPR, HIPAA). Clear security requirements help AI assistants suggest secure coding patterns."
+            className="mb-4"
+          />
+          
+          <LearningCard
+            type="tip"
+            title="Security Planning Strategy"
+            content="Think about the complete security lifecycle: user authentication, session management, data protection, API security, and incident response. Include specific threats you need to protect against and compliance standards you must meet."
+            className="mb-4"
+          />
+          
           <textarea
             id="security"
             value={formData.security}
@@ -78,6 +108,21 @@ export const NonFunctionalRequirementsStep: React.FC = () => {
           <label htmlFor="scalability" className="block text-sm font-medium text-gray-700 mb-2">
             Scalability Requirements
           </label>
+          
+          <LearningCard
+            type="explanation"
+            title="Scalability Planning Fundamentals"
+            content="Define growth expectations: user base growth (100 to 10,000 users), data volume increases, traffic patterns, and resource scaling needs. Include both horizontal scaling (more servers) and vertical scaling (bigger servers) considerations."
+            className="mb-4"
+          />
+          
+          <LearningCard
+            type="tip"
+            title="Scalability Design Considerations"
+            content="Consider auto-scaling triggers, database scaling strategies, CDN requirements, and microservices architecture. Document expected growth patterns and bottleneck scenarios to help AI assistants suggest scalable solutions from the start."
+            className="mb-4"
+          />
+          
           <textarea
             id="scalability"
             value={formData.scalability}
@@ -92,6 +137,21 @@ export const NonFunctionalRequirementsStep: React.FC = () => {
           <label htmlFor="availability" className="block text-sm font-medium text-gray-700 mb-2">
             Availability & Reliability
           </label>
+          
+          <LearningCard
+            type="explanation"
+            title="Availability and Reliability Targets"
+            content="Set specific uptime targets (99.9% = 8.7 hours downtime/year), define acceptable failure scenarios, recovery time objectives (RTO), and recovery point objectives (RPO). Include backup strategies and disaster recovery procedures."
+            className="mb-4"
+          />
+          
+          <LearningCard
+            type="tip"
+            title="Reliability Engineering Approach"
+            content="Plan for failure: health checks, graceful degradation, circuit breakers, and monitoring alerts. Define what constitutes 'system failure' and acceptable recovery times. This helps AI assistants suggest resilient architecture patterns."
+            className="mb-4"
+          />
+          
           <textarea
             id="availability"
             value={formData.availability}

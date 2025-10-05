@@ -9,10 +9,8 @@ import { PreviewStep } from './PreviewStep';
 import { ImportModal } from './ImportModal';
 import { ConfirmationModal } from './ConfirmationModal';
 import { TemplatesModal } from './TemplatesModal';
-import { parseSpecMarkdownContent, parseMemoryMarkdownContent } from '../utils/markdownParsers';
-
 export const DocumentWizard: React.FC = () => {
-  const { documentType, currentStep, steps, updateSpecData, updateMemoryData, learningMode, setLearningMode, navigateToDocumentSelection } = useWizard();
+  const { documentType, currentStep, steps, importDocument, learningMode, setLearningMode, navigateToDocumentSelection } = useWizard();
   const [showImportModal, setShowImportModal] = useState(false);
   const [showSampleConfirmModal, setShowSampleConfirmModal] = useState(false);
   const [showTemplatesModal, setShowTemplatesModal] = useState(false);
@@ -50,64 +48,13 @@ export const DocumentWizard: React.FC = () => {
         throw new Error('Sample document is empty or could not be loaded');
       }
       
-      // Use the same parsing logic as ImportModal
-      const parsedData = documentType === 'spec' 
-        ? parseSpecMarkdownContent(content)
-        : parseMemoryMarkdownContent(content);
-
-      if (parsedData.success && parsedData.data) {
-        if (documentType === 'memory') {
-          const memoryDocData = parsedData.data as any;
-          
-          // Replace all data with parsed content
-          if (memoryDocData.projectInfo) {
-            updateMemoryData('projectInfo', memoryDocData.projectInfo);
-          }
-          if (memoryDocData.decisionLog) {
-            updateMemoryData('decisionLog', memoryDocData.decisionLog);
-          }
-          if (memoryDocData.glossary) {
-            updateMemoryData('glossary', memoryDocData.glossary);
-          }
-          if (memoryDocData.meetingNotes) {
-            updateMemoryData('meetingNotes', memoryDocData.meetingNotes);
-          }
-          if (memoryDocData.lessonsLearned) {
-            updateMemoryData('lessonsLearned', memoryDocData.lessonsLearned);
-          }
-          if (memoryDocData.onboardingNotes) {
-            updateMemoryData('onboardingNotes', memoryDocData.onboardingNotes);
-          }
-        } else {
-          const specData = parsedData.data as any;
-          
-          // Replace all data with parsed content
-          if (specData.projectOverview) {
-            updateSpecData('projectOverview', specData.projectOverview);
-          }
-          if (specData.functionalRequirements) {
-            updateSpecData('functionalRequirements', specData.functionalRequirements);
-          }
-          if (specData.technicalRequirements) {
-            updateSpecData('technicalRequirements', specData.technicalRequirements);
-          }
-          if (specData.apis) {
-            updateSpecData('apis', specData.apis);
-          }
-          if (specData.nonFunctionalRequirements) {
-            updateSpecData('nonFunctionalRequirements', specData.nonFunctionalRequirements);
-          }
-          if (specData.roadmap) {
-            updateSpecData('roadmap', specData.roadmap);
-          }
-        }
+      // Use the new enhanced import system
+      importDocument(content, documentType!);
         
-        if ((window as any).showToast) {
-          (window as any).showToast(`Sample ${documentType} document loaded successfully!`, 'success');
-        }
-      } else {
-        throw new Error(parsedData.error || 'Failed to parse sample document');
+      if ((window as any).showToast) {
+        (window as any).showToast(`Sample ${documentType} document loaded successfully with full content preservation!`, 'success');
       }
+      
     } catch (error) {
       console.error('Failed to load sample document:', error);
       if ((window as any).showToast) {

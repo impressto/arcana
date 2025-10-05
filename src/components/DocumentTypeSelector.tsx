@@ -60,12 +60,8 @@ export const DocumentTypeSelector: React.FC = () => {
               className="h-12 sm:h-14 w-auto transition-transform duration-200 hover:scale-105"
             />
           </div>
-          <p id="selector-description" className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-            Choose the type of documentation you want to create. Arcana will guide you through 
-            each step to create professional, comprehensive documentation.
-          </p>
-          
-          {/* Explanatory Image Section */}
+
+                    {/* Explanatory Image Section */}
           <div id="concept-explanation" className="max-w-4xl mx-auto mb-8">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
               <div className="p-6">
@@ -87,6 +83,13 @@ export const DocumentTypeSelector: React.FC = () => {
               </div>
             </div>
           </div>
+          
+          <p id="selector-description" className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+            Choose the type of documentation you want to create. Arcana will guide you through 
+            each step to create professional, comprehensive documentation.
+          </p>
+          
+
         </div>
 
         {hasSavedProgress && (

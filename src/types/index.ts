@@ -160,6 +160,20 @@ export interface OnboardingResource {
   type: string;
 }
 
+// Document Preservation System Types
+export interface PreservedDocument {
+  parsedData: any;
+  originalContent: string;
+  preservedSections: Map<string, string>;
+  metadata: {
+    parsingDate: string;
+    unparsedSectionCount: number;
+    totalSections: number;
+    documentType: 'spec' | 'memory';
+    parsingMethod: 'enhanced' | 'legacy';
+  };
+}
+
 // Wizard Context
 export interface WizardContextType {
   documentType: DocumentType | null;
@@ -168,6 +182,7 @@ export interface WizardContextType {
   specData: SpecDocumentData;
   memoryData: MemoryDocumentData;
   learningMode: boolean;
+  preservedDocument: PreservedDocument | null;
   setDocumentType: (type: DocumentType) => void;
   setCurrentStep: (step: number) => void;
   updateSpecData: (section: keyof SpecDocumentData, data: any) => void;
@@ -176,4 +191,6 @@ export interface WizardContextType {
   resetWizard: () => void;
   navigateToDocumentSelection: () => void;
   setLearningMode: (enabled: boolean) => void;
+  importDocument: (content: string, documentType: DocumentType) => void;
+  exportDocument: () => string;
 }

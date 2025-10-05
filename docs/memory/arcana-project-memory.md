@@ -1,20 +1,49 @@
 # Arcana Project Memory Document
 
+> **🤖 AI Coding Agent Notice:** This is a LIVING DOCUMENT that should be actively maintained during development. Please add new decisions to the Decision Log, capture lessons learned from implementation challenges, update project information when status changes, and document new concepts in the Glossary. This ensures institutional knowledge is preserved and accessible for future development cycles.
+
 *Living documentation of project decisions, lessons learned, and organizational knowledge*  
-*Last Updated: October 2, 2025*  
+*Last Updated: October 4, 2025*  
 *References: [Project Specification](./spec/arcana-project-spec.md)*
 
 ## 🏢 Project Information
 
 **Project Name:** Arcana - Document Wizard System  
-**Description:** Interactive wizard-driven documentation platform for creating structured project specifications and maintaining organizational memory. Built with modern web technologies for optimal developer and user experience.  
+**Description:** Interactive wizard-driven documentation platform for creating structured project specifications and maintaining organizational memory. Features robust real-world document preservation, educational learning modes, and comprehensive template system. Built with React 19 + TypeScript for optimal developer and user experience.  
 **Team:** Development Team (impressto), Product Owner, QA Team  
 **Start Date:** 2024  
-**Current Phase:** Active Development & Enhancement  
+**Current Phase:** Production Ready - Enhanced Document Processing & Educational Features  
 **Repository:** impressto/arcana  
 **Live Demo:** Available locally via `npm run dev`  
+**Key Achievements:** 
+- ✅ Enhanced document preservation system for real-world document compatibility
+- ✅ Educational learning mode with contextual guidance for 19+ documentation concepts
+- ✅ Comprehensive template system with AI integration guides
+- ✅ Hash-based URL navigation with bookmarkable wizard states
+- ✅ Fault-tolerant parsing system supporting evolved documents
+- ✅ Smooth UX with custom modals and consistent interaction patterns  
 
 ## 📋 Decision Log
+
+### Enhanced Document Preservation System
+**Date:** October 4, 2025  
+**Description:** Implement robust document parsing system that preserves all content from real-world documents during import/export cycles  
+**Rationale:** Initial parsing system was too rigid and lost significant content when importing documents that had been modified from original templates. Real-world testing revealed that users lose entire sections like "Testing & Validation" with custom formatting, emojis, and acceptance criteria when round-tripping documents through the wizard. This was identified as a critical blocker for real-world adoption.  
+**Status:** Implemented  
+**Impact:** Critical - Enables use with real-world documents, prevents content loss, maintains user trust  
+**Stakeholders:** All users working with existing documentation, Technical Writers, Project Managers  
+**Implementation:** Created comprehensive `DocumentPreservationSystem` class with:
+- Content preservation using Map storage for unparsed sections
+- Hybrid reconstruction that prioritizes original content structure over template regeneration
+- Fault-tolerant parsing that continues even if individual sections fail
+- Metadata tracking for parsing statistics and document integrity
+- Enhanced `WizardContext` with `importDocument()` and `exportDocument()` functions
+- Updated `ImportModal` and `DocumentWizard` to use new preservation system  
+**Technical Details:** 
+- `/src/utils/documentPreservationSystem.ts` - Core preservation logic
+- `/src/utils/enhancedMarkdownParsers.ts` - Enhanced parsing with preservation
+- Updated type definitions in `/src/types/index.ts` with `PreservedDocument` interface
+- Modified reconstruction logic to use `reconstructWithPreservation()` method when unparsed sections exist
 
 ### Custom Confirmation Modals Implementation
 **Date:** October 2, 2025  
@@ -456,6 +485,22 @@ Discovered markdown parsing issues where Action Items were importing as blank en
 **Lesson:** When processing complex objects, always extract specific properties instead of converting entire object to string  
 **Application:** Fixed AI context builder to display feature.name, feature.description, endpoint.method, endpoint.path etc. instead of raw objects  
 **Impact:** Medium - Better AI context generation and improved developer debugging experience
+
+### Content Preservation Trumps Structured Parsing
+**Date:** October 4, 2025  
+**Category:** Data Processing & User Trust  
+**Situation:** Real-world documents imported into wizard were losing significant content including entire sections with custom formatting, emojis, and user-created content that didn't match templates  
+**Lesson:** For document processing tools, preserving user content exactly as written is more important than enforcing template structure - users will not trust systems that lose their work  
+**Application:** Implemented hybrid parsing approach that preserves unparsed content in original form while still enabling wizard editing of recognized sections, prioritizing content preservation over perfect parsing  
+**Impact:** Critical - Enables real-world document usage, maintains user trust, prevents data loss scenarios that would cause user abandonment  
+
+### Real-World Documents Evolve Beyond Templates
+**Date:** October 4, 2025  
+**Category:** Product Strategy & User Behavior  
+**Situation:** Users modify template documents significantly over time, adding custom sections, changing formatting, and creating content that doesn't fit original structure  
+**Lesson:** Document tools must handle evolved documents that deviate from original templates while preserving all user modifications  
+**Application:** Built fault-tolerant parsing system that continues processing even when individual sections fail, stores unrecognized content for preservation  
+**Impact:** High - Platform can handle real-world document lifecycle, supports long-term user workflows, enables adoption by teams with existing documentation  
 
 ### Educational Features Require Contextual Integration
 **Date:** October 2, 2025  

@@ -130,6 +130,13 @@ export const FunctionalRequirementsStep: React.FC = () => {
           className="mb-4"
         />
         
+        <LearningCard
+          type="tip"
+          title="Writing Effective User Stories"
+          content="Focus on the user's perspective and the value they receive. Examples: 'As a project manager, I want to see task progress in real-time so that I can identify blockers quickly' rather than 'System should show task status'."
+          className="mb-4"
+        />
+        
         <div className="space-y-3">
           <div className="flex space-x-2">
             <input
@@ -183,6 +190,20 @@ export const FunctionalRequirementsStep: React.FC = () => {
             <span>Add Feature</span>
           </button>
         </div>
+        
+        <LearningCard
+          type="explanation"
+          title="Feature Definition Guidelines"
+          content="Features are specific capabilities your system will provide. Each feature should have a clear name, description, priority level, and current status. This helps AI assistants understand the scope and complexity of your project."
+          className="mb-4"
+        />
+        
+        <LearningCard
+          type="tip"
+          title="Prioritizing Features Effectively"
+          content="Use High priority for must-have features that are core to your product's value. Medium for important features that enhance user experience. Low for nice-to-have features that can be added later. This helps AI assistants suggest appropriate technical approaches."
+          className="mb-4"
+        />
 
         {formData.features.length > 0 && (
           <div className="grid grid-cols-1 gap-4">
@@ -246,6 +267,21 @@ export const FunctionalRequirementsStep: React.FC = () => {
       {/* Acceptance Criteria */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-800">Acceptance Criteria</h3>
+        
+        <LearningCard
+          type="explanation"
+          title="Acceptance Criteria Best Practices"
+          content="Acceptance criteria define the specific conditions that must be met for a feature to be considered complete. They should be testable, clear, and focused on outcomes rather than implementation details."
+          className="mb-4"
+        />
+        
+        <LearningCard
+          type="tip"
+          title="Writing Testable Criteria"
+          content="Use the Given-When-Then format when helpful: 'Given a user is logged in, When they click the save button, Then their data should be saved and a confirmation message displayed.' This helps AI assistants understand the expected behavior."
+          className="mb-4"
+        />
+        
         <div className="space-y-3">
           <div className="flex space-x-2">
             <input

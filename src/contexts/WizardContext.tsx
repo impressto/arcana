@@ -6,7 +6,9 @@ import type {
   SpecDocumentData,
   MemoryDocumentData,
   WizardContextType,
+  PreservedDocument,
 } from '../types';
+import { DocumentPreservationSystem } from '../utils/documentPreservationSystem';
 
 // URL hash management
 const parseHashUrl = () => {
@@ -174,6 +176,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
   const [specData, setSpecData] = useState<SpecDocumentData>(defaultSpecData);
   const [memoryData, setMemoryData] = useState<MemoryDocumentData>(defaultMemoryData);
   const [learningMode, setLearningMode] = useState(true);
+  const [preservedDocument, setPreservedDocument] = useState<PreservedDocument | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Load data from localStorage and URL hash on component mount
@@ -294,6 +297,65 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     updateHashUrl(documentType, step);
   };
 
+  const importDocument = (content: string, docType: DocumentType) => {
+    try {
+      const preserved = DocumentPreservationSystem.parseDocument(content, docType);
+      setPreservedDocument(preserved);
+      
+      if (docType === 'spec') {
+        setSpecData(preserved.parsedData);
+      } else {
+        setMemoryData(preserved.parsedData);
+      }
+      
+      // Set document type and navigate to first step
+      setDocumentType(docType);
+      setCurrentStep(0);
+      updateHashUrl(docType, 0);
+      
+      if ((window as any).showToast) {
+        const unparsedCount = preserved.metadata.unparsedSectionCount;
+        const message = unparsedCount > 0
+          ? `Document imported successfully! ${unparsedCount} sections preserved for export.`
+          : 'Document imported successfully!';
+        (window as any).showToast(message, 'success');
+      }
+    } catch (error) {
+      console.error('Error importing document:', error);
+      if ((window as any).showToast) {
+        (window as any).showToast('Failed to import document', 'error');
+      }
+    }
+  };
+
+  const exportDocument = (): string => {
+    try {
+      if (preservedDocument) {
+        // Update preserved document with current data
+        const updatedPreserved: PreservedDocument = {
+          ...preservedDocument,
+          parsedData: documentType === 'spec' ? specData : memoryData
+        };
+        return DocumentPreservationSystem.reconstructDocument(updatedPreserved);
+      } else {
+        // Fallback: create new document from current data
+        const content = documentType === 'spec' ? specData : memoryData;
+        const preserved = DocumentPreservationSystem.parseDocument('', documentType!);
+        const updatedPreserved: PreservedDocument = {
+          ...preserved,
+          parsedData: content
+        };
+        return DocumentPreservationSystem.reconstructDocument(updatedPreserved);
+      }
+    } catch (error) {
+      console.error('Error exporting document:', error);
+      if ((window as any).showToast) {
+        (window as any).showToast('Failed to export document', 'error');
+      }
+      return '';
+    }
+  };
+
   const value: WizardContextType = {
     documentType,
     currentStep,
@@ -301,6 +363,7 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     specData,
     memoryData,
     learningMode,
+    preservedDocument,
     setDocumentType: handleSetDocumentType,
     setCurrentStep: handleSetCurrentStep,
     updateSpecData,
@@ -309,6 +372,8 @@ export const WizardProvider: React.FC<WizardProviderProps> = ({ children }) => {
     resetWizard,
     navigateToDocumentSelection,
     setLearningMode,
+    importDocument,
+    exportDocument,
   };
 
   return (

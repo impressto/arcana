@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useWizard } from '../contexts/WizardContext';
-import type { SpecDocumentData } from '../types';
 import { Upload, FileText, AlertCircle, CheckCircle, X } from 'lucide-react';
-import { parseSpecMarkdownContent, parseMemoryMarkdownContent } from '../utils/markdownParsers';
 
 interface ImportModalProps {
   isOpen: boolean;
@@ -10,7 +8,7 @@ interface ImportModalProps {
 }
 
 export function ImportModal({ isOpen, onClose }: ImportModalProps) {
-  const { updateMemoryData, memoryData, updateSpecData, specData, documentType } = useWizard();
+  const { importDocument, documentType } = useWizard();
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState<{
     success: boolean;
@@ -35,142 +33,43 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
 
     try {
       const content = await file.text();
-      const parsedData = documentType === 'spec' 
-        ? parseSpecMarkdownContent(content)
-        : parseMemoryMarkdownContent(content);
-
-      if (parsedData.success && parsedData.data) {
-        // Merge with existing data or replace
-        const shouldMerge = window.confirm(
-          'Do you want to merge with existing data? Click OK to merge, Cancel to replace all data.'
-        );
-
-        if (documentType === 'memory') {
-          const memoryDocData = parsedData.data as any; // Memory document data
-          if (shouldMerge) {
-            // Merge arrays for memory document
-            if (memoryDocData.decisionLog) {
-              updateMemoryData('decisionLog', [...memoryData.decisionLog, ...memoryDocData.decisionLog]);
-            }
-            if (memoryDocData.glossary) {
-              updateMemoryData('glossary', [...memoryData.glossary, ...memoryDocData.glossary]);
-            }
-            if (memoryDocData.meetingNotes) {
-              updateMemoryData('meetingNotes', [...memoryData.meetingNotes, ...memoryDocData.meetingNotes]);
-            }
-            if (memoryDocData.lessonsLearned) {
-              updateMemoryData('lessonsLearned', [...memoryData.lessonsLearned, ...memoryDocData.lessonsLearned]);
-            }
-            if (memoryDocData.onboardingNotes) {
-              updateMemoryData('onboardingNotes', [...memoryData.onboardingNotes, ...memoryDocData.onboardingNotes]);
-            }
-            
-            // Update project info if it's not empty
-            if (memoryDocData.projectInfo && (memoryDocData.projectInfo.name || memoryDocData.projectInfo.description)) {
-              updateMemoryData('projectInfo', memoryDocData.projectInfo);
-            }
-          } else {
-            // Replace all sections
-            Object.keys(memoryDocData).forEach(key => {
-              updateMemoryData(key as any, memoryDocData[key]);
-            });
-          }
+      
+      // Determine document type from content or use current selection
+      let detectedType = documentType;
+      if (!detectedType) {
+        // Try to detect from content
+        if (content.includes('Memory Document') || content.includes('Decision Log') || content.includes('Glossary')) {
+          detectedType = 'memory';
+        } else if (content.includes('Technical Specification') || content.includes('Functional Requirements')) {
+          detectedType = 'spec';
         } else {
-          // Handle spec document
-          const specDocData = parsedData.data as SpecDocumentData;
-          if (shouldMerge) {
-            // Merge arrays for spec document
-            if (specDocData.functionalRequirements) {
-              updateSpecData('functionalRequirements', {
-                ...specData.functionalRequirements,
-                userStories: [...specData.functionalRequirements.userStories, ...(specDocData.functionalRequirements.userStories || [])],
-                features: [...specData.functionalRequirements.features, ...(specDocData.functionalRequirements.features || [])],
-                acceptanceCriteria: [...specData.functionalRequirements.acceptanceCriteria, ...(specDocData.functionalRequirements.acceptanceCriteria || [])]
-              });
-            }
-            if (specDocData.technicalRequirements) {
-              updateSpecData('technicalRequirements', {
-                ...specDocData.technicalRequirements,
-                technologies: [...specData.technicalRequirements.technologies, ...(specDocData.technicalRequirements.technologies || [])],
-                dependencies: [...specData.technicalRequirements.dependencies, ...(specDocData.technicalRequirements.dependencies || [])]
-              });
-            }
-            if (specDocData.apis) {
-              updateSpecData('apis', {
-                ...specDocData.apis,
-                endpoints: [...specData.apis.endpoints, ...(specDocData.apis.endpoints || [])]
-              });
-            }
-            if (specDocData.roadmap) {
-              updateSpecData('roadmap', {
-                phases: [...specData.roadmap.phases, ...(specDocData.roadmap.phases || [])],
-                milestones: [...specData.roadmap.milestones, ...(specDocData.roadmap.milestones || [])]
-              });
-            }
-            
-            // Update other sections if they have content
-            if (specDocData.projectOverview && (specDocData.projectOverview.name || specDocData.projectOverview.description)) {
-              updateSpecData('projectOverview', specDocData.projectOverview);
-            }
-            if (specDocData.nonFunctionalRequirements && (specDocData.nonFunctionalRequirements.performance || specDocData.nonFunctionalRequirements.security)) {
-              updateSpecData('nonFunctionalRequirements', specDocData.nonFunctionalRequirements);
-            }
-          } else {
-            // Replace all sections
-            Object.keys(specDocData).forEach(key => {
-              updateSpecData(key as any, (specDocData as any)[key]);
-            });
-          }
+          // Default to spec if uncertain
+          detectedType = 'spec';
         }
-
-        if (documentType === 'memory') {
-          const memoryData = parsedData.data as any;
-          setImportResult({
-            success: true,
-            message: `Successfully imported memory document!`,
-            details: {
-              decisions: memoryData.decisionLog.length,
-              glossaryTerms: memoryData.glossary.length,
-              meetings: memoryData.meetingNotes.length,
-              lessons: memoryData.lessonsLearned.length,
-              onboarding: memoryData.onboardingNotes.length,
-              // Additional details for complex structures
-              actionItems: memoryData.meetingNotes.reduce((sum: number, meeting: any) => 
-                sum + (meeting.actionItems?.length || 0), 0),
-              onboardingTasks: memoryData.onboardingNotes.reduce((sum: number, note: any) => 
-                sum + (note.onboardingTasks?.length || 0), 0)
-            }
-          });
-        } else {
-          const specData = parsedData.data as SpecDocumentData;
-          setImportResult({
-            success: true,
-            message: `Successfully imported specification document!`,
-            details: {
-              userStories: specData.functionalRequirements.userStories.length,
-              features: specData.functionalRequirements.features.length,
-              acceptanceCriteria: specData.functionalRequirements.acceptanceCriteria.length,
-              technologies: specData.technicalRequirements.technologies.length,
-              dependencies: specData.technicalRequirements.dependencies.length,
-              endpoints: specData.apis.endpoints.length,
-              phases: specData.roadmap.phases.length,
-              milestones: specData.roadmap.milestones.length
-            }
-          });
-        }
-      } else {
-        setImportResult({
-          success: false,
-          message: parsedData.error || 'Failed to parse the markdown file'
-        });
       }
+
+      // Use the new enhanced import system
+      importDocument(content, detectedType);
+
+      setImportResult({
+        success: true,
+        message: 'Document imported successfully with full content preservation!',
+      });
+
+      // Auto-close after 2 seconds on success
+      setTimeout(() => {
+        onClose();
+      }, 2000);
+
     } catch (error) {
       setImportResult({
         success: false,
-        message: `Error reading file: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: 'Error reading file: ' + (error as Error).message
       });
     } finally {
       setIsImporting(false);
+      // Reset file input
+      event.target.value = '';
     }
   };
 

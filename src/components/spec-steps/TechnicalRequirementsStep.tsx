@@ -95,6 +95,21 @@ export const TechnicalRequirementsStep: React.FC = () => {
           <label htmlFor="architecture" className="block text-sm font-medium text-gray-700 mb-2">
             System Architecture *
           </label>
+          
+          <LearningCard
+            type="explanation"
+            title="System Architecture Fundamentals"
+            content="Document your system's high-level structure: frontend/backend separation, data flow, key components, and how they interact. Include architectural patterns like MVC, microservices, or layered architecture that guide your design decisions."
+            className="mb-4"
+          />
+          
+          <LearningCard
+            type="tip"
+            title="Architecture Documentation Tips"
+            content="Focus on decisions that affect multiple components: authentication flow, data storage strategy, API design patterns, and scalability considerations. This helps AI assistants suggest code that fits your overall architecture."
+            className="mb-4"
+          />
+          
           <textarea
             id="architecture"
             value={formData.architecture}
@@ -110,6 +125,21 @@ export const TechnicalRequirementsStep: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Technologies & Tools
           </label>
+          
+          <LearningCard
+            type="explanation"
+            title="Technology Stack Selection"
+            content="List your core technologies: programming languages, frameworks, databases, and development tools. Include version numbers when specific versions are required. Think about frontend, backend, database, and deployment technologies."
+            className="mb-4"
+          />
+          
+          <LearningCard
+            type="tip"
+            title="Tool Selection Strategy"
+            content="Choose technologies that work well together and match your team's expertise. Consider factors like community support, documentation quality, and long-term maintenance. AI assistants can provide better help when they understand your complete tech stack."
+            className="mb-4"
+          />
+          
           <div className="space-y-3">
             <div className="flex space-x-2">
               <input
@@ -155,6 +185,21 @@ export const TechnicalRequirementsStep: React.FC = () => {
           <label htmlFor="infrastructure" className="block text-sm font-medium text-gray-700 mb-2">
             Infrastructure & Deployment
           </label>
+          
+          <LearningCard
+            type="explanation"
+            title="Infrastructure Planning Essentials"
+            content="Define your hosting environment, deployment process, and operational requirements. Include cloud platforms, CI/CD pipelines, monitoring solutions, and backup strategies. This ensures your application runs reliably in production."
+            className="mb-4"
+          />
+          
+          <LearningCard
+            type="tip"
+            title="Deployment Best Practices"
+            content="Consider automated deployment, environment consistency (dev/staging/prod), scaling requirements, and monitoring needs. Document your deployment pipeline and rollback procedures. AI assistants can help optimize these processes when they understand your infrastructure goals."
+            className="mb-4"
+          />
+          
           <textarea
             id="infrastructure"
             value={formData.infrastructure}
