@@ -1,5 +1,7 @@
 # [Project Name] - Memory Document
 
+> **🤖 AI Coding Agent Notice:** This is a LIVING DOCUMENT that should be actively maintained during development. Please add new decisions to the Decision Log, capture lessons learned from implementation challenges, update project information when status changes, and document new concepts in the Glossary. This ensures institutional knowledge is preserved and accessible for future development cycles.
+
 *Living documentation of project decisions, lessons learned, and organizational knowledge*  
 *Last Updated: [Date]*  
 *References: [Link to project specification or related docs]*

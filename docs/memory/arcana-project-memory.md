@@ -25,6 +25,20 @@
 
 ## 📋 Decision Log
 
+### Living Document Notices for Sample and Template Files
+**Date:** October 5, 2025  
+**Description:** Add AI Coding Agent notices to all sample documents and templates to encourage living document best practices  
+**Rationale:** Sample documents and templates serve as examples for users and should demonstrate best practices including proper living document maintenance. Adding the notices promotes this practice and helps users understand the importance of keeping documentation synchronized with code changes.  
+**Status:** Implemented  
+**Impact:** Medium - Promotes best practices, educates users about living documentation, standardizes approach across all document types  
+**Stakeholders:** Development Teams, Documentation Users, AI Coding Agents  
+**Implementation:** Added living document notices to:
+- `/public/sample-spec-document.md` - Sample specification document
+- `/public/sample-memory-document.md` - Sample memory document  
+- `/public/templates/spec-document-template.md` - Specification template
+- `/public/templates/memory-document-template.md` - Memory document template
+Each notice provides specific guidance for that document type with appropriate instructions for AI agents and users
+
 ### Enhanced Document Preservation System
 **Date:** October 4, 2025  
 **Description:** Implement robust document parsing system that preserves all content from real-world documents during import/export cycles  

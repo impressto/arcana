@@ -1,5 +1,7 @@
 # Arcana Platform Development
 
+> **🤖 AI Coding Agent Notice:** This is a LIVING DOCUMENT that should be actively maintained during development. Please add new decisions to the Decision Log, capture lessons learned from implementation challenges, update project information when status changes, and document new concepts in the Glossary. This ensures institutional knowledge is preserved and accessible for future development cycles.
+
 *Memory Document*  
 *Generated using Arcana Documentation Wizard*  
 *Last Updated: October 4, 2025*

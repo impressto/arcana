@@ -1,5 +1,7 @@
 # [Project Name] - Specification Document
 
+> **🤖 AI Coding Agent Notice:** This is a LIVING DOCUMENT that should be updated whenever project changes are made. When implementing new features, fixing bugs, or making architectural changes, please update the relevant sections of this specification to maintain accuracy and completeness. This ensures the documentation stays synchronized with the actual codebase and helps future development efforts.
+
 *Comprehensive technical specification for [Project Name]*  
 *Last Updated: [Date]*  
 *Version: [Version Number]*  

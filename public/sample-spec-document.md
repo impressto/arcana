@@ -1,5 +1,7 @@
 # Arcana Documentation Platform
 
+> **🤖 AI Coding Agent Notice:** This is a LIVING DOCUMENT that should be updated whenever project changes are made. When implementing new features, fixing bugs, or making architectural changes, please update the relevant sections of this specification to maintain accuracy and completeness. This ensures the documentation stays synchronized with the actual codebase and helps future development efforts.
+
 *Technical Specification Document*  
 *Generated using Arcana Documentation Wizard*  
 *Last Updated: October 4, 2025*
