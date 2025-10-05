@@ -5,17 +5,26 @@ import { LearningCard } from './LearningCard';
 import type { DocumentType } from '../types';
 
 export const DocumentTypeSelector: React.FC = () => {
-  const { setDocumentType, resetWizard } = useWizard();
+  const { setDocumentType, resetWizard, documentType } = useWizard();
   
-  // Check if there's saved progress
-  const savedData = React.useMemo(() => {
+  // Use state to track saved progress
+  const [savedData, setSavedData] = React.useState<any>(null);
+  
+  // Function to check localStorage
+  const checkSavedProgress = React.useCallback(() => {
     try {
       const saved = localStorage.getItem('arcana-state');
-      return saved ? JSON.parse(saved) : null;
+      const data = saved ? JSON.parse(saved) : null;
+      setSavedData(data);
     } catch {
-      return null;
+      setSavedData(null);
     }
   }, []);
+  
+  // Check saved progress on mount and when documentType changes
+  React.useEffect(() => {
+    checkSavedProgress();
+  }, [checkSavedProgress, documentType]);
 
   const hasSavedProgress = savedData && savedData.documentType;
 
@@ -122,6 +131,8 @@ export const DocumentTypeSelector: React.FC = () => {
                     onClick={() => {
                       if (window.confirm('Are you sure you want to start over? This will delete your saved progress.')) {
                         resetWizard();
+                        // Force refresh the saved progress state
+                        setTimeout(() => checkSavedProgress(), 0);
                       }
                     }}
                     className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
