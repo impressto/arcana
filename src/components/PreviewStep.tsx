@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Download, FileText, Eye } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
 import { useWizard } from '../contexts/WizardContext';
 import { WizardAIAssistant } from './WizardAIAssistant';
 
@@ -1122,63 +1125,129 @@ const generateMemoryMarkdown = (data: any): string => {
   return markdown;
 };
 
-// Component to render markdown content in a formatted view
+// Component to render markdown content using React Markdown for high fidelity
 const MarkdownFormattedPreview: React.FC<{ markdown: string }> = ({ markdown }) => {
-  // Enhanced markdown-to-HTML converter for preview
-  const convertMarkdownToHtml = (md: string) => {
-    // Escape HTML to prevent XSS
-    const escapeHtml = (text: string) => {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    };
-
-    return md
-      // Code blocks (must be first to avoid conflicts)
-      .replace(/```([\s\S]*?)```/g, (_, code) => 
-        `<pre class="bg-gray-100 p-4 rounded-lg mt-4 mb-4 overflow-x-auto border"><code class="text-sm font-mono">${escapeHtml(code.trim())}</code></pre>`
-      )
-      // Inline code
-      .replace(/`([^`]+)`/g, (_, code) => 
-        `<code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono border">${escapeHtml(code)}</code>`
-      )
-      // Headers (order matters - larger first)
-      .replace(/^#### (.*$)/gm, '<h4 class="text-base font-semibold text-gray-900 mt-4 mb-2">$1</h4>')
-      .replace(/^### (.*$)/gm, '<h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">$1</h3>')
-      .replace(/^## (.*$)/gm, '<h2 class="text-xl font-bold text-gray-900 mt-8 mb-4 pb-2 border-b border-gray-200">$1</h2>')
-      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-2 border-blue-600">$1</h1>')
-      // Bold and italic (bold first to avoid conflicts)
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-      // Links
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">$1</a>')
-      // Blockquotes (handle multiple lines)
-      .replace(/^> (.*$)/gm, '<blockquote class="border-l-4 border-blue-500 bg-blue-50 p-4 my-4 italic text-gray-700">$1</blockquote>')
-      // Lists (improved with proper nesting)
-      .replace(/^\d+\.\s+(.*$)/gm, '<li class="ml-8 mb-1 list-decimal">$1</li>')
-      .replace(/^[\-\*\+]\s+(.*$)/gm, '<li class="ml-8 mb-1 list-disc">$1</li>')
-      // Horizontal rules
-      .replace(/^---+$/gm, '<hr class="border-t-2 border-gray-300 my-8" />')
-      // Tables (basic support)
-      .replace(/\|(.+)\|/g, (_, content) => {
-        const cells = content.split('|').map((cell: string) => cell.trim());
-        return '<tr>' + cells.map((cell: string) => `<td class="border border-gray-300 px-3 py-2">${cell}</td>`).join('') + '</tr>';
-      })
-      // Line breaks and paragraphs
-      .replace(/\n\n+/g, '</p><p class="mb-4 text-gray-800 leading-relaxed">')
-      .replace(/\n/g, '<br />');
-  };
-
-  const htmlContent = convertMarkdownToHtml(markdown);
-
   return (
-    <div className="max-w-none">
-      <div 
-        className="prose-custom"
-        dangerouslySetInnerHTML={{ 
-          __html: `<div class="text-gray-800 leading-relaxed"><p class="mb-4 text-gray-800 leading-relaxed">${htmlContent}</p></div>` 
+    <div className="max-w-none prose prose-lg prose-gray">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeHighlight]}
+        components={{
+          // Custom styling for different elements to match our design
+          h1: ({ children }) => (
+            <h1 className="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-2 border-blue-600">
+              {children}
+            </h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="text-xl font-bold text-gray-900 mt-8 mb-4 pb-2 border-b border-gray-200">
+              {children}
+            </h2>
+          ),
+          h3: ({ children }) => (
+            <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">
+              {children}
+            </h3>
+          ),
+          h4: ({ children }) => (
+            <h4 className="text-base font-semibold text-gray-900 mt-4 mb-2">
+              {children}
+            </h4>
+          ),
+          p: ({ children }) => (
+            <p className="mb-4 text-gray-800 leading-relaxed">
+              {children}
+            </p>
+          ),
+          blockquote: ({ children }) => (
+            <blockquote className="border-l-4 border-blue-500 bg-blue-50 p-4 my-4 italic text-gray-700">
+              {children}
+            </blockquote>
+          ),
+          code: ({ children, ...props }) => {
+            const inline = !props.className;
+            if (inline) {
+              return (
+                <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono border">
+                  {children}
+                </code>
+              );
+            }
+            return (
+              <code className="text-sm font-mono">
+                {children}
+              </code>
+            );
+          },
+          pre: ({ children }) => (
+            <pre className="bg-gray-100 p-4 rounded-lg mt-4 mb-4 overflow-x-auto border">
+              {children}
+            </pre>
+          ),
+          a: ({ href, children }) => (
+            <a 
+              href={href} 
+              className="text-blue-600 hover:text-blue-800 underline" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              {children}
+            </a>
+          ),
+          ul: ({ children }) => (
+            <ul className="list-disc ml-6 mb-4 space-y-1">
+              {children}
+            </ul>
+          ),
+          ol: ({ children }) => (
+            <ol className="list-decimal ml-6 mb-4 space-y-1">
+              {children}
+            </ol>
+          ),
+          li: ({ children }) => (
+            <li className="text-gray-800">
+              {children}
+            </li>
+          ),
+          hr: () => (
+            <hr className="border-t-2 border-gray-300 my-8" />
+          ),
+          table: ({ children }) => (
+            <div className="overflow-x-auto my-4">
+              <table className="min-w-full border border-gray-300">
+                {children}
+              </table>
+            </div>
+          ),
+          th: ({ children }) => (
+            <th className="border border-gray-300 px-3 py-2 bg-gray-50 font-semibold text-left">
+              {children}
+            </th>
+          ),
+          td: ({ children }) => (
+            <td className="border border-gray-300 px-3 py-2">
+              {children}
+            </td>
+          ),
+          // Support for task lists (GitHub-flavored markdown)
+          input: ({ type, checked, disabled, ...props }) => {
+            if (type === 'checkbox') {
+              return (
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  disabled={disabled}
+                  className="mr-2"
+                  {...props}
+                />
+              );
+            }
+            return <input type={type} {...props} />;
+          }
         }}
-      />
+      >
+        {markdown}
+      </ReactMarkdown>
     </div>
   );
 };
